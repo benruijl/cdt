@@ -13,11 +13,18 @@
 
 class Triangle {
 public:
-    Triangle();
+
+    /* the two Lorentz triangles. Indices are in this order */
+    enum TYPE {
+        TTS, TSS
+    };
+
+    Triangle(TYPE type);
     Triangle(const Triangle& orig);
     virtual ~Triangle();
 
-    Triangle(Vertex& a, Vertex& b, Vertex& c) {
+    Triangle(TYPE type, Vertex& a, Vertex& b, Vertex& c) {
+        this->type = type;
         vertices[0] = &a;
         vertices[1] = &b;
         vertices[2] = &c;
@@ -47,7 +54,7 @@ public:
                         w = i;
                         y = j;
                     }
-                    
+
                     break;
                 }
             }
@@ -68,8 +75,6 @@ public:
         } else {
             b->neighbours[1] = a;
         }
-        
-        std::cout << u << " " << w << " " << v << " " << y << " " << "\n";
     }
 
     void registerNeighbour(int p, Triangle* neighbour) {
@@ -78,7 +83,12 @@ public:
 
     int getLightConeCount(Vertex* v) {
         int i = indexFromVertex(v);
-        return 0;
+
+        if (type == TTS) {
+            return i != 0;
+        } else {
+            return i != 2;
+        }
     }
 
     int indexFromVertex(Vertex* v) {
@@ -127,6 +137,7 @@ public:
     }
 
 private:
+    TYPE type;
     Vertex* vertices[3]; /* Each triangle has three vertices */
     /* Each triangle has max. three neighbours. Neighbour 0 is contains vertex 0 and 1, etc. */
     Triangle* neighbours[3];

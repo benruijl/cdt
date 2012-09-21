@@ -7,10 +7,12 @@
 
 #include "Triangle.h"
 
-Triangle::Triangle() {
+Triangle::Triangle(TYPE type) {
+    this->type = type;
 }
 
 Triangle::Triangle(const Triangle& orig) {
+    this->type = orig.type;
     vertices[0] = orig.vertices[0];
     vertices[1] = orig.vertices[1];
     vertices[2] = orig.vertices[2];

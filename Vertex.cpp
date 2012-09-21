@@ -9,8 +9,6 @@
 #include "Triangle.h"
 
 Vertex::Vertex() {
-    t = 0;
-    x = 0;
     triangle = NULL;
 }
 
@@ -25,11 +23,12 @@ bool Vertex::checkCausality() {
 
     /* Find neighbours */
     Triangle* cur = triangle;
-    while ((cur = cur->getNeighbourClockwise(this)) != triangle) {
-        std::cout << "Neighbour passed!";
-
-    }
+    do  {
+        lightConeCount += cur->getLightConeCount(this);
+        cur = cur->getNeighbourClockwise(this);
+    } while(cur != triangle);
     
-    return false;
+    std::cout << "Lightcone count: " << lightConeCount << std::endl;
+    return lightConeCount == 4;
 }
 
