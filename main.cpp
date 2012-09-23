@@ -18,20 +18,21 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    Vertex a, b, c, d, e, f;
-    Triangle t(Triangle::TSS, a, b, c);
-    Triangle u(Triangle::TTS, d, c, a);
-    Triangle v(Triangle::TSS, a, e, d);
-    Triangle w(Triangle::TTS, b, f, a);
+    Vertex a, b, c, d, e;
+    Triangle t(Triangle::TTS, c, b, a);
+    Triangle u(Triangle::TTS, a, d, c);
+    Triangle v(Triangle::TTS, e, d, a);
+    Triangle w(Triangle::TTS, a, b, e);
     Triangle::registerNeighbour(&t, &u);
     Triangle::registerNeighbour(&u, &v);
     Triangle::registerNeighbour(&v, &w);
     Triangle::registerNeighbour(&w, &t);
     
-    std::cout << "Vertex A is causal: " << a.checkCausality();
+    std::cout << "Vertex A is causal: " << a.checkCausality() << std::endl;
+    std::cout << "Vertex B is causal: " << b.checkCausality() << std::endl;
     
     Simulation simulation;
-    Triangle* triangulation = simulation.generateRandomTriangulation();
+    Triangle* triangulation = simulation.generateRandomTriangulation(10);
     simulation.Metropolis(triangulation);
 
     return 0;

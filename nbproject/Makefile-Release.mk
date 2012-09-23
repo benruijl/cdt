@@ -36,8 +36,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Triangle.o \
-	${OBJECTDIR}/Simulation.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/Simulation.o \
 	${OBJECTDIR}/Vertex.o
 
 
@@ -70,15 +70,15 @@ ${OBJECTDIR}/Triangle.o: Triangle.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Triangle.o Triangle.cpp
 
-${OBJECTDIR}/Simulation.o: Simulation.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Simulation.o Simulation.cpp
-
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/Simulation.o: Simulation.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Simulation.o Simulation.cpp
 
 ${OBJECTDIR}/Vertex.o: Vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -24,10 +24,11 @@ public:
 
     /**
      * Generates a random triangulation that satisfies causality.
-     * @param N Number of triangles
+     * @param N Number of vertices in the circular spatial dimension
+     * @param T Number of time slices
      * @return Triangulation
      */
-    Triangle* generateRandomTriangulation(int N);
+    Triangle* generateRandomTriangulation(int N, int T);
 
     /**
      * Perform Metropolis algorithm to improve a given triangulation.

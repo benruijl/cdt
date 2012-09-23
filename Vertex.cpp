@@ -26,6 +26,12 @@ bool Vertex::checkCausality() {
     do  {
         lightConeCount += cur->getLightConeCount(this);
         cur = cur->getNeighbourClockwise(this);
+        
+        if (cur == NULL) { /* are we at an edge? */
+            std::cout << "Edge detected => always causal" << std::endl;
+            return true;
+        }
+        
     } while(cur != triangle);
     
     std::cout << "Lightcone count: " << lightConeCount << std::endl;

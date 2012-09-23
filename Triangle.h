@@ -28,6 +28,9 @@ public:
         vertices[0] = &a;
         vertices[1] = &b;
         vertices[2] = &c;
+        neighbours[0] = NULL;
+        neighbours[1] = NULL;
+        neighbours[2] = NULL;
 
         a.registerTriangle(this);
         b.registerTriangle(this);
@@ -85,7 +88,7 @@ public:
         int i = indexFromVertex(v);
 
         if (type == TTS) {
-            return i != 0;
+            return i != 1;
         } else {
             return i != 2;
         }

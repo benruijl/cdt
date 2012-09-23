@@ -18,11 +18,11 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
 }
 
-Triangle* Simulation::generateRandomTriangulation(int N) {
-    Triangle* triangles = new Triangle*[N];
+Triangle* Simulation::generateRandomTriangulation(int N, int T) {
+    Triangle** triangles = new Triangle*[N];
     
     
-    return triangles;    
+    return triangles[0];    
 }
 
 Triangle* Simulation::Metropolis(Triangle* triangulation) {
