@@ -19,10 +19,10 @@ using namespace std;
  */
 int main(int argc, char** argv) {
     Vertex a, b, c, d, e;
-    Triangle t(Triangle::TTS, c, b, a);
-    Triangle u(Triangle::TTS, a, d, c);
-    Triangle v(Triangle::TTS, e, d, a);
-    Triangle w(Triangle::TTS, a, b, e);
+    Triangle t(Triangle::TTS, &c, &b, &a);
+    Triangle u(Triangle::TTS, &a, &d, &c);
+    Triangle v(Triangle::TTS, &e, &d, &a);
+    Triangle w(Triangle::TTS, &a, &b, &e);
     Triangle::registerNeighbour(&t, &u);
     Triangle::registerNeighbour(&u, &v);
     Triangle::registerNeighbour(&v, &w);
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     std::cout << "Vertex B is causal: " << b.checkCausality() << std::endl;
     
     Simulation simulation;
-    Triangle* triangulation = simulation.generateRandomTriangulation(10);
+    Triangle* triangulation = simulation.generateInitialTriangulation(4, 4);
     simulation.Metropolis(triangulation);
 
     return 0;

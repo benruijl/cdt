@@ -23,12 +23,16 @@ public:
     virtual ~Simulation();
 
     /**
-     * Generates a random triangulation that satisfies causality.
-     * @param N Number of vertices in the circular spatial dimension
+     * Generates an triangulation that satisfies causality and CDT foliation constraints. 
+     * Thus, this initial configuration can be used for both CDT and extended CDT.
+     * 
+     * The triangulation has the shape of a torus, since both time and space have periodic boundary conditions.
+     * 
+     * @param N Number of links in the circular spatial dimension
      * @param T Number of time slices
      * @return Triangulation
      */
-    Triangle* generateRandomTriangulation(int N, int T);
+    Triangle* generateInitialTriangulation(int N, int T);
 
     /**
      * Perform Metropolis algorithm to improve a given triangulation.

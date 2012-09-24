@@ -23,18 +23,18 @@ public:
     Triangle(const Triangle& orig);
     virtual ~Triangle();
 
-    Triangle(TYPE type, Vertex& a, Vertex& b, Vertex& c) {
+    Triangle(TYPE type, Vertex* a, Vertex* b, Vertex* c) {
         this->type = type;
-        vertices[0] = &a;
-        vertices[1] = &b;
-        vertices[2] = &c;
+        vertices[0] = a;
+        vertices[1] = b;
+        vertices[2] = c;
         neighbours[0] = NULL;
         neighbours[1] = NULL;
         neighbours[2] = NULL;
 
-        a.registerTriangle(this);
-        b.registerTriangle(this);
-        c.registerTriangle(this);
+        a->registerTriangle(this);
+        b->registerTriangle(this);
+        c->registerTriangle(this);
     }
 
     /**
