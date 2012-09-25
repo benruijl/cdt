@@ -84,6 +84,37 @@ public:
         neighbours[p] = neighbour;
     }
 
+
+	/**
+	  Sets the new neighbour for one triangle.
+	  */
+	void replaceNeighbour(Triangle* old, Triangle* n) {
+		for (int i = 0; i < 3; i++) {
+			if (neighbours[i] == old) {
+				neighbours[i] = n;
+				return;
+			}
+		}
+	}
+
+	int getLink(Vertex* a, Vertex* b) {
+		int i = indexFromVertex(a);
+		if (vertices[(i + 1) % 3] == b) {
+			return i;
+		}
+
+		return (i - 1) % 3;
+	}
+
+	bool containsVertex(Vertex* a) {
+		for (int i = 0; i < 3; i++) {
+			if (vertices[i] == a) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     int getLightConeCount(Vertex* v) {
         int i = indexFromVertex(v);
 
@@ -93,6 +124,13 @@ public:
             return i != 2;
         }
     }
+	
+	void replaceVertex(Vertex* old, Vertex* n) {
+		int i = indexFromVertex(old);
+		vertices[i] = n;
+	}
+
+	
 
     int indexFromVertex(Vertex* v) {
         if (vertices[0] == v) {
@@ -106,12 +144,16 @@ public:
         return -1;
     }
 
-    Triangle* getNeighbourClockwise(Vertex* v) {
-        int i = (indexFromVertex(v) - 1) % 3;
-        if (i < 0) {
-            i += 3;
-        }
+	Vertex* getVertex(int index) {
+		return vertices[index];
+	}
 
+	Triangle* getNeighbour(int index) {
+		return neighbours[index];
+	}
+
+    Triangle* getNeighbourClockwise(Vertex* v) {
+        int i = (indexFromVertex(v) +2) % 3;
         return neighbours[i];
     }
 

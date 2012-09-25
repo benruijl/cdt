@@ -26,6 +26,8 @@ public:
         return triangle;
     }
 
+	static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
+
     /**
      * Checks the causality requirement of this vertex.
      * @return True if vertex is causal, else false
