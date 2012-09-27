@@ -20,7 +20,6 @@ Vertex::~Vertex() {
 
 void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second) {
     TriSet t = a->triangles & b->triangles; // intersection
-    std::cout << t.size() << std::endl;
     BOOST_ASSERT(t.size() == 2); // each link should have 2 triangles
 
     *first = NULL;
@@ -44,7 +43,7 @@ bool Vertex::checkCausality() {
         lightConeCount += t->getLightConeCount(this);
     }
 
-    std::cout << "Lightcone count: " << lightConeCount << std::endl;
+    //std::cout << "Lightcone count: " << lightConeCount << std::endl;
     return lightConeCount == 4;
 }
 

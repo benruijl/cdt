@@ -26,19 +26,16 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     // TODO: check if the side links are of the same type
     // if not, the replacement is invalid
 
-    // find triangles that can be removed
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
-
-
-    std::cout << "Old count: " << b->getTriangles().size() << std::endl; // old number
+    
+    BOOST_ASSERT(a->checkCausality());
+    BOOST_ASSERT(b->checkCausality());
 
     first->removeVertices();
     second->removeVertices();
 
     b->getTriangles() += a->getTriangles();
-
-    std::cout << "New count: " << b->getTriangles().size() << std::endl;
 
     foreach(Triangle* t, a->getTriangles()) {
         t->replaceVertex(a, b);
@@ -64,7 +61,7 @@ Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
 
 Triangle* Simulation::generateInitialTriangulation(int N, int T) {
     Vertex * vertices[N * T];
-    Triangle * triangles[N * T * 2];
+    Triangle * triangles[N * T * 2]; // TODO: remove, unnecessary
 
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {
