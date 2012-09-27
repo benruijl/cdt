@@ -6,10 +6,14 @@
  */
 
 #include "Simulation.h"
+#include "Utils.h"
+#include <boost/assign/std.hpp>
+
+using namespace boost::assign;
 
 Simulation::Simulation() {
     /* Initialize random number generator */
-    rng.seed(static_cast<boost::mt19937::result_type>(SEED));
+    rng.seed(static_cast<boost::mt19937::result_type> (SEED));
 }
 
 Simulation::Simulation(const Simulation& orig) {
@@ -18,48 +22,49 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
 }
 
-Triangle* Simulation::doCollapse(Vertex* a, Vertex* b) {
-	Triangle* tri = a->getTriangle();
+Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
+    // TODO: check if the side links are of the same type
+    // if not, the replacement is invalid
 
-	// TODO: check if the side links are of the same type
-	// if not, the replacement
+    // find triangles that can be removed
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
 
-	Triangle* first, *second;
-	Vertex::getAdjacentTriangles(a, b, &first, &second);
-	int linkA = first->getLink(a, b);
-	int linkB = second->getLink(a, b);
-	
-	do {
-		tri->replaceVertex(a, b);
-		tri = tri->getNeighbourClockwise(b);
-	} while (tri != a->getTriangle());
-	
-	Triangle::registerNeighbour(first->getNeighbour((linkA + 1) % 3), first->getNeighbour((linkA + 2) % 3));
-	Triangle::registerNeighbour(second->getNeighbour((linkB + 1) % 3), second->getNeighbour((linkB + 2) % 3));
 
-	if (!b->checkCausality()) {
-		std::cerr << "Causality check failed after collapse";
-	}
+    std::cout << "Old count: " << b->getTriangles().size() << std::endl; // old number
 
-	free(a);
-	free(first);
-	free(second);
+    first->removeVertices();
+    second->removeVertices();
 
-	return b->getTriangle();
+    b->getTriangles() += a->getTriangles();
+
+    std::cout << "New count: " << b->getTriangles().size() << std::endl;
+
+    foreach(Triangle* t, a->getTriangles()) {
+        t->replaceVertex(a, b);
+    }
+
+    free(a);
+    free(first);
+    free(second);
+
+    BOOST_ASSERT(b->checkCausality());
+
+    return b;
 }
 
-Triangle* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
-	switch(move) {
-		case COLLAPSE:	
-			return doCollapse(a, b);
-	};
+Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
+    switch (move) {
+        case COLLAPSE:
+            return doCollapse(a, b);
+    };
 
-	return NULL;
+    return NULL;
 }
 
 Triangle* Simulation::generateInitialTriangulation(int N, int T) {
-    Vertex* vertices[N * T];
-    Triangle* triangles[N * T * 2];
+    Vertex * vertices[N * T];
+    Triangle * triangles[N * T * 2];
 
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {
@@ -78,24 +83,26 @@ Triangle* Simulation::generateInitialTriangulation(int N, int T) {
         }
     }
 
-    /* Create neighbour list */
+    /* Check causality to make sure the grid is correct */
+    // TODO: remove from production release when satisfied with above algorithm
     for (int t = 0; t < T; t++) {
         for (int s = 0; s < N; s++) {
-            Triangle::registerNeighbour(triangles[t * 2 * N + 2 * s], triangles[t * 2 * N + 2 * s + 1]);
-            Triangle::registerNeighbour(triangles[t * 2 * N + 2 * s + 1], triangles[t * 2 * N + 2 * ((s + 1) % N)]);
-            Triangle::registerNeighbour(triangles[t * 2 * N + 2 * s + 1], triangles[((t + 1) % T) * 2 * N + 2 * s]);
+            if (!vertices[t * N + s]->checkCausality()) {
+                std::cerr << "Causality failure at " << t << " " << s << std::endl;
+            }
         }
     }
-     
-    /* Check causality to make sure the grid is correct */
-	// TODO: remove from production release when satisfied with above algorithm
-	for (int t = 0; t < T; t++) {
-			for (int s = 0; s < N; s++) {
-					if (!vertices[t * N + s]->checkCausality()) {
-							std::cerr << "Causality failure at " << t << " " << s << std::endl;
-					}	
-			}
-	} 
+
+    /* Check if no links are double */
+    for (int i = 0; i < N * T - 1; i++) {
+        for (int j = i + 1; j < N * T; j++) {
+            TriSet t = vertices[i]->getTriangles() & vertices[j]->getTriangles(); // intersection
+
+            if (t.size() != 2 && t.size() != 0) {
+                std::cerr << "Link duplicates: " << i << " " << j << " " << t.size() << std::endl;
+            }
+        }
+    }
 
     return triangles[0];
 }

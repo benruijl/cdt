@@ -8,7 +8,11 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
+#include "Utils.h"
+
+
 class Triangle;
+typedef boost::unordered_set<Triangle*> TriSet;
 
 class Vertex {
 public:
@@ -17,16 +21,14 @@ public:
     virtual ~Vertex();
 
     void registerTriangle(Triangle* t) {
-        if (triangle == 0) {
-            triangle = t;
-        }
+        triangles.insert(t);
     }
 
-    Triangle* getTriangle() {
-        return triangle;
+    TriSet& getTriangles() {
+        return triangles;
     }
 
-	static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
+    static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
 
     /**
      * Checks the causality requirement of this vertex.
@@ -35,7 +37,7 @@ public:
     bool checkCausality();
 
 private:
-    Triangle* triangle; // a triangle that contains this vertex
+    TriSet triangles; // set of all triangles 
 };
 
 #endif	/* VERTEX_H */

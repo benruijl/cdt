@@ -14,15 +14,12 @@
 
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
     Simulation simulation;
-    Triangle* triangulation = simulation.generateInitialTriangulation(2, 2);
-
-	// Test a collapse:
-	simulation.doMove(triangulation->getVertex(0), triangulation->getVertex(1), Simulation::COLLAPSE);
+    Triangle* triangulation = simulation.generateInitialTriangulation(3, 3);
+    
+    // Test a collapse, remove a timelike link
+    simulation.doMove(triangulation->getVertex(0), triangulation->getVertex(1), Simulation::COLLAPSE);
 
     simulation.Metropolis(triangulation);
 
