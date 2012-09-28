@@ -48,10 +48,35 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     return b;
 }
 
+Vertex* Simulation::doFlip(Vertex* a, Vertex* b) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+    
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
+    
+    a->getTriangles().erase(second);
+    c->getTriangles().insert(second);
+    second->replaceVertex(a, c);
+    
+    b->getTriangles().erase(first);
+    d->getTriangles().insert(first);
+    first->replaceVertex(b, d);
+    
+    BOOST_ASSERT(a->checkCausality());
+    BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(c->checkCausality());
+    BOOST_ASSERT(d->checkCausality());
+    
+    return c;
+}
+
 Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
     switch (move) {
         case COLLAPSE:
             return doCollapse(a, b);
+        case FLIP:
+            return doFlip(a, b);
     };
 
     return NULL;

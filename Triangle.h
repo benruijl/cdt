@@ -68,6 +68,15 @@ public:
 
         return isTimelike((link + 1) % 3) == isTimelike((link + 2) % 3);
     }
+    
+    Vertex* getThirdVertex(Vertex* a, Vertex* b) {
+        int i = indexFromVertex(a);
+        if (vertices[(i + 1) % 3] == b) {
+            return vertices[(i + 2) % 3];
+        }
+
+        return vertices[(i + 1) % 3];
+    }
 
     bool containsVertex(Vertex* a) {
         for (int i = 0; i < 3; i++) {

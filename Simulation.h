@@ -55,10 +55,12 @@ private:
     boost::mt19937 rng;
 
     /**
-            Do the collapse move. It removes all the occurences of a and replaces it with b.
-            TODO: move to seperate Moves class
+            Do the collapse move. It removes all the occurrences of a and replaces it with b.
+            TODO: move to separate Moves class
      */
     Vertex* doCollapse(Vertex* a, Vertex* b);
+    
+    Vertex* doFlip(Vertex* a, Vertex* b);
 };
 
 #endif	/* SIMULATION_H */

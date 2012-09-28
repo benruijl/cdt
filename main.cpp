@@ -16,10 +16,11 @@ using namespace std;
 
 int main(int argc, char** argv) {
     Simulation simulation;
-    Triangle* triangulation = simulation.generateInitialTriangulation(5, 5);
+    Triangle* triangulation = simulation.generateInitialTriangulation(3, 3);
     
     // Test a collapse, remove a spacelike link
-    simulation.doMove(triangulation->getVertex(2), triangulation->getVertex(0), Simulation::COLLAPSE);
+    //simulation.doMove(triangulation->getVertex(2), triangulation->getVertex(0), Simulation::COLLAPSE);
+    simulation.doMove(triangulation->getVertex(2), triangulation->getVertex(1), Simulation::FLIP);
 
     simulation.Metropolis(triangulation);
 

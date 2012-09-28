@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>Simulation.h</itemPath>
       <itemPath>Triangle.h</itemPath>
-      <itemPath>Utils.h</itemPath>
       <itemPath>Vertex.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -18,7 +17,6 @@
                    projectFiles="true">
       <itemPath>Simulation.cpp</itemPath>
       <itemPath>Triangle.cpp</itemPath>
-      <itemPath>Utils.cpp</itemPath>
       <itemPath>Vertex.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
