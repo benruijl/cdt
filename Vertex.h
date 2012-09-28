@@ -27,7 +27,7 @@ public:
     TriSet& getTriangles() {
         return triangles;
     }
-
+    
     static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
 
     /**

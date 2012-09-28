@@ -23,14 +23,12 @@ Simulation::~Simulation() {
 }
 
 Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
-    // TODO: check if the side links are of the same type
-    // if not, the replacement is invalid
-
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
-    
-    BOOST_ASSERT(a->checkCausality());
-    BOOST_ASSERT(b->checkCausality());
+
+    /* A collapse is only valid if the to be merged links are of the same type */
+    BOOST_ASSERT(first->checkAdjacentSides(a, b));
+    BOOST_ASSERT(second->checkAdjacentSides(a, b));
 
     first->removeVertices();
     second->removeVertices();

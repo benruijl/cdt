@@ -43,6 +43,32 @@ public:
         return (i + 2) % 3;
     }
 
+    /**
+     * Checks if a link is timelike.
+     * @param link Link number
+     * @return True if timelike, false if spacelike
+     */
+    bool isTimelike(int link) {
+        if (type == TTS) {
+            return link != 2;
+        }
+
+        return link == 0;
+    }
+
+    /**
+     * Check that if the links adjacent to the link spanned by vertex a and b are 
+     * of the same nature (timelike or spacelike).
+     * @param a First vertex
+     * @param b Second vertex
+     * @return True if adjacent links have the same type
+     */
+    bool checkAdjacentSides(Vertex* a, Vertex* b) {
+        int link = getLink(a, b);
+
+        return isTimelike((link + 1) % 3) == isTimelike((link + 2) % 3);
+    }
+
     bool containsVertex(Vertex* a) {
         for (int i = 0; i < 3; i++) {
             if (vertices[i] == a) {
