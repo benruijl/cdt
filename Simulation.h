@@ -55,12 +55,28 @@ private:
     boost::mt19937 rng;
 
     /**
-            Do the collapse move. It removes all the occurrences of a and replaces it with b.
-            TODO: move to separate Moves class
+     * Do the collapse move. It removes all the occurrences of a and replaces it with b.
+     * This move is not always possible.
+     * TODO: move to separate Moves class
      */
     Vertex* doCollapse(Vertex* a, Vertex* b);
-    
+
+    /**
+     * A move that flips a link. 
+     * @param a First link vertex
+     * @param b Second link vertex
+     * @return 
+     */
     Vertex* doFlip(Vertex* a, Vertex* b);
+
+    /**
+     * An Alexander move is making a cross in a diamons shape. An Alexandar move
+     * is always possible.
+     * @param a First link vertex
+     * @param b Second link vertex
+     * @return 
+     */
+    Vertex* doAlexander(Vertex* a, Vertex* b);
 };
 
 #endif	/* SIMULATION_H */

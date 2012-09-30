@@ -14,15 +14,27 @@
 class Triangle {
 public:
 
-    /* the two Lorentz triangles. Indices are in this order */
+    /** 
+     * The type of a triangle. To be Lorentzian, it can either have two 
+     * spacelike and one timelike link or two timelike links and one spacelik. 
+     * 
+     * <b>Important</b>: Links should be defined in the order of the type name
+     */
     enum TYPE {
-        TTS, TSS
+        TTS, SST
     };
 
     Triangle(TYPE type);
     Triangle(const Triangle& orig);
     virtual ~Triangle();
 
+    /**
+     * Creates a new triangle. It is automatically registered with the vertices.
+     * @param type Type of the triangle
+     * @param a First vertex
+     * @param b Second vertex
+     * @param c Third vertex
+     */
     Triangle(TYPE type, Vertex* a, Vertex* b, Vertex* c) {
         this->type = type;
         vertices[0] = a;
@@ -53,7 +65,7 @@ public:
             return link != 2;
         }
 
-        return link == 0;
+        return link == 2;
     }
 
     /**
@@ -68,7 +80,7 @@ public:
 
         return isTimelike((link + 1) % 3) == isTimelike((link + 2) % 3);
     }
-    
+
     Vertex* getThirdVertex(Vertex* a, Vertex* b) {
         int i = indexFromVertex(a);
         if (vertices[(i + 1) % 3] == b) {
@@ -89,12 +101,7 @@ public:
 
     int getLightConeCount(Vertex* v) {
         int i = indexFromVertex(v);
-
-        if (type == TTS) {
-            return i != 1;
-        } else {
-            return i != 2;
-        }
+        return i != 1;
     }
 
     void replaceVertex(Vertex* old, Vertex* n) {

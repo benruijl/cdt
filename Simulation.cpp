@@ -22,6 +22,8 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
 }
 
+// TODO: also create the inverse process
+
 Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
@@ -48,27 +50,63 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     return b;
 }
 
+// TODO: add second possibility
+
 Vertex* Simulation::doFlip(Vertex* a, Vertex* b) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
-    
+
     Vertex* c = first->getThirdVertex(a, b);
     Vertex* d = second->getThirdVertex(a, b);
-    
+
     a->getTriangles().erase(second);
     c->getTriangles().insert(second);
     second->replaceVertex(a, c);
-    
+
     b->getTriangles().erase(first);
     d->getTriangles().insert(first);
     first->replaceVertex(b, d);
-    
+
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());
     BOOST_ASSERT(c->checkCausality());
     BOOST_ASSERT(d->checkCausality());
-    
+
     return c;
+}
+
+Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
+
+    Vertex* u = new Vertex();
+    b->getTriangles().erase(first);
+    first->replaceVertex(b, u);
+    u->getTriangles().insert(first);
+
+    b->getTriangles().erase(second);
+    second->replaceVertex(b, u);
+    u->getTriangles().insert(second);
+
+    // if link is timelike -> make spacelike counterpart
+    if (first->isTimelike(first->getLink(a, b))) {
+        new Triangle(Triangle::SST, u, c, b);
+        new Triangle(Triangle::SST, b, b, u);
+    } else {
+        new Triangle(Triangle::TTS, u, c, b);
+        new Triangle(Triangle::TTS, b, d, u);
+    }
+
+    BOOST_ASSERT(a->checkCausality());
+    BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(c->checkCausality());
+    BOOST_ASSERT(d->checkCausality());
+    BOOST_ASSERT(u->checkCausality());
+
+    return u;
 }
 
 Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
@@ -77,6 +115,8 @@ Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
             return doCollapse(a, b);
         case FLIP:
             return doFlip(a, b);
+        case ALEXANDER:
+            return doAlexander(a, b);
     };
 
     return NULL;
