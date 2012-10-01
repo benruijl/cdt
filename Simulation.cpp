@@ -87,10 +87,8 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
     bool lAC = first->isTimelike(a, c);
     bool lCB = first->isTimelike(c, b);
     bool lAD = second->isTimelike(a, d);
-    bool lBD = second->isTimelike(b, b);
+    bool lBD = second->isTimelike(b, d);
     bool newLink = !lAB;
-    
-    std::cout << lAB << lAC << lCB << lAD << lBD << newLink;
 
     Vertex* u = new Vertex(); // new vertex
     new Triangle(a, c, u, lAC, newLink, lAB);
@@ -98,15 +96,10 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
     new Triangle(a, u, d, lAB, newLink, lAD);
     new Triangle(u, b, d, lAB, lBD, newLink);
     
-        
-    std::cout << "u: ";
-    u->checkCausality();
-    
     first->removeVertices();
     second->removeVertices();
     free(first);
     free(second);
-
 
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());

@@ -59,40 +59,39 @@ public:
      * @param timeLikeB Second link is timelike
      * @param timeLikeC Third link is timelike
      */
-    Triangle(Vertex* a, Vertex* b, Vertex* c, bool timeLikeA, bool timeLikeB, bool timeLikeC) {
-        if (timeLikeA && timeLikeB) {
+    Triangle(Vertex* a, Vertex* b, Vertex* c, bool timeLikeAB, bool timeLikeBC, bool timeLikeCA) {
+        if (timeLikeAB && timeLikeBC && !timeLikeCA) {
             initialize(TTS, a, b, c);
             return;
         }
 
-        if (timeLikeB && timeLikeC) {
+        if (timeLikeBC && timeLikeCA && !timeLikeAB) {
             initialize(TTS, b, c, a);
             return;
         }
 
-        if (timeLikeA && timeLikeC) {
-            initialize(TTS, a, c, b);
+        if (timeLikeCA && timeLikeAB && !timeLikeBC) {
+            initialize(TTS, c, a, b);
             return;
         }
 
-        if (!timeLikeA && !timeLikeB) {
+        if (!timeLikeAB && !timeLikeBC && timeLikeCA) {
             initialize(SST, a, b, c);
             return;
         }
 
-        if (!timeLikeB && !timeLikeC) {
+        if (!timeLikeBC && !timeLikeCA && timeLikeAB) {
             initialize(SST, b, c, a);
             return;
         }
 
-        if (!timeLikeA && !timeLikeC) {
-            initialize(SST, a, c, b);
+        if (!timeLikeCA && !timeLikeAB && timeLikeBC) {
+            initialize(SST, c, a, b);
             return;
         }
-        
-        std::cout << timeLikeA << " " << timeLikeB << " " << timeLikeC << std::endl;
-        BOOST_ASSERT(false); 
-   }
+
+        BOOST_ASSERT(false);
+    }
 
     int getLink(Vertex* a, Vertex* b) {
         int i = indexFromVertex(a);
