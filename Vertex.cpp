@@ -38,12 +38,13 @@ void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triang
 
 bool Vertex::checkCausality() {
     int lightConeCount = 0;
+    std::cout << triangles.size() << std::endl;
 
     foreach(Triangle* t, triangles) {
         lightConeCount += t->getLightConeCount(this);
     }
 
-    //std::cout << "Lightcone count: " << lightConeCount << std::endl;
+    std::cout << "Lightcone count: " << lightConeCount << std::endl;
     return lightConeCount == 4;
 }
 

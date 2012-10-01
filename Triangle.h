@@ -28,14 +28,7 @@ public:
     Triangle(const Triangle& orig);
     virtual ~Triangle();
 
-    /**
-     * Creates a new triangle. It is automatically registered with the vertices.
-     * @param type Type of the triangle
-     * @param a First vertex
-     * @param b Second vertex
-     * @param c Third vertex
-     */
-    Triangle(TYPE type, Vertex* a, Vertex* b, Vertex* c) {
+    void initialize(TYPE type, Vertex* a, Vertex* b, Vertex* c) {
         this->type = type;
         vertices[0] = a;
         vertices[1] = b;
@@ -45,6 +38,61 @@ public:
         b->registerTriangle(this);
         c->registerTriangle(this);
     }
+
+    /**
+     * Creates a new triangle. It is automatically registered with the vertices.
+     * @param type Type of the triangle
+     * @param a First vertex
+     * @param b Second vertex
+     * @param c Third vertex
+     */
+    Triangle(TYPE type, Vertex* a, Vertex* b, Vertex* c) {
+        initialize(type, a, b, c);
+    }
+
+    /**
+     * Creates a triangle, given that the links are timelike or spacelike.
+     * @param a First vertex
+     * @param b Second vertex
+     * @param c Third vertex
+     * @param timeLikeA First link is timelike
+     * @param timeLikeB Second link is timelike
+     * @param timeLikeC Third link is timelike
+     */
+    Triangle(Vertex* a, Vertex* b, Vertex* c, bool timeLikeA, bool timeLikeB, bool timeLikeC) {
+        if (timeLikeA && timeLikeB) {
+            initialize(TTS, a, b, c);
+            return;
+        }
+
+        if (timeLikeB && timeLikeC) {
+            initialize(TTS, b, c, a);
+            return;
+        }
+
+        if (timeLikeA && timeLikeC) {
+            initialize(TTS, a, c, b);
+            return;
+        }
+
+        if (!timeLikeA && !timeLikeB) {
+            initialize(SST, a, b, c);
+            return;
+        }
+
+        if (!timeLikeB && !timeLikeC) {
+            initialize(SST, b, c, a);
+            return;
+        }
+
+        if (!timeLikeA && !timeLikeC) {
+            initialize(SST, a, c, b);
+            return;
+        }
+        
+        std::cout << timeLikeA << " " << timeLikeB << " " << timeLikeC << std::endl;
+        BOOST_ASSERT(false); 
+   }
 
     int getLink(Vertex* a, Vertex* b) {
         int i = indexFromVertex(a);
@@ -66,6 +114,17 @@ public:
         }
 
         return link == 2;
+    }
+
+    /**
+     * Checks if a link is timelike.
+     * @param a First vertex of link 
+     * @param b Second vertex of link
+     * @return True if timelike, false if spacelike
+     */
+    bool isTimelike(Vertex* a, Vertex* b) {
+        int link = getLink(a, b);
+        return isTimelike(link);
     }
 
     /**

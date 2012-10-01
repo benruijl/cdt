@@ -81,24 +81,32 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
 
     Vertex* c = first->getThirdVertex(a, b);
     Vertex* d = second->getThirdVertex(a, b);
+    
+    /* Get link types */
+    bool lAB = first->isTimelike(a, b);
+    bool lAC = first->isTimelike(a, c);
+    bool lCB = first->isTimelike(c, b);
+    bool lAD = second->isTimelike(a, d);
+    bool lBD = second->isTimelike(b, b);
+    bool newLink = !lAB;
+    
+    std::cout << lAB << lAC << lCB << lAD << lBD << newLink;
 
-    Vertex* u = new Vertex();
-    b->getTriangles().erase(first);
-    first->replaceVertex(b, u);
-    u->getTriangles().insert(first);
+    Vertex* u = new Vertex(); // new vertex
+    new Triangle(a, c, u, lAC, newLink, lAB);
+    new Triangle(u, c, b, newLink, lCB, lAB);
+    new Triangle(a, u, d, lAB, newLink, lAD);
+    new Triangle(u, b, d, lAB, lBD, newLink);
+    
+        
+    std::cout << "u: ";
+    u->checkCausality();
+    
+    first->removeVertices();
+    second->removeVertices();
+    free(first);
+    free(second);
 
-    b->getTriangles().erase(second);
-    second->replaceVertex(b, u);
-    u->getTriangles().insert(second);
-
-    // if link is timelike -> make spacelike counterpart
-    if (first->isTimelike(first->getLink(a, b))) {
-        new Triangle(Triangle::SST, u, c, b);
-        new Triangle(Triangle::SST, b, b, u);
-    } else {
-        new Triangle(Triangle::TTS, u, c, b);
-        new Triangle(Triangle::TTS, b, d, u);
-    }
 
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());
