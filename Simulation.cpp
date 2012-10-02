@@ -138,22 +138,62 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
     return u;
 }
 
-Vertex* Simulation::doInverseAlexander(Vertex* a, Vertex* b, Vertex* c, Vertex* d, Vertex* u) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(u, b, &first, &second);
-    
+Vertex* Simulation::doInverseAlexander(Vertex* a, Vertex* b, Vertex* u) {
+    Triangle* first, *second, *third, *fourth;
+    Vertex::getAdjacentTriangles(a, u, &first, &second);
+
+    Vertex* c = first->getThirdVertex(a, u);
+    Vertex* d = second->getThirdVertex(a, u);
+
+    /* Get link types */
+    bool lAB = first->isTimelike(a, u);
+    bool lAC = first->isTimelike(a, c);
+    bool lAD = second->isTimelike(a, d);
+
+    Vertex::getAdjacentTriangles(u, b, &third, &fourth);
+
+    bool lCB, lBD;
+    if (third->containsVertex(c)) { // order could be turned around, so check!
+        lCB = third->isTimelike(b, c);
+        lBD = fourth->isTimelike(b, d);
+    } else {
+        lBD = third->isTimelike(b, d);
+        lCB = fourth->isTimelike(b, c);
+    }
+
     first->removeVertices();
     second->removeVertices();
+    third->removeVertices();
+    fourth->removeVertices();
     delete first;
     delete second;
-    
-    Vertex::getAdjacentTriangles(a, u, &first, &second);
-    
-    b->getTriangles() += u->getTriangles();
-    first->replaceVertex(u, b);
-    second->replaceVertex(u, b);
-    
+    delete third;
+    delete fourth;
     delete u;
+    
+    new Triangle(a, c, b, lAC, lCB, lAB);
+    new Triangle(a, b, d, lAB, lBD, lAD);
+
+    BOOST_ASSERT(a->checkCausality());
+    BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(c->checkCausality());
+    BOOST_ASSERT(d->checkCausality());
+
+    return a;
+}
+
+Vertex* Simulation::doAlexanderAndInverse(Vertex* a, Vertex* b) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
+
+    Vertex* u = doAlexander(a, b);
+    return doInverseAlexander(a, b, u);
+}
+
+Vertex* Simulation::doInverseCollapse(Vertex* a, Vertex* b, Vertex* c) {
+
 }
 
 Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {

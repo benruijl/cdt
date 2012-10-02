@@ -21,6 +21,15 @@ public:
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
+    
+    /**
+     * Test function that performs an Alexander move and its inverse straight after.
+     * It should'nt change the grid.
+     * @param a First vertex
+     * @param b Second vertex
+     * @return Vertex a
+     */
+    Vertex* doAlexanderAndInverse(Vertex* a, Vertex* b);
 
     /**
      * Performs a move on the link spanned by vertex a and b.
@@ -94,7 +103,16 @@ private:
      * @param u
      * @return 
      */
-    Vertex* doInverseAlexander(Vertex* a, Vertex* b, Vertex* c, Vertex* d, Vertex* u);
+    Vertex* doInverseAlexander(Vertex* a, Vertex* b, Vertex* u);
+    
+    /**
+     * Inverts a collapse. Links a-b and b-c should be of the same type.
+     * @param a First vertex
+     * @param b Second vertex
+     * @param c Third vertex
+     * @return Vertex b
+     */
+    Vertex* doInverseCollapse(Vertex* a, Vertex*b, Vertex* c);
 };
 
 #endif	/* SIMULATION_H */
