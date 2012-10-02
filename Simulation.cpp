@@ -41,9 +41,9 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
         t->replaceVertex(a, b);
     }
 
-    free(a);
-    free(first);
-    free(second);
+    delete a;
+    delete first;
+    delete second;
 
     BOOST_ASSERT(b->checkCausality());
 
@@ -53,10 +53,10 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
 Vertex* Simulation::doFlip2(Vertex* a, Vertex* b) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
-    
+
     Vertex* c = first->getThirdVertex(a, b);
     Vertex* d = second->getThirdVertex(a, b);
-    
+
     /* Get link types */
     bool lAB = first->isTimelike(a, b);
     bool lAC = first->isTimelike(a, c);
@@ -66,11 +66,11 @@ Vertex* Simulation::doFlip2(Vertex* a, Vertex* b) {
 
     new Triangle(a, c, d, lAC, !lAB, lAD);
     new Triangle(c, b, d, lCB, lBD, !lAB);
-    
+
     first->removeVertices();
     second->removeVertices();
-    free(first);
-    free(second);
+    delete first;
+    delete second;
 
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());
@@ -109,7 +109,7 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
 
     Vertex* c = first->getThirdVertex(a, b);
     Vertex* d = second->getThirdVertex(a, b);
-    
+
     /* Get link types */
     bool lAB = first->isTimelike(a, b);
     bool lAC = first->isTimelike(a, c);
@@ -123,11 +123,11 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
     new Triangle(u, c, b, newLink, lCB, lAB);
     new Triangle(a, u, d, lAB, newLink, lAD);
     new Triangle(u, b, d, lAB, lBD, newLink);
-    
+
     first->removeVertices();
     second->removeVertices();
-    free(first);
-    free(second);
+    delete first;
+    delete second;
 
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());
@@ -136,6 +136,24 @@ Vertex* Simulation::doAlexander(Vertex* a, Vertex* b) {
     BOOST_ASSERT(u->checkCausality());
 
     return u;
+}
+
+Vertex* Simulation::doInverseAlexander(Vertex* a, Vertex* b, Vertex* c, Vertex* d, Vertex* u) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(u, b, &first, &second);
+    
+    first->removeVertices();
+    second->removeVertices();
+    delete first;
+    delete second;
+    
+    Vertex::getAdjacentTriangles(a, u, &first, &second);
+    
+    b->getTriangles() += u->getTriangles();
+    first->replaceVertex(u, b);
+    second->replaceVertex(u, b);
+    
+    delete u;
 }
 
 Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {

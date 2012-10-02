@@ -85,6 +85,16 @@ private:
      * @return 
      */
     Vertex* doAlexander(Vertex* a, Vertex* b);
+    
+    /**
+     * Do the inverse of an Alexander move. It needs four links.
+     * @param a
+     * @param b
+     * @param c
+     * @param u
+     * @return 
+     */
+    Vertex* doInverseAlexander(Vertex* a, Vertex* b, Vertex* c, Vertex* d, Vertex* u);
 };
 
 #endif	/* SIMULATION_H */
