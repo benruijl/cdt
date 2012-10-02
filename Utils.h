@@ -30,6 +30,22 @@ boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::un
 }
 
 /**
+ * Removes the content of set b from set a.
+ * @param a
+ * @param b
+ * @return 
+ */
+template <typename T>
+boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+
+    foreach(T e, b) {
+        a.erase(e);
+    }
+
+    return a;
+}
+
+/**
  * Returns the intersection of two sets.
  * TODO: check for speed
  * @param a Set A

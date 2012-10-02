@@ -24,12 +24,21 @@ public:
     
     /**
      * Test function that performs an Alexander move and its inverse straight after.
-     * It should'nt change the grid.
+     * It shouldn't change the grid.
      * @param a First vertex
      * @param b Second vertex
      * @return Vertex a
      */
     Vertex* doAlexanderAndInverse(Vertex* a, Vertex* b);
+    
+    /**
+     * Test function that performs a collapse move and its inverse straight after.
+     * It shouldn't change the grid. 
+     * @param a First vertex
+     * @param b Second vertex
+     * @return Vertex a
+     */
+    Vertex* doCollapseAndInverse(Vertex* a, Vertex* b);
 
     /**
      * Performs a move on the link spanned by vertex a and b.
@@ -112,7 +121,7 @@ private:
      * @param c Third vertex
      * @return Vertex b
      */
-    Vertex* doInverseCollapse(Vertex* a, Vertex*b, Vertex* c);
+    Vertex* doInverseCollapse(Vertex* a, Vertex* b, Vertex* c);
 };
 
 #endif	/* SIMULATION_H */

@@ -28,6 +28,9 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
 
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
+
     /* A collapse is only valid if the to be merged links are of the same type */
     BOOST_ASSERT(first->checkAdjacentSides(a, b));
     BOOST_ASSERT(second->checkAdjacentSides(a, b));
@@ -46,6 +49,8 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     delete second;
 
     BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(c->checkCausality());
+    BOOST_ASSERT(d->checkCausality());
 
     return b;
 }
@@ -170,7 +175,7 @@ Vertex* Simulation::doInverseAlexander(Vertex* a, Vertex* b, Vertex* u) {
     delete third;
     delete fourth;
     delete u;
-    
+
     new Triangle(a, c, b, lAC, lCB, lAB);
     new Triangle(a, b, d, lAB, lBD, lAD);
 
@@ -192,8 +197,53 @@ Vertex* Simulation::doAlexanderAndInverse(Vertex* a, Vertex* b) {
     return doInverseAlexander(a, b, u);
 }
 
-Vertex* Simulation::doInverseCollapse(Vertex* a, Vertex* b, Vertex* c) {
+Vertex* Simulation::doCollapseAndInverse(Vertex* a, Vertex* b) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
 
+    b = doCollapse(a, b);
+    return doInverseCollapse(c, b, d);
+}
+
+Vertex* Simulation::doInverseCollapse(Vertex* a, Vertex* b, Vertex* c) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+
+    bool lAB = first->isTimelike(a, b);
+    Vertex::getAdjacentTriangles(b, c, &first, &second);
+    bool lBC = first->isTimelike(b, c); // not really required
+
+    /* Collected all triangles on one side of the barrier a - b - c*/
+    TriSet tri;
+    Triangle* cur = first;
+    Vertex* edgeVertex = cur->getThirdVertex(b, c);
+
+    do {
+        tri.insert(cur);
+        Vertex::getAdjacentTriangles(edgeVertex, b, &first, &second);
+        cur = first == cur ? second : first;
+        edgeVertex = cur->getThirdVertex(edgeVertex, b);
+    } while (edgeVertex != a);
+
+    /* Create new vertex */
+    b->getTriangles() -= tri;
+    Vertex* u = new Vertex();
+    u->getTriangles() += tri;
+
+    foreach(Triangle* t, tri) {
+        t->replaceVertex(b, u);
+    }
+
+    /* Create two new triangles */
+    new Triangle(a, u, b, lAB, !lAB, lAB);
+    new Triangle(c, u, b, lAB, !lAB, lAB);
+
+    BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(u->checkCausality());
+
+    return b;
 }
 
 Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
