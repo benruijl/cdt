@@ -50,7 +50,35 @@ Vertex* Simulation::doCollapse(Vertex* a, Vertex* b) {
     return b;
 }
 
-// TODO: add second possibility
+Vertex* Simulation::doFlip2(Vertex* a, Vertex* b) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(a, b, &first, &second);
+    
+    Vertex* c = first->getThirdVertex(a, b);
+    Vertex* d = second->getThirdVertex(a, b);
+    
+    /* Get link types */
+    bool lAB = first->isTimelike(a, b);
+    bool lAC = first->isTimelike(a, c);
+    bool lCB = first->isTimelike(c, b);
+    bool lAD = second->isTimelike(a, d);
+    bool lBD = second->isTimelike(b, d);
+
+    new Triangle(a, c, d, lAC, !lAB, lAD);
+    new Triangle(c, b, d, lCB, lBD, !lAB);
+    
+    first->removeVertices();
+    second->removeVertices();
+    free(first);
+    free(second);
+
+    BOOST_ASSERT(a->checkCausality());
+    BOOST_ASSERT(b->checkCausality());
+    BOOST_ASSERT(c->checkCausality());
+    BOOST_ASSERT(d->checkCausality());
+
+    return c;
+}
 
 Vertex* Simulation::doFlip(Vertex* a, Vertex* b) {
     Triangle* first, *second;
@@ -116,6 +144,8 @@ Vertex* Simulation::doMove(Vertex* a, Vertex* b, MOVES move) {
             return doCollapse(a, b);
         case FLIP:
             return doFlip(a, b);
+        case FLIP2:
+            return doFlip2(a, b);
         case ALEXANDER:
             return doAlexander(a, b);
     };

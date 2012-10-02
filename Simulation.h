@@ -15,7 +15,7 @@ class Simulation {
 public:
 
     enum MOVES {
-        ALEXANDER, FLIP, COLLAPSE
+        ALEXANDER, FLIP, FLIP2, COLLAPSE
     };
 
     Simulation();
@@ -68,6 +68,14 @@ private:
      * @return 
      */
     Vertex* doFlip(Vertex* a, Vertex* b);
+
+    /**
+     * A move that flips a link and changes its spacelike or timelike character.
+     * @param a First link vertex
+     * @param b Second link vertex
+     * @return 
+     */
+    Vertex* doFlip2(Vertex* a, Vertex* b);
 
     /**
      * An Alexander move is making a cross in a diamons shape. An Alexandar move
