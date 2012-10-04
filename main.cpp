@@ -11,6 +11,7 @@
 #include "Vertex.h"
 #include "Triangle.h"
 #include "Simulation.h"
+#include "Moves.h"
 
 using namespace std;
 
@@ -22,10 +23,15 @@ int main(int argc, char** argv) {
     //simulation.doMove(triangulation->getVertex(2), triangulation->getVertex(0), Simulation::COLLAPSE);
     //simulation.doMove(triangulation->getVertex(2), triangulation->getVertex(1), Simulation::FLIP);
     //simulation.doMove(triangulation->getVertex(0), triangulation->getVertex(1), Simulation::FLIP2);
-    simulation.doAlexanderAndInverse(triangulation->getVertex(0), triangulation->getVertex(1));
-    simulation.doCollapseAndInverse(triangulation->getVertex(0), triangulation->getVertex(2));
+    //simulation.doAlexanderAndInverse(triangulation->getVertex(0), triangulation->getVertex(1));
+    
+    // NOTE: triangulation is not valid anymore after this move
+    //simulation.doCollapseAndInverse(triangulation->getVertex(0), triangulation->getVertex(2));
+    
+    Moves m;
+    std::cout << m.getInverseCollapseMoveCount(triangulation->getVertex(0), triangulation->getVertex(2));
 
-    simulation.Metropolis(triangulation);
+    simulation.Metropolis(triangulation, 1, 1);
 
     return 0;
 }

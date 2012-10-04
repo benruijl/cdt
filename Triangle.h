@@ -114,6 +114,16 @@ public:
 
         return link == 2;
     }
+    
+    /**
+     * Returns the number of timelike links that contain vertex v.
+     * @param v Vertex
+     * @return 
+     */
+    int getAdjacentTimelikeCount(Vertex* v) {
+        int i = indexFromVertex(v);
+        return isTimelike(i) + isTimelike((i + 2) % 3);
+    }
 
     /**
      * Checks if a link is timelike.

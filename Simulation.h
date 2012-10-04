@@ -9,43 +9,24 @@
 #define	SIMULATION_H
 
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_real.hpp>
+
 #include "Triangle.h"
+#include "Moves.h"
 
 class Simulation {
 public:
-
-    enum MOVES {
-        ALEXANDER, FLIP, FLIP2, COLLAPSE
-    };
-
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
     
     /**
-     * Test function that performs an Alexander move and its inverse straight after.
-     * It shouldn't change the grid.
-     * @param a First vertex
-     * @param b Second vertex
-     * @return Vertex a
+     * Gives the number of moves that are possible at a given vertex.
+     * @param v Vertex v
+     * @return
      */
-    Vertex* doAlexanderAndInverse(Vertex* a, Vertex* b);
-    
-    /**
-     * Test function that performs a collapse move and its inverse straight after.
-     * It shouldn't change the grid. 
-     * @param a First vertex
-     * @param b Second vertex
-     * @return Vertex a
-     */
-    Vertex* doCollapseAndInverse(Vertex* a, Vertex* b);
-
-    /**
-     * Performs a move on the link spanned by vertex a and b.
-     */
-    Vertex* doMove(Vertex* a, Vertex* b, MOVES move);
-
-
+    int getAcceptableMoveCount(Vertex* v);
+            
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
      * Thus, this initial configuration can be used for both CDT and extended CDT.
@@ -64,64 +45,18 @@ public:
      * 
      * @param triangulation A single triangle from a triangulation. Since the space is 
      * connected, every other triangle can be reached.
+     * @param lambda Action parameter
+     * @param alpha Ratio between length of spacelike and timelike links. should be positive
      * 
      * @return Improved triangulation
      */
-    Triangle* Metropolis(Triangle* triangulation);
+    Vertex* Metropolis(Triangle* triangulation, double lambda, double alpha);
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
-
-    /**
-     * Do the collapse move. It removes all the occurrences of a and replaces it with b.
-     * This move is not always possible.
-     * TODO: move to separate Moves class
-     */
-    Vertex* doCollapse(Vertex* a, Vertex* b);
-
-    /**
-     * A move that flips a link. 
-     * @param a First link vertex
-     * @param b Second link vertex
-     * @return 
-     */
-    Vertex* doFlip(Vertex* a, Vertex* b);
-
-    /**
-     * A move that flips a link and changes its spacelike or timelike character.
-     * @param a First link vertex
-     * @param b Second link vertex
-     * @return 
-     */
-    Vertex* doFlip2(Vertex* a, Vertex* b);
-
-    /**
-     * An Alexander move is making a cross in a diamons shape. An Alexandar move
-     * is always possible.
-     * @param a First link vertex
-     * @param b Second link vertex
-     * @return 
-     */
-    Vertex* doAlexander(Vertex* a, Vertex* b);
+    boost::uniform_real<> unireal;
     
-    /**
-     * Do the inverse of an Alexander move. It needs four links.
-     * @param a
-     * @param b
-     * @param c
-     * @param u
-     * @return 
-     */
-    Vertex* doInverseAlexander(Vertex* a, Vertex* b, Vertex* u);
-    
-    /**
-     * Inverts a collapse. Links a-b and b-c should be of the same type.
-     * @param a First vertex
-     * @param b Second vertex
-     * @param c Third vertex
-     * @return Vertex b
-     */
-    Vertex* doInverseCollapse(Vertex* a, Vertex* b, Vertex* c);
+    Vertex* vertices; // a list of all the vertices in the simulation
 };
 
 #endif	/* SIMULATION_H */

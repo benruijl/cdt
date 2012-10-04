@@ -39,7 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/Simulation.o \
 	${OBJECTDIR}/Vertex.o \
-	${OBJECTDIR}/Utils.o
+	${OBJECTDIR}/Utils.o \
+	${OBJECTDIR}/Moves.o
 
 
 # C Compiler Flags
@@ -90,6 +91,11 @@ ${OBJECTDIR}/Utils.o: Utils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Utils.o Utils.cpp
+
+${OBJECTDIR}/Moves.o: Moves.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Moves.o Moves.cpp
 
 # Subprojects
 .build-subprojects:
