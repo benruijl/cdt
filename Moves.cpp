@@ -7,10 +7,10 @@
 
 #include "Moves.h"
 
-Moves::Moves() {
+Moves::Moves(VertSet& vertices) : vertices(vertices) {
 }
 
-Moves::Moves(const Moves& orig) {
+Moves::Moves(const Moves& orig) : vertices(orig.vertices) {
 }
 
 Moves::~Moves() {
@@ -37,7 +37,8 @@ double Moves::getMoveProbability(MOVES move, bool inv, double lambda, double alp
             break;
     }
 
-    return exp(inv_mod * lambda / 4.0 * (sqrt(5) * Ntts + sqrt(3) * Ntss));
+    return exp(inv_mod * lambda / 4.0 * (sqrt(1 + 4 * alpha) * Ntts +
+            sqrt(alpha * (4 - alpha)) * Ntss));
 }
 
 Vertex* Moves::doCollapse(Vertex* a, Vertex* b) {
@@ -277,6 +278,20 @@ Vertex* Moves::doMove(Vertex* a, Vertex* b, MOVES move) {
     };
 
     return NULL;
+}
+
+int Moves::getInverseMoveCount(MOVES move, Vertex* a, Vertex* b) {
+    switch (move) {
+        case COLLAPSE_TIMELIKE:
+        case COLLAPSE_SPACELIKE:
+            return getInverseCollapseMoveCount(a, b);
+        case FLIP:
+        case FLIP_CHANGE:
+            return 1;
+        case ALEXANDER_SPACELIKE:
+        case ALEXANDER_TIMELIKE:
+            return 1;
+    };
 }
 
 int Moves::getInverseCollapseMoveCount(Vertex* u, Vertex* v) {

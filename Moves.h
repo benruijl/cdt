@@ -18,7 +18,7 @@ public:
         COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, COUNT
     };
 
-    Moves();
+    Moves(VertSet& vertices);
     Moves(const Moves& orig);
     virtual ~Moves();
 
@@ -63,6 +63,8 @@ public:
      * Performs a move on the link spanned by vertex a and b.
      */
     Vertex* doMove(Vertex* a, Vertex* b, MOVES move);
+    
+    int getInverseMoveCount(MOVES move, Vertex* a, Vertex* b);
 
     /**
      * Finds the number of ways a collapse move can be inverted.
@@ -72,6 +74,8 @@ public:
      */
     int getInverseCollapseMoveCount(Vertex* u, Vertex* v);
 private:
+    VertSet& vertices;
+    
     /**
      * Do the collapse move. It removes all the occurrences of a and replaces it with b.
      * This move is not always possible.

@@ -22,13 +22,14 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
 }
 
-Triangle* Simulation::generateInitialTriangulation(int N, int T) {
+void Simulation::generateInitialTriangulation(int N, int T) {
     Vertex * vertices[N * T];
     Triangle * triangles[N * T * 2]; // TODO: remove, unnecessary
 
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {
         vertices[t] = new Vertex();
+        this->vertices.insert(vertices[t]);
     }
 
     /* Create a foliation */
@@ -64,32 +65,75 @@ Triangle* Simulation::generateInitialTriangulation(int N, int T) {
         }
     }
 
-    return triangles[0];
 }
 
-int Simulation::getAcceptableMoveCount(Vertex* v) {
-    int count = 0;
-    /* One Alexander move is always possible per link */
-    //count += v->getTriangles() + 1;
+// FIXME: only moves that are not inverted
 
-    /* The inverse Alexander move is not always possible */
+bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(u, v, &first, &second);
 
+    switch (move) {
+        case Moves::ALEXANDER_SPACELIKE:
+            return !first->isTimelike(u, v);
+        case Moves::ALEXANDER_TIMELIKE:
+            return first->isTimelike(u, v);
+        case Moves::COLLAPSE_SPACELIKE:
+            return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
+                    && second->checkAdjacentSides(u, v);
+        case Moves::COLLAPSE_TIMELIKE:
+            return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
+                    && second->checkAdjacentSides(u, v);
+        case Moves::FLIP:
+        case Moves::FLIP_CHANGE:
+            return !first->checkAdjacentSides(u, v) && !second->checkAdjacentSides(u, v);
+    }
 }
 
-Vertex* Simulation::Metropolis(Triangle* triangulation, double lambda, double alpha) {
-    Triangle* current = triangulation;
-    Moves m; // moves helper class, TODO: refactor
+VertSet Simulation::getNeighbouringVertices(Vertex* v) {
+    VertSet neighbours;
+
+    foreach(Triangle* t, v->getTriangles()) {
+        for (int i = 0; i < 3; i++) {
+            neighbours.insert(t->getVertex(i));
+        }
+    }
+
+    neighbours.erase(v);
+    return neighbours;
+}
+
+Vertex* Simulation::getRandomVertex(VertSet& vertices) {
+    VertSet::iterator it = vertices.begin();
+
+    std::advance(it, unireal(rng) * vertices.size());
+    return *it;
+}
+
+// TODO: support inverse moves
+
+VertSet Simulation::Metropolis(double lambda, double alpha) {
+    Moves m(vertices); // moves helper class, TODO: refactor
 
     // draw proposal
     Moves::MOVES move = m.generateRandomMove(unireal(rng));
-    bool inv = unireal(rng) < 0.5; // is the move inverted?
+    // is the move inverted? put to false for testing
+    bool inv = false; // unireal(rng) < 0.5;
     double acceptance = m.getMoveProbability(move, inv, lambda, alpha);
-    
+
+
     // select vertices
+    Vertex* f = getRandomVertex(vertices);
+    VertSet neighbours = getNeighbouringVertices(f);
+    Vertex* g = getRandomVertex(neighbours);
+
     // acceptance *= Q(x | x') / Q(x' | x)
+    // Q(x' | x) = 1 in our case
+    acceptance *= m.getInverseMoveCount(move, f, g);
+
 
     if (acceptance > 1) {
-       
+
     } else {
         if (unireal(rng) < acceptance) {
             // do move

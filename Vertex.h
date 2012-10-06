@@ -12,7 +12,9 @@
 
 
 class Triangle;
+class Vertex;
 typedef boost::unordered_set<Triangle*> TriSet;
+typedef boost::unordered_set<Vertex*> VertSet;
 
 class Vertex {
 public:

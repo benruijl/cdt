@@ -20,12 +20,7 @@ public:
     Simulation(const Simulation& orig);
     virtual ~Simulation();
     
-    /**
-     * Gives the number of moves that are possible at a given vertex.
-     * @param v Vertex v
-     * @return
-     */
-    int getAcceptableMoveCount(Vertex* v);
+    bool isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v);
             
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
@@ -36,27 +31,29 @@ public:
      * 
      * @param N Number of vertices in the circular spatial dimension
      * @param T Number of time slices. Has to be more than 1.
-     * @return Triangulation
      */
-    Triangle* generateInitialTriangulation(int N, int T);
+    void generateInitialTriangulation(int N, int T);
 
     /**
-     * Perform Metropolis algorithm to improve a given triangulation.
+     * Perform Metropolis algorithm to improve a given triangulation. The triangulation
+     * shoul be created with the generateInitialTriangulation method.
      * 
-     * @param triangulation A single triangle from a triangulation. Since the space is 
-     * connected, every other triangle can be reached.
      * @param lambda Action parameter
      * @param alpha Ratio between length of spacelike and timelike links. should be positive
      * 
      * @return Improved triangulation
      */
-    Vertex* Metropolis(Triangle* triangulation, double lambda, double alpha);
+    VertSet Metropolis(double lambda, double alpha);
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
     boost::uniform_real<> unireal;
     
-    Vertex* vertices; // a list of all the vertices in the simulation
+    VertSet vertices; // a list of all the vertices in the simulation
+    
+    Vertex* getRandomVertex(VertSet& vertices);
+    
+    VertSet getNeighbouringVertices(Vertex* v);
 };
 
 #endif	/* SIMULATION_H */
