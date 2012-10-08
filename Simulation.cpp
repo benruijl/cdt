@@ -72,6 +72,8 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(u, v, &first, &second);
+    Vertex* c = first->getThirdVertex(u, v);
+    Vertex* d = second->getThirdVertex(u, v);
 
     switch (move) {
         case Moves::ALEXANDER_SPACELIKE:
@@ -85,8 +87,9 @@ bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
             return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
                     && second->checkAdjacentSides(u, v);
         case Moves::FLIP:
-        case Moves::FLIP_CHANGE:
-            return !first->checkAdjacentSides(u, v) && !second->checkAdjacentSides(u, v);
+        case Moves::FLIP_CHANGE: // for inverted this is different
+            return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
+                    && first->isTimelike(v, c) != second->isTimelike(v, d);
     }
 }
 
@@ -115,31 +118,37 @@ Vertex* Simulation::getRandomVertex(VertSet& vertices) {
 VertSet Simulation::Metropolis(double lambda, double alpha) {
     Moves m(vertices); // moves helper class, TODO: refactor
 
-    // draw proposal
-    Moves::MOVES move = m.generateRandomMove(unireal(rng));
-    // is the move inverted? put to false for testing
-    bool inv = false; // unireal(rng) < 0.5;
-    double acceptance = m.getMoveProbability(move, inv, lambda, alpha);
+    for (int i = 0; i < 100; i++) // for testing
+    {
+        // draw proposal
+        Moves::MOVES move = m.generateRandomMove(unireal(rng));
+
+        // is the move inverted? put to false for testing
+        bool inv = false; // unireal(rng) < 0.5;
+        double acceptance = m.getMoveProbability(move, inv, lambda, alpha);
 
 
-    // select vertices
-    Vertex* f = getRandomVertex(vertices);
-    VertSet neighbours = getNeighbouringVertices(f);
-    Vertex* g = getRandomVertex(neighbours);
+        // select vertices
+        Vertex* f = getRandomVertex(vertices);
+        VertSet neighbours = getNeighbouringVertices(f);
+        Vertex* g = getRandomVertex(neighbours);
 
-    // acceptance *= Q(x | x') / Q(x' | x)
-    // Q(x' | x) = 1 in our case
-    acceptance *= m.getInverseMoveCount(move, f, g);
+        if (!isMovePossible(move, f, g)) {
+            continue;
+        }
 
+        // acceptance *= Q(x | x') / Q(x' | x)
+        // Q(x' | x) = 1 in our case
+        acceptance *= m.getInverseMoveCount(move, f, g);
 
-    if (acceptance > 1) {
-
-    } else {
-        if (unireal(rng) < acceptance) {
-            // do move
+        if (acceptance > 1) {
+            m.doMove(f, g, move);
+        } else {
+            if (unireal(rng) < acceptance) {
+                m.doMove(f, g, move);
+            }
         }
     }
-
 
     return vertices;
 }

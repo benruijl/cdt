@@ -61,6 +61,7 @@ Vertex* Moves::doCollapse(Vertex* a, Vertex* b) {
         t->replaceVertex(a, b);
     }
 
+    vertices.erase(a);
     delete a;
     delete first;
     delete second;
@@ -72,7 +73,7 @@ Vertex* Moves::doCollapse(Vertex* a, Vertex* b) {
     return b;
 }
 
-Vertex* Moves::doFlipChange(Vertex* a, Vertex* b) {
+Vertex* Moves::doFlip(Vertex* a, Vertex* b, bool change) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
 
@@ -80,42 +81,19 @@ Vertex* Moves::doFlipChange(Vertex* a, Vertex* b) {
     Vertex* d = second->getThirdVertex(a, b);
 
     /* Get link types */
-    bool lAB = first->isTimelike(a, b);
+    bool lNew = first->isTimelike(a, b) ^ change;
     bool lAC = first->isTimelike(a, c);
     bool lCB = first->isTimelike(c, b);
     bool lAD = second->isTimelike(a, d);
     bool lBD = second->isTimelike(b, d);
 
-    new Triangle(a, c, d, lAC, !lAB, lAD);
-    new Triangle(c, b, d, lCB, lBD, !lAB);
+    new Triangle(a, c, d, lAC, lNew, lAD);
+    new Triangle(c, b, d, lCB, lBD, lNew);
 
     first->removeVertices();
     second->removeVertices();
     delete first;
     delete second;
-
-    BOOST_ASSERT(a->checkCausality());
-    BOOST_ASSERT(b->checkCausality());
-    BOOST_ASSERT(c->checkCausality());
-    BOOST_ASSERT(d->checkCausality());
-
-    return c;
-}
-
-Vertex* Moves::doFlip(Vertex* a, Vertex* b) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(a, b, &first, &second);
-
-    Vertex* c = first->getThirdVertex(a, b);
-    Vertex* d = second->getThirdVertex(a, b);
-
-    a->getTriangles().erase(second);
-    c->getTriangles().insert(second);
-    second->replaceVertex(a, c);
-
-    b->getTriangles().erase(first);
-    d->getTriangles().insert(first);
-    first->replaceVertex(b, d);
 
     BOOST_ASSERT(a->checkCausality());
     BOOST_ASSERT(b->checkCausality());
@@ -146,6 +124,7 @@ Vertex* Moves::doAlexander(Vertex* a, Vertex* b) {
     new Triangle(a, u, d, lAB, newLink, lAD);
     new Triangle(u, b, d, lAB, lBD, newLink);
 
+    vertices.insert(u);
     first->removeVertices();
     second->removeVertices();
     delete first;
@@ -166,6 +145,10 @@ Vertex* Moves::doInverseAlexander(Vertex* a, Vertex* b, Vertex* u) {
 
     Vertex* c = first->getThirdVertex(a, u);
     Vertex* d = second->getThirdVertex(a, u);
+
+    vertices.erase(u);
+    vertices.insert(c);
+    vertices.insert(d);
 
     /* Get link types */
     bool lAB = first->isTimelike(a, u);
@@ -204,26 +187,6 @@ Vertex* Moves::doInverseAlexander(Vertex* a, Vertex* b, Vertex* u) {
     return a;
 }
 
-Vertex* Moves::doAlexanderAndInverse(Vertex* a, Vertex* b) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(a, b, &first, &second);
-    Vertex* c = first->getThirdVertex(a, b);
-    Vertex* d = second->getThirdVertex(a, b);
-
-    Vertex* u = doAlexander(a, b);
-    return doInverseAlexander(a, b, u);
-}
-
-Vertex* Moves::doCollapseAndInverse(Vertex* a, Vertex* b) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(a, b, &first, &second);
-    Vertex* c = first->getThirdVertex(a, b);
-    Vertex* d = second->getThirdVertex(a, b);
-
-    b = doCollapse(a, b);
-    return doInverseCollapse(c, b, d);
-}
-
 Vertex* Moves::doInverseCollapse(Vertex* a, Vertex* b, Vertex* c) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(a, b, &first, &second);
@@ -256,6 +219,7 @@ Vertex* Moves::doInverseCollapse(Vertex* a, Vertex* b, Vertex* c) {
     /* Create two new triangles */
     new Triangle(a, u, b, lAB, !lAB, lAB);
     new Triangle(c, u, b, lAB, !lAB, lAB);
+    vertices.insert(u);
 
     BOOST_ASSERT(b->checkCausality());
     BOOST_ASSERT(u->checkCausality());
@@ -269,9 +233,9 @@ Vertex* Moves::doMove(Vertex* a, Vertex* b, MOVES move) {
         case COLLAPSE_SPACELIKE:
             return doCollapse(a, b);
         case FLIP:
-            return doFlip(a, b);
+            return doFlip(a, b, false);
         case FLIP_CHANGE:
-            return doFlipChange(a, b);
+            return doFlip(a, b, true);
         case ALEXANDER_SPACELIKE:
         case ALEXANDER_TIMELIKE:
             return doAlexander(a, b);
@@ -287,7 +251,6 @@ int Moves::getInverseMoveCount(MOVES move, Vertex* a, Vertex* b) {
             return getInverseCollapseMoveCount(a, b);
         case FLIP:
         case FLIP_CHANGE:
-            return 1;
         case ALEXANDER_SPACELIKE:
         case ALEXANDER_TIMELIKE:
             return 1;

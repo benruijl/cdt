@@ -69,16 +69,5 @@ boost::unordered_set<T> operator &(boost::unordered_set<T>& a, const boost::unor
     return out;
 }
 
-/**
- * Removes an element from an unordered vector. This is O(1).
- * @param v Vector
- * @param pos Position to remove element
- */
-template <typename T>
-void erase_unordered(std::vector<T> &v, int pos) {
-    v[pos] = v[v.size() - 1];
-    v.pop_back();
-}
-
 #endif	/* UTILS_H */
 

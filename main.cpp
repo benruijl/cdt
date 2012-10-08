@@ -18,7 +18,7 @@ using namespace std;
 int main(int argc, char** argv) {
     Simulation simulation;
 
-    simulation.generateInitialTriangulation(4, 4);
+    simulation.generateInitialTriangulation(10, 10);
     simulation.Metropolis(1, 1);
 
     return 0;

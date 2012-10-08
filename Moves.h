@@ -21,24 +21,6 @@ public:
     Moves(VertSet& vertices);
     Moves(const Moves& orig);
     virtual ~Moves();
-
-    /**
-     * Test function that performs an Alexander move and its inverse straight after.
-     * It shouldn't change the grid.
-     * @param a First vertex
-     * @param b Second vertex
-     * @return Vertex a
-     */
-    Vertex* doAlexanderAndInverse(Vertex* a, Vertex* b);
-
-    /**
-     * Test function that performs a collapse move and its inverse straight after.
-     * It shouldn't change the grid. 
-     * @param a First vertex
-     * @param b Second vertex
-     * @return Vertex a
-     */
-    Vertex* doCollapseAndInverse(Vertex* a, Vertex* b);
     
     /**
      * Return a random move.
@@ -87,17 +69,10 @@ private:
      * A move that flips a link. 
      * @param a First link vertex
      * @param b Second link vertex
+     * @param change Should the link type change?
      * @return 
      */
-    Vertex* doFlip(Vertex* a, Vertex* b);
-
-    /**
-     * A move that flips a link and changes its spacelike or timelike character.
-     * @param a First link vertex
-     * @param b Second link vertex
-     * @return 
-     */
-    Vertex* doFlipChange(Vertex* a, Vertex* b);
+    Vertex* doFlip(Vertex* a, Vertex* b, bool change);
 
     /**
      * An Alexander move is making a cross in a diamons shape. An Alexandar move
