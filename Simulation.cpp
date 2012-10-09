@@ -67,8 +67,6 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 
 }
 
-// FIXME: only moves that are not inverted
-
 bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(u, v, &first, &second);
@@ -87,8 +85,30 @@ bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
             return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
                     && second->checkAdjacentSides(u, v);
         case Moves::FLIP:
-        case Moves::FLIP_CHANGE: // for inverted this is different
+        case Moves::FLIP_CHANGE:
             return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
+                    && first->isTimelike(v, c) != second->isTimelike(v, d);
+    }
+}
+
+bool Simulation::isInverseMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
+    Triangle* first, *second;
+    Vertex::getAdjacentTriangles(u, v, &first, &second);
+    Vertex* c = first->getThirdVertex(u, v);
+    Vertex* d = second->getThirdVertex(u, v);
+
+    switch (move) {
+        case Moves::ALEXANDER_SPACELIKE: // only one vertex required
+        case Moves::ALEXANDER_TIMELIKE:
+            return u->getTriangles().size() == 4;
+        case Moves::COLLAPSE_SPACELIKE:
+        case Moves::COLLAPSE_TIMELIKE:
+            return true; // always possible
+        case Moves::FLIP:
+            return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
+                    && first->isTimelike(v, c) != second->isTimelike(v, d);
+        case Moves::FLIP_CHANGE:
+            return !first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
                     && first->isTimelike(v, c) != second->isTimelike(v, d);
     }
 }
@@ -126,7 +146,6 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
         // is the move inverted? put to false for testing
         bool inv = false; // unireal(rng) < 0.5;
         double acceptance = m.getMoveProbability(move, inv, lambda, alpha);
-
 
         // select vertices
         Vertex* f = getRandomVertex(vertices);

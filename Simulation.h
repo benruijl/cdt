@@ -21,6 +21,8 @@ public:
     virtual ~Simulation();
     
     bool isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v);
+    
+    bool isInverseMovePossible(Moves::MOVES move, Vertex* u, Vertex* v);
             
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
