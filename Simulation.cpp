@@ -133,13 +133,22 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
         VertSet neighbours = getNeighbouringVertices(f);
         Vertex* g = getRandomVertex(neighbours);
 
+        /* multiply acceptance by probability Q(x' | x)
+         * use that for forward moves you always have to select 2 vertices
+         * of which one is neighbouring
+         * the probability of the move itself need not be taken into account,
+         * because it will be divided out later
+         */
+        acceptance *= 1.0 / (vertices.size() * m.getNeighbouringVertexCount(f)) +
+                1.0 / (vertices.size() * m.getNeighbouringVertexCount(g));
+
         if (!isMovePossible(move, f, g)) {
             continue;
         }
 
         // acceptance *= Q(x | x') / Q(x' | x)
         // Q(x' | x) = 1 in our case
-        acceptance *= m.getInverseMoveCount(move, f, g);
+        acceptance *= m.getInverseMoveProbability(move, f, g);
 
         if (acceptance > 1) {
             m.doMove(f, g, move);

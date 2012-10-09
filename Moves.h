@@ -46,7 +46,16 @@ public:
      */
     Vertex* doMove(Vertex* a, Vertex* b, MOVES move);
     
-    int getInverseMoveCount(MOVES move, Vertex* a, Vertex* b);
+    /**
+     * Gets the transition probability Q(x | x') after a move is done from x to
+     * x'. This uses the <b>current</b> triangulation x, and the move information
+     * to get from x to x'.
+     * @param move Move taken to get from x to x'
+     * @param a First vertex involved in move
+     * @param b Second vertex involved in move
+     * @return Q(x | x')
+     */
+    double getInverseMoveProbability(MOVES move, Vertex* a, Vertex* b);
 
     /**
      * Finds the number of ways a collapse move can be inverted.
@@ -55,6 +64,8 @@ public:
      * @return 
      */
     int getInverseCollapseMoveCount(Vertex* u, Vertex* v);
+    
+    int getNeighbouringVertexCount(Vertex* u);
 private:
     VertSet& vertices;
     

@@ -244,16 +244,24 @@ Vertex* Moves::doMove(Vertex* a, Vertex* b, MOVES move) {
     return NULL;
 }
 
-int Moves::getInverseMoveCount(MOVES move, Vertex* a, Vertex* b) {
+int Moves::getNeighbouringVertexCount(Vertex* u) {
+    return u->getTriangles().size();
+}
+
+double Moves::getInverseMoveProbability(MOVES move, Vertex* a, Vertex* b) {
     switch (move) {
         case COLLAPSE_TIMELIKE:
         case COLLAPSE_SPACELIKE:
-            return getInverseCollapseMoveCount(a, b);
+            return (double)getInverseCollapseMoveCount(a, b) / (vertices.size() + 1) ;
         case FLIP:
         case FLIP_CHANGE:
+            return 1.0 / (vertices.size() * getNeighbouringVertexCount(a)) + 
+                   1.0 / (vertices.size() * getNeighbouringVertexCount(b));
         case ALEXANDER_SPACELIKE:
         case ALEXANDER_TIMELIKE:
-            return 1;
+            // Alexander moves create one new vertex and the inverse needs
+            // only this vertex to perform the move
+            return 1.0 / (vertices.size() + 1); 
     };
 }
 
