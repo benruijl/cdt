@@ -7,6 +7,7 @@
 
 #include "Simulation.h"
 #include "Utils.h"
+#include "MoveFactory.h"
 #include <boost/assign/std.hpp>
 
 using namespace boost::assign;
@@ -67,117 +68,39 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 
 }
 
-bool Simulation::isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(u, v, &first, &second);
-    Vertex* c = first->getThirdVertex(u, v);
-    Vertex* d = second->getThirdVertex(u, v);
-
-    switch (move) {
-        case Moves::ALEXANDER_SPACELIKE:
-            return !first->isTimelike(u, v);
-        case Moves::ALEXANDER_TIMELIKE:
-            return first->isTimelike(u, v);
-        case Moves::COLLAPSE_SPACELIKE:
-            return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
-                    && second->checkAdjacentSides(u, v);
-        case Moves::COLLAPSE_TIMELIKE:
-            return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
-                    && second->checkAdjacentSides(u, v);
-        case Moves::FLIP:
-        case Moves::FLIP_CHANGE:
-            return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
-                    && first->isTimelike(v, c) != second->isTimelike(v, d);
-    }
-}
-
-bool Simulation::isInverseMovePossible(Moves::MOVES move, Vertex* u, Vertex* v) {
-    Triangle* first, *second;
-    Vertex::getAdjacentTriangles(u, v, &first, &second);
-    Vertex* c = first->getThirdVertex(u, v);
-    Vertex* d = second->getThirdVertex(u, v);
-
-    switch (move) {
-        case Moves::ALEXANDER_SPACELIKE: // only one vertex required
-        case Moves::ALEXANDER_TIMELIKE:
-            return u->getTriangles().size() == 4;
-        case Moves::COLLAPSE_SPACELIKE:
-        case Moves::COLLAPSE_TIMELIKE:
-            return true; // always possible
-        case Moves::FLIP:
-            return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
-                    && first->isTimelike(v, c) != second->isTimelike(v, d);
-        case Moves::FLIP_CHANGE:
-            return !first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
-                    && first->isTimelike(v, c) != second->isTimelike(v, d);
-    }
-}
-
-VertSet Simulation::getNeighbouringVertices(Vertex* v) {
-    VertSet neighbours;
-
-    foreach(Triangle* t, v->getTriangles()) {
-        for (int i = 0; i < 3; i++) {
-            neighbours.insert(t->getVertex(i));
-        }
-    }
-
-    neighbours.erase(v);
-    return neighbours;
-}
-
-Vertex* Simulation::getRandomVertex(VertSet& vertices) {
+Vertex* Simulation::getRandomVertex(const VertSet& vertices) {
     VertSet::iterator it = vertices.begin();
 
     std::advance(it, unireal(rng) * vertices.size());
     return *it;
 }
 
-// TODO: support inverse moves
-
 VertSet Simulation::Metropolis(double lambda, double alpha) {
-    Moves m(vertices); // moves helper class, TODO: refactor
+    MoveFactory m;
 
     for (int i = 0; i < 100; i++) // for testing
     {
-        // draw proposal
-        Moves::MOVES move = m.generateRandomMove(unireal(rng));
+        Move* move = m.createRandomMove(*this);
 
-        // is the move inverted? put to false for testing
-        bool inv = false; // unireal(rng) < 0.5;
-        double acceptance = m.getMoveProbability(move, inv, lambda, alpha);
-
-        // select vertices
-        Vertex* f = getRandomVertex(vertices);
-        VertSet neighbours = getNeighbouringVertices(f);
-        Vertex* g = getRandomVertex(neighbours);
-
-        /* multiply acceptance by probability Q(x' | x)
-         * use that for forward moves you always have to select 2 vertices
-         * of which one is neighbouring
-         * the probability of the move itself need not be taken into account,
-         * because it will be divided out later
-         */
-        acceptance *= 1.0 / (vertices.size() * m.getNeighbouringVertexCount(f)) +
-                1.0 / (vertices.size() * m.getNeighbouringVertexCount(g));
-
-        if (!isMovePossible(move, f, g)) {
+        // TODO: only generate valid moves
+        if (!move->isMovePossible(vertices)) {
             continue;
         }
 
-        // acceptance *= Q(x | x') / Q(x' | x)
-        // Q(x' | x) = 1 in our case
-        acceptance *= m.getInverseMoveProbability(move, f, g);
+        /* acceptance = P(x') / P(x) * Q(x | x') / Q(x' | x) */
+        double acceptance = move->getMoveProbability(lambda, alpha) *
+                move->getInverseTransitionProbability(vertices) /
+                move->getTransitionProbability(vertices);
 
         if (acceptance > 1) {
-            m.doMove(f, g, move);
+            move->execute(vertices);
         } else {
-            if (unireal(rng) < acceptance) {
-                m.doMove(f, g, move);
+            if (getRandomNumber() < acceptance) {
+                move->execute(vertices);
             }
         }
     }
 
     return vertices;
-}
+};
 

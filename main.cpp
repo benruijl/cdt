@@ -8,16 +8,13 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "Vertex.h"
-#include "Triangle.h"
 #include "Simulation.h"
-#include "Moves.h"
 
 using namespace std;
 
 int main(int argc, char** argv) {
     Simulation simulation;
-
+    
     simulation.generateInitialTriangulation(10, 10);
     simulation.Metropolis(1, 1);
 

@@ -18,6 +18,19 @@ Vertex::Vertex(const Vertex& orig) {
 Vertex::~Vertex() {
 }
 
+VertSet Vertex::getNeighbouringVertices() {
+    VertSet neighbours;
+
+    foreach(Triangle* t, triangles) {
+        for (int i = 0; i < 3; i++) {
+            neighbours.insert(t->getVertex(i));
+        }
+    }
+
+    neighbours.erase(this);
+    return neighbours;
+}
+
 void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second) {
     TriSet t = a->triangles & b->triangles; // intersection
     

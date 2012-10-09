@@ -4,7 +4,15 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>Moves.h</itemPath>
+      <logicalFolder name="f1" displayName="Moves" projectFiles="true">
+        <itemPath>AlexanderMove.h</itemPath>
+        <itemPath>CollapseMove.h</itemPath>
+        <itemPath>FlipMove.h</itemPath>
+        <itemPath>InverseAlexanderMove.h</itemPath>
+        <itemPath>InverseCollapseMove.h</itemPath>
+        <itemPath>Move.h</itemPath>
+        <itemPath>MoveFactory.h</itemPath>
+      </logicalFolder>
       <itemPath>Simulation.h</itemPath>
       <itemPath>Triangle.h</itemPath>
       <itemPath>Utils.h</itemPath>
@@ -17,7 +25,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>Moves.cpp</itemPath>
+      <logicalFolder name="f1" displayName="Moves" projectFiles="true">
+        <itemPath>Move.cpp</itemPath>
+      </logicalFolder>
       <itemPath>Simulation.cpp</itemPath>
       <itemPath>Triangle.cpp</itemPath>
       <itemPath>Utils.cpp</itemPath>

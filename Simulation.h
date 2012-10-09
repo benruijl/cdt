@@ -12,17 +12,12 @@
 #include <boost/random/uniform_real.hpp>
 
 #include "Triangle.h"
-#include "Moves.h"
 
 class Simulation {
 public:
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
-    
-    bool isMovePossible(Moves::MOVES move, Vertex* u, Vertex* v);
-    
-    bool isInverseMovePossible(Moves::MOVES move, Vertex* u, Vertex* v);
             
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
@@ -46,16 +41,31 @@ public:
      * @return Improved triangulation
      */
     VertSet Metropolis(double lambda, double alpha);
+    
+    /**
+     * Convenience function that 
+     * @param vertices
+     * @return 
+     */
+    Vertex* getRandomVertex(const VertSet& vertices);
+    
+    VertSet& getVertices() {
+        return vertices;
+    }
+    
+    /**
+     * Generates a uniform random double in the closed interval [0,1].
+     * @return Random number
+     */
+    double getRandomNumber() {
+        return unireal(rng);
+    }
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
     boost::uniform_real<> unireal;
     
     VertSet vertices; // a list of all the vertices in the simulation
-    
-    Vertex* getRandomVertex(VertSet& vertices);
-    
-    VertSet getNeighbouringVertices(Vertex* v);
 };
 
 #endif	/* SIMULATION_H */

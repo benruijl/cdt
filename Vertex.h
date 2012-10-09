@@ -31,6 +31,20 @@ public:
     }
     
     static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
+    
+    /**
+     * Gets the amount of neighbouring vertices.
+     * @return 
+     */
+    int getNeighbouringVertexCount() {
+        return triangles.size();
+    }
+    
+    /**
+     * Gets the neighbouring vertices of this vertex.
+     * @return 
+     */
+    VertSet getNeighbouringVertices();
 
     /**
      * Checks the causality requirement of this vertex.
