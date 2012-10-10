@@ -15,6 +15,13 @@ private:
     Vertex* u, *v;
     bool isTimelike;
 
+    /**
+     * Counts all ways to select three vertices from the correct surroundings
+     * after a move is done to collapse u and v.
+     * @param u
+     * @param v
+     * @return 
+     */
     int getInverseCollapseMoveCount(Vertex* u, Vertex* v) {
         int count = 0;
 

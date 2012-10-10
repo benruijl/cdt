@@ -31,6 +31,11 @@ public:
      */
     double getMoveProbability(double lambda, double alpha);
     
+    /**
+     * Gets the probability of performing this particular move.
+     * @param vertices Set of vertices
+     * @return 
+     */
     virtual double getTransitionProbability(VertSet& vertices) = 0;
 
     /**

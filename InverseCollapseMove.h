@@ -13,8 +13,33 @@
 
 class InverseCollapseMove : public Move {
 private:
-    Vertex* u, *v;
+    Vertex* u, *v, *w; // u is the center triangle
     bool isTimelike;
+
+    /**
+     * Gets all the triangles that contain vertex u and that are on either the left
+     * or right side of the barrier v - u -w.
+     * @param left Check the left side?
+     * @return 
+     */
+    TriSet getNeighbouringTriangles(bool left) {
+        Triangle* first, *second;
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+
+        // Collected all triangles on one side of the barrier v - u - w
+        TriSet tri;
+        Triangle* cur = left ? first : second;
+        Vertex* edgeVertex = cur->getThirdVertex(u, v);
+
+        do {
+            tri.insert(cur);
+            Vertex::getAdjacentTriangles(edgeVertex, u, &first, &second);
+            cur = first == cur ? second : first;
+            edgeVertex = cur->getThirdVertex(edgeVertex, u);
+        } while (edgeVertex != w); // TODO: check if it collects all
+
+        return tri;
+    }
 public:
 
     InverseCollapseMove(bool timelike) : Move(!timelike * 2, timelike * 2) {
@@ -22,61 +47,77 @@ public:
     }
 
     double getTransitionProbability(VertSet& vertices) {
-        return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
-                1.0 / (vertices.size() * v->getNeighbouringVertexCount());
+        // -2 because the third vertex must not belong to the same triangle
+        return 1.0 / (vertices.size() * u->getNeighbouringVertexCount() *
+                (u->getNeighbouringVertexCount() - 2) / 2.0);
     }
 
     bool isMovePossible(VertSet& vertices) {
-        return true;
+        Triangle* first, *second;
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+        bool lUV = first->isTimelike(u, v);
+        Vertex::getAdjacentTriangles(u, w, &first, &second);
+        bool lUW = first->isTimelike(u, w);
+
+        return lUV == lUW && lUV == !isTimelike;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
         v = simulation.getRandomVertex(u->getNeighbouringVertices());
+
+        Triangle* first, *second;
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+
+        // select a third neighbouring vertex that is not v
+        // the triangle should also not belong to the same triangle as u and v
+        w = v;
+        while (w == v || w == first->getThirdVertex(u, v) ||
+                w == second->getThirdVertex(u, v)) {
+            w = simulation.getRandomVertex(u->getNeighbouringVertices());
+        }
+
         return this;
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        // TODO
+        int numTriLeft = getNeighbouringTriangles(true).size();
+
+        // the probability of the inverse is selecting a vertex and then one of their neighbours.
+        // The number of neighbours depends on the vertex and is calculated in numTriLeft.
+        return 1.0 / ((vertices.size() - 1) * numTriLeft) +
+                1.0 / ((vertices.size() - 1) * (u->getTriangles().size() - numTriLeft));
     }
 
     void execute(VertSet& vertices) {
-        /*Triangle* first, *second;
-        Vertex::getAdjacentTriangles(a, b, &first, &second);
+        Triangle* first, *second;
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+        bool lUV = first->isTimelike(u, v);
 
-        bool lAB = first->isTimelike(a, b);
-        Vertex::getAdjacentTriangles(b, c, &first, &second);
-        bool lBC = first->isTimelike(b, c); // not really required
-
-        // Collected all triangles on one side of the barrier a - b - c
-        TriSet tri;
-        Triangle* cur = first;
-        Vertex* edgeVertex = cur->getThirdVertex(b, c);
-
-        do {
-            tri.insert(cur);
-            Vertex::getAdjacentTriangles(edgeVertex, b, &first, &second);
-            cur = first == cur ? second : first;
-            edgeVertex = cur->getThirdVertex(edgeVertex, b);
-        } while (edgeVertex != a); // TODO: check if it collects all
+        // Collected all triangles on one side of the barrier v - u - w
+        TriSet tri = getNeighbouringTriangles(true);
+        std::cout << "tl " << isTimelike << std::endl;
+        std::cout << tri.size() << " ";
+        std::cout << u->getTriangles().size() << " ";
 
         // Create new vertex
-        b->getTriangles() -= tri;
-        Vertex* u = new Vertex();
-        u->getTriangles() += tri;
+        Vertex* x = new Vertex();
+        u->getTriangles() -= tri;
+        x->getTriangles() += tri;
 
         foreach(Triangle* t, tri) {
-            t->replaceVertex(b, u);
+            t->replaceVertex(u, x);
         }
 
         // Create two new triangles
-        new Triangle(a, u, b, lAB, !lAB, lAB);
-        new Triangle(c, u, b, lAB, !lAB, lAB);
-        vertices.insert(u);
+        new Triangle(v, x, u, lUV, !lUV, lUV);
+        new Triangle(w, x, u, lUV, !lUV, lUV);
+        vertices.insert(x);
 
-        BOOST_ASSERT(b->checkCausality());
+        std::cout << u->getTriangles().size() << " " << x->getTriangles().size() << std::endl;
+
         BOOST_ASSERT(u->checkCausality());
-        */
+        BOOST_ASSERT(x->checkCausality());
     }
 };
 
