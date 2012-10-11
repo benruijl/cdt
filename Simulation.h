@@ -18,7 +18,7 @@ public:
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
-            
+
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
      * Thus, this initial configuration can be used for both CDT and extended CDT.
@@ -41,18 +41,18 @@ public:
      * @return Improved triangulation
      */
     VertSet Metropolis(double lambda, double alpha);
-    
+
     /**
      * Convenience function that 
      * @param vertices
      * @return 
      */
     Vertex* getRandomVertex(const VertSet& vertices);
-    
+
     VertSet& getVertices() {
         return vertices;
     }
-    
+
     /**
      * Generates a uniform random double in the closed interval [0,1].
      * @return Random number
@@ -60,11 +60,28 @@ public:
     double getRandomNumber() {
         return unireal(rng);
     }
+
+    /**
+     * Collect triangles around a given vertex that are at most depth links away.
+     * @param v
+     * @param triSet Set to put triangles in
+     * @param depth
+     */
+    void collectTriangles(TriSet& triSet, Vertex* v, int depth);
+
+    /**
+     * Outputs a partial of the triangulation to the 'dot' format.
+     * This can be printed with `sfdp graph.dot -Tpdf -o graph.pdf` for example.
+     * @param filename
+     * @param v Highlight this vertex
+     * @param tri Set of triangulation
+     */
+    void drawPartialTriangulation(const char* filename, Vertex* v, const TriSet& tri);
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
     boost::uniform_real<> unireal;
-    
+
     VertSet vertices; // a list of all the vertices in the simulation
 };
 

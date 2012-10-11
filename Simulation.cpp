@@ -9,6 +9,7 @@
 #include "Utils.h"
 #include "MoveFactory.h"
 #include <boost/assign/std.hpp>
+#include <fstream>
 
 using namespace boost::assign;
 
@@ -73,6 +74,43 @@ Vertex* Simulation::getRandomVertex(const VertSet& vertices) {
 
     std::advance(it, unireal(rng) * vertices.size());
     return *it;
+}
+
+void Simulation::collectTriangles(TriSet& triSet, Vertex* v, int depth) {
+    if (depth <= 0) {
+        triSet += v->getTriangles();
+        return;
+    }
+
+    triSet += v->getTriangles();
+
+    foreach(Vertex* u, v->getNeighbouringVertices()) {
+        collectTriangles(triSet, u, depth - 1);
+    }
+}
+
+void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const TriSet& tri) {
+    std::ofstream dotFile(filename);
+    if (!dotFile.is_open()) {
+        std::cout << "Unable to open file '" << filename << "'" << std::endl;
+    }
+
+    dotFile << "strict graph G {" << std::endl << "node[shape=point];" << std::endl;
+    dotFile << "n" << v << "[color=green];" << std::endl;
+
+    foreach(Triangle* t, tri) {
+        for (int i = 0; i < 3; i++) {
+            dotFile << "n" << t->getVertex(i) << "--" << "n" << t->getVertex((i + 1) % 3);
+            if (t->isTimelike(i)) {
+                dotFile << " [color=red];" << std::endl;
+            } else {
+                dotFile << " [color=blue];" << std::endl;
+            }
+        }
+    }
+
+    dotFile << "}";
+    dotFile.close();
 }
 
 VertSet Simulation::Metropolis(double lambda, double alpha) {

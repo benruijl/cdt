@@ -28,14 +28,14 @@ private:
 
         // Collected all triangles on one side of the barrier v - u - w
         TriSet tri;
-        Triangle* cur = left ? first : second;
-        Vertex* edgeVertex = cur->getThirdVertex(u, v);
+        Triangle* cur = left ? second : first;
+        Vertex* edgeVertex = v;
 
         do {
-            tri.insert(cur);
             Vertex::getAdjacentTriangles(edgeVertex, u, &first, &second);
             cur = first == cur ? second : first;
             edgeVertex = cur->getThirdVertex(edgeVertex, u);
+            tri.insert(cur);
         } while (edgeVertex != w); // TODO: check if it collects all
 
         return tri;
@@ -59,7 +59,7 @@ public:
         Vertex::getAdjacentTriangles(u, w, &first, &second);
         bool lUW = first->isTimelike(u, w);
 
-        return lUV == lUW && lUV == !isTimelike;
+        return lUV == lUW && lUV != isTimelike;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -112,12 +112,21 @@ public:
         // Create two new triangles
         new Triangle(v, x, u, lUV, !lUV, lUV);
         new Triangle(w, x, u, lUV, !lUV, lUV);
+
         vertices.insert(x);
 
         std::cout << u->getTriangles().size() << " " << x->getTriangles().size() << std::endl;
 
+        Simulation s;
+        TriSet tri2;
+        s.collectTriangles(tri2, *vertices.begin(), 1);
+        s.drawPartialTriangulation("graph.dot", *vertices.begin(), tri2);
+
         BOOST_ASSERT(u->checkCausality());
+        BOOST_ASSERT(v->checkCausality());
+        BOOST_ASSERT(w->checkCausality());
         BOOST_ASSERT(x->checkCausality());
+        std::cout << "Causality check done " << std::endl;
     }
 };
 
