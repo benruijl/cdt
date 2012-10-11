@@ -61,9 +61,6 @@ private:
 public:
 
     Move* createRandomMove(Simulation& simulation) {
-        return (new InverseCollapseMove(false))->generateRandomMove(simulation); // for testing
-
-        
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
         bool inverse = simulation.getRandomNumber() < 0.5;
 

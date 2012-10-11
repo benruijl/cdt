@@ -139,6 +139,11 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
         }
     }
 
+    // write a part of the grid to a file
+    TriSet tri;
+    collectTriangles(tri, *vertices.begin(), 2);
+    drawPartialTriangulation("graph.dot", *vertices.begin(), tri);
+
     return vertices;
 };
 

@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
     
     simulation.generateInitialTriangulation(10, 10);
     simulation.Metropolis(1, 1);
+    std::cout << "Simulation ended." << std::endl;
 
     return 0;
 }
