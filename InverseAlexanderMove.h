@@ -9,7 +9,7 @@
 #define	INVERSEALEXANDERMOVE_H
 
 #include "Move.h"
-
+#include "Triangle.h"
 
 class InverseAlexanderMove : public Move {
 private:
@@ -26,7 +26,7 @@ public:
     }
 
     bool isMovePossible(VertSet& vertices) {
-        // FIXME: also check if the isTimelike matches the environment
+        // vertex needs to have 4 links: two spacelike and two timelike
         return u->getTriangles().size() == 4;
     }
 
@@ -36,39 +36,41 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        // FIXME: this is hard
-        return 1;
+        // TODO: find isTimelike Link and get the two vertices u and v from them
+        //   return 1.0 / ((vertices.size() - 1) * u->getNeighbouringVertexCount()) +
+        //           1.0 / ((vertices.size() - 1) * v->getNeighbouringVertexCount());
+        return 1.0;
     }
 
     void execute(VertSet& vertices) {
-        // TODO: different from previous version
-        
-     /*   Triangle* first, *second, *third, *fourth;
-        Vertex::getAdjacentTriangles(a, u, &first, &second);
+        Triangle *first, *second, *third, *fourth, *t, *r;
+        Vertex *v, *w, *x, *y;
+        bool lUV, lVW, lVY, lWX, lXY;
 
-        Vertex* c = first->getThirdVertex(a, u);
-        Vertex* d = second->getThirdVertex(a, u);
+        /* Determine the surroundings in a deterministic way */
+        VertSet n = u->getNeighbouringVertices();
 
+        v = *n.begin();
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+        w = first->getThirdVertex(u, v);
+        y = second->getThirdVertex(u, v);
+
+        lUV = first->isTimelike(u, v);
+        lVW = first->isTimelike(v, w);
+        lVY = second->isTimelike(v, y);
+
+        Vertex::getAdjacentTriangles(u, w, &t, &r);
+        third = t == first ? r : t;
+
+        x = third->getThirdVertex(u, w);
+        Vertex::getAdjacentTriangles(u, x, &t, &r);
+        fourth = t == third ? r : t;
+
+        lWX = third->isTimelike(w, x);
+        lXY = fourth->isTimelike(x, y);
+
+        /* Perform cleanup */
         vertices.erase(u);
-        vertices.insert(c);
-        vertices.insert(d);
-
-        // Get link types
-        bool lAB = first->isTimelike(a, u);
-        bool lAC = first->isTimelike(a, c);
-        bool lAD = second->isTimelike(a, d);
-
-        Vertex::getAdjacentTriangles(u, b, &third, &fourth);
-
-        bool lCB, lBD;
-        if (third->containsVertex(c)) { // order could be turned around, so check!
-            lCB = third->isTimelike(b, c);
-            lBD = fourth->isTimelike(b, d);
-        } else {
-            lBD = third->isTimelike(b, d);
-            lCB = fourth->isTimelike(b, c);
-        }
-
         first->removeVertices();
         second->removeVertices();
         third->removeVertices();
@@ -79,15 +81,19 @@ public:
         delete fourth;
         delete u;
 
-        new Triangle(a, c, b, lAC, lCB, lAB);
-        new Triangle(a, b, d, lAB, lBD, lAD);
+        if (lUV == isTimelike) {
+            new Triangle(v, w, y, lVW, !lUV, lVY);
+            new Triangle(w, x, y, lWX, lXY, !lUV);
+        } else {
+            new Triangle(v, w, x, lVW, lWX, lUV);
+            new Triangle(v, x, y, lUV, lXY, lVY);
+        }
 
-        BOOST_ASSERT(a->checkCausality());
-        BOOST_ASSERT(b->checkCausality());
-        BOOST_ASSERT(c->checkCausality());
-        BOOST_ASSERT(d->checkCausality());
 
-        return a;*/
+        BOOST_ASSERT(v->checkCausality());
+        BOOST_ASSERT(w->checkCausality());
+        BOOST_ASSERT(x->checkCausality());
+        BOOST_ASSERT(y->checkCausality());
     }
 };
 

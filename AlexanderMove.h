@@ -30,7 +30,7 @@ public:
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
-        return isTimelike == first->isTimelike(u, v);
+        return isTimelike == !first->isTimelike(u, v);
     }
 
     Move* generateRandomMove(Simulation& simulation) {

@@ -130,12 +130,8 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
                 move->getInverseTransitionProbability(vertices) /
                 move->getTransitionProbability(vertices);
 
-        if (acceptance > 1) {
+        if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
-        } else {
-            if (getRandomNumber() < acceptance) {
-                move->execute(vertices);
-            }
         }
     }
 

@@ -65,6 +65,11 @@ public:
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
+            return (new InverseAlexanderMove(false))->generateRandomMove(simulation);
+        } else
+            return (new AlexanderMove(false))->generateRandomMove(simulation);
+
+        if (inverse) {
             return createInverseMove(move, simulation);
         } else {
             return createForwardMove(move, simulation);
