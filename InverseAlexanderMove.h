@@ -36,10 +36,20 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        // TODO: find isTimelike Link and get the two vertices u and v from them
-        //   return 1.0 / ((vertices.size() - 1) * u->getNeighbouringVertexCount()) +
-        //           1.0 / ((vertices.size() - 1) * v->getNeighbouringVertexCount());
-        return 1.0;
+        Triangle *first, *second;
+        double prob = 0;
+
+        foreach(Vertex* v, u->getNeighbouringVertices()) {
+            Vertex::getAdjacentTriangles(u, v, &first, &second);
+
+            if (first->isTimelike(u, v) != isTimelike) {
+                // -1 because vertex u does not exist
+                prob += 1.0 / ((vertices.size() - 1) *
+                        (v->getNeighbouringVertexCount() - 1));
+            }
+        }
+
+        return prob;
     }
 
     void execute(VertSet& vertices) {
