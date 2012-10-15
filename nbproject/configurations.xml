@@ -10,8 +10,10 @@
         <itemPath>FlipMove.h</itemPath>
         <itemPath>InverseAlexanderMove.h</itemPath>
         <itemPath>InverseCollapseMove.h</itemPath>
+        <itemPath>InversePinchingMove.h</itemPath>
         <itemPath>Move.h</itemPath>
         <itemPath>MoveFactory.h</itemPath>
+        <itemPath>PinchingMove.h</itemPath>
       </logicalFolder>
       <itemPath>Simulation.h</itemPath>
       <itemPath>Triangle.h</itemPath>

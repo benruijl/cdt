@@ -15,13 +15,15 @@
 #include "InverseAlexanderMove.h"
 #include "InverseCollapseMove.h"
 #include "CollapseMove.h"
+#include "PinchingMove.h"
+#include "InversePinchingMove.h"
 
 class MoveFactory {
 private:
 
     enum MOVES {
         ALEXANDER_TIMELIKE, ALEXANDER_SPACELIKE, FLIP_CHANGE, FLIP,
-        COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, COUNT
+        COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH, COUNT
     };
 
     Move* createForwardMove(MOVES move, Simulation& simulation) {
@@ -38,6 +40,8 @@ private:
                 return (new FlipMove(true, false))->generateRandomMove(simulation);
             case FLIP_CHANGE:
                 return (new FlipMove(true, true))->generateRandomMove(simulation);
+            case PINCH:
+                return (new PinchingMove())->generateRandomMove(simulation);
         }
     }
 
@@ -55,6 +59,8 @@ private:
                 return (new FlipMove(true, false))->generateRandomMove(simulation);
             case FLIP_CHANGE:
                 return (new FlipMove(false, true))->generateRandomMove(simulation);
+            case PINCH:
+                return (new InversePinchingMove())->generateRandomMove(simulation);
         }
     }
 

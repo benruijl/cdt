@@ -102,6 +102,15 @@ public:
         return (i + 2) % 3;
     }
 
+    int getOppositeLink(Vertex* a) {
+        int i = indexFromVertex(a);
+        return (i + 1) % 3;
+    }
+
+    bool isOppositeLinkTimelike(Vertex* a) {
+        return isTimelike(getOppositeLink(a));
+    }
+
     /**
      * Checks if a link is timelike.
      * @param link Link number
@@ -114,7 +123,7 @@ public:
 
         return link == 2;
     }
-    
+
     /**
      * Returns the number of timelike links that contain vertex v.
      * @param v Vertex

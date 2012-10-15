@@ -27,7 +27,39 @@ public:
 
     bool isMovePossible(VertSet& vertices) {
         // vertex needs to have 4 links: two spacelike and two timelike
-        return u->getTriangles().size() == 4;
+        if (u->getTriangles().size() != 4) {
+            return false;
+        }
+
+        int tlCount = 0;
+
+        foreach(Triangle* t, u->getTriangles()) {
+            tlCount += t->isOppositeLinkTimelike(u);
+        }
+
+	if (tlCount != 2) {
+            return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);
+            
+	}
+
+	// The check for tlCount == 2 is more complicated
+	Triangle *first, *second, *third, *t, *r;
+        Vertex* v = *u->getNeighbouringVertices().begin();
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+        Vertex* w = first->getThirdVertex(u, v);
+        Vertex::getAdjacentTriangles(u, w, &t, &r);
+        third = t == first ? r : t;
+
+	if (first->isOppositeLinkTimelike(u) == second->isOppositeLinkTimelike(u)) {
+            return true; //symmetric configuration
+	}
+
+	// FIXME: not working yet
+	if (first->checkAdjacentSides(u, v)) return !first->isTimelike(u, v) == isTimelike;
+	if (second->checkAdjacentSides(u, v)) return !second->isTimelike(u, v) == isTimelike;
+	if (third->checkAdjacentSides(u, w)) return !third->isTimelike(u, w) == isTimelike;
+
+	BOOST_ASSERT(false);
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -91,7 +123,7 @@ public:
         delete fourth;
         delete u;
 
-        if (lUV == isTimelike) {
+        if (lUV != isTimelike) {
             new Triangle(v, w, y, lVW, !lUV, lVY);
             new Triangle(w, x, y, lWX, lXY, !lUV);
         } else {

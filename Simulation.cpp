@@ -116,7 +116,7 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 VertSet Simulation::Metropolis(double lambda, double alpha) {
     MoveFactory m;
 
-    for (int i = 0; i < 100; i++) // for testing
+    for (int i = 0; i < 1000; i++) // for testing
     {
         Move* move = m.createRandomMove(*this);
 
