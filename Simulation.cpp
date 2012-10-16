@@ -76,6 +76,18 @@ Vertex* Simulation::getRandomVertex(const VertSet& vertices) {
     return *it;
 }
 
+template <typename T>
+T Simulation::getRandomElementFromSet(const boost::unordered_set<T>& set) {
+    typename boost::unordered_set<T>::iterator it = set.begin();
+
+    if (set.size() == 0) {
+        return NULL;
+    }
+
+    std::advance(it, unireal(rng) * set.size());
+    return *it;
+}
+
 void Simulation::collectTriangles(TriSet& triSet, Vertex* v, int depth) {
     if (depth <= 0) {
         triSet += v->getTriangles();
@@ -116,7 +128,7 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 VertSet Simulation::Metropolis(double lambda, double alpha) {
     MoveFactory m;
 
-    for (int i = 0; i < 1000; i++) // for testing
+    for (int i = 0; i < 100; i++) // for testing
     {
         Move* move = m.createRandomMove(*this);
 

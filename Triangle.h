@@ -112,6 +112,17 @@ public:
     }
 
     /**
+     * Gets all the triangles that belong to one of the four sectors. The two links
+     * of the triangle should be both spacelike or timelike in v.
+     * @param v The vertex that is rotated about
+     * @param u One of the neighbouring vertices of v
+     * @param left Count sector on the left or right of u?
+     * @param tl True if the collected sector should be timelike
+     * @return 
+     */
+    static TriSet getSectorTriangles(Vertex* v, Vertex* u, bool left, bool tl);
+
+    /**
      * Checks if a link is timelike.
      * @param link Link number
      * @return True if timelike, false if spacelike
@@ -232,6 +243,11 @@ public:
 
     Vertex* getVertex(int index) {
         return vertices[index];
+    }
+    
+    Vertex* getNextVertex(Vertex* v) {
+        int i = indexFromVertex(v);
+        return vertices[(i + 1) % 3];
     }
 
 private:

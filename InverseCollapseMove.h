@@ -19,6 +19,8 @@ private:
     /**
      * Gets all the triangles that contain vertex u and that are on either the left
      * or right side of the barrier v - u -w.
+     * 
+     * TODO: rewrite in terms of sector vertices
      * @param left Check the left side?
      * @return 
      */

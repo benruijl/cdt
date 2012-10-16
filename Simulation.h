@@ -77,6 +77,14 @@ public:
      * @param tri Set of triangulation
      */
     void drawPartialTriangulation(const char* filename, Vertex* v, const TriSet& tri);
+
+    /**
+     * Selects a random element from a set.
+     * @param set
+     * @return 
+     */
+    template <typename T>
+    T getRandomElementFromSet(const boost::unordered_set<T>& set);
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;

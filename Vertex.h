@@ -29,9 +29,9 @@ public:
     TriSet& getTriangles() {
         return triangles;
     }
-    
+
     static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
-    
+
     /**
      * Gets the amount of neighbouring vertices.
      * @return 
@@ -39,7 +39,7 @@ public:
     int getNeighbouringVertexCount() {
         return triangles.size();
     }
-    
+
     /**
      * Gets the neighbouring vertices of this vertex.
      * @return 
@@ -51,6 +51,16 @@ public:
      * @return True if vertex is causal, else false
      */
     bool checkCausality();
+
+    /**
+     * Gets all the vertices that belong to one of the four sectors.
+     * @param v The vertex that is rotated about
+     * @param edge One of the neighbouring vertices of v
+     * @param left Count sector on the left or right of u?
+     * @param tl True if the collected sector should be timelike
+     * @return 
+     */
+    static VertSet getSectorVertices(Vertex* v, Vertex* edge, bool left, bool tl);
 
 private:
     TriSet triangles; // set of all triangles 
