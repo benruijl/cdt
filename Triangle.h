@@ -158,6 +158,17 @@ public:
         return isTimelike((link + 1) % 3) == isTimelike((link + 2) % 3);
     }
 
+    /**
+     * Check that if the links adjacent to vertex v are 
+     * of the same nature (timelike or spacelike).
+     * @param v Vertex
+     * @return True if adjacent links have the same type
+     */
+    bool checkAdjacentSides(Vertex* v) {
+        int i = indexFromVertex(v);
+        return isTimelike(i) == isTimelike((i + 2) % 3);
+    }
+
     Vertex* getThirdVertex(Vertex* a, Vertex* b) {
         int i = indexFromVertex(a);
         if (vertices[(i + 1) % 3] == b) {
@@ -184,6 +195,17 @@ public:
     void replaceVertex(Vertex* old, Vertex* n) {
         int i = indexFromVertex(old);
         vertices[i] = n;
+    }
+
+    bool isNeighbour(Triangle* t) {
+        int count = 0;
+
+        for (int i = 0; i < 3; i++) {
+            count += vertices[i]->getTriangles().find(t) !=
+                    vertices[i]->getTriangles().end();
+        }
+
+        return count == 2;
     }
 
     int indexFromVertex(Vertex* v) {

@@ -37,29 +37,44 @@ public:
             tlCount += t->isOppositeLinkTimelike(u);
         }
 
-	if (tlCount != 2) {
+        if (tlCount != 2) {
             return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);
-            
-	}
 
-	// The check for tlCount == 2 is more complicated
-	Triangle *first, *second, *third, *t, *r;
+        }
+
+        // The check for tlCount == 2 is more complicated
+        // TODO: find a better way
+        Triangle *first, *second, *third, *fourth, *t, *r;
         Vertex* v = *u->getNeighbouringVertices().begin();
         Vertex::getAdjacentTriangles(u, v, &first, &second);
         Vertex* w = first->getThirdVertex(u, v);
         Vertex::getAdjacentTriangles(u, w, &t, &r);
         third = t == first ? r : t;
+        Vertex* x = third->getThirdVertex(u, w);
+        Vertex::getAdjacentTriangles(u, x, &t, &r);
+        fourth = t == third ? r : t;
+        Vertex* y = fourth->getThirdVertex(u, x);
 
-	if (first->isOppositeLinkTimelike(u) == second->isOppositeLinkTimelike(u)) {
+        bool lUV = first->isTimelike(u, v);
+        bool lVW = first->isTimelike(v, w);
+        bool lWX = third->isTimelike(w, x);
+        bool lXU = third->isTimelike(x, u);
+        bool lXY = fourth->isTimelike(x, y);
+        bool lYV = second->isTimelike(y, v);
+        bool lYU = second->isTimelike(y, u);
+        bool lUW = first->isTimelike(u, w);
+
+        if (first->isOppositeLinkTimelike(u) != second->isOppositeLinkTimelike(u) &&
+                first->isOppositeLinkTimelike(u) != third->isOppositeLinkTimelike(u)) {
             return true; //symmetric configuration
-	}
+        }
 
-	// FIXME: not working yet
-	if (first->checkAdjacentSides(u, v)) return !first->isTimelike(u, v) == isTimelike;
-	if (second->checkAdjacentSides(u, v)) return !second->isTimelike(u, v) == isTimelike;
-	if (third->checkAdjacentSides(u, w)) return !third->isTimelike(u, w) == isTimelike;
+        if (lUV == lVW && lVW == lWX && lWX == lXU) return first->isTimelike(u, v) != isTimelike;
+        if (lUW == lWX && lWX == lXY && lXY == lYU) return first->isTimelike(u, w) != isTimelike;
+        if (lXY == lYV && lYV == lUV && lUV == lXU) return first->isTimelike(u, v) != isTimelike;
+        if (lUW == lVW && lVW == lYV && lYV == lYU) return first->isTimelike(u, w) != isTimelike;
 
-	BOOST_ASSERT(false);
+        BOOST_ASSERT(false);
     }
 
     Move* generateRandomMove(Simulation& simulation) {
