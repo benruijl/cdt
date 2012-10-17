@@ -30,6 +30,14 @@ public:
         return triangles;
     }
 
+    /**
+     * Note that the order of which the first and second triangle are returned
+     * should be considered random.
+     * @param a
+     * @param b
+     * @param first
+     * @param second
+     */
     static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
 
     /**
@@ -54,13 +62,23 @@ public:
 
     /**
      * Gets all the vertices that belong to one of the four sectors.
+     * @param start Triangle to start the search from
+     * @param left Count sector on the left or right of start?
+     * @param tl True if the collected sector should be timelike
+     * @return 
+     */
+    VertSet getSectorVertices(Triangle* start, bool left, bool tl);
+
+    /**
+     * Gets all the triangles that belong to one of the four sectors. The two links
+     * of the triangle should be both spacelike or timelike in this vertex.
      * @param v The vertex that is rotated about
-     * @param edge One of the neighbouring vertices of v
+     * @param start Triangle to start the search from
      * @param left Count sector on the left or right of u?
      * @param tl True if the collected sector should be timelike
      * @return 
      */
-    static VertSet getSectorVertices(Vertex* v, Vertex* edge, bool left, bool tl);
+    TriSet getSectorTriangles(Triangle* start, bool left, bool tl);
 
 private:
     TriSet triangles; // set of all triangles 

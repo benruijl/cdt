@@ -112,17 +112,6 @@ public:
     }
 
     /**
-     * Gets all the triangles that belong to one of the four sectors. The two links
-     * of the triangle should be both spacelike or timelike in v.
-     * @param v The vertex that is rotated about
-     * @param u One of the neighbouring vertices of v
-     * @param left Count sector on the left or right of u?
-     * @param tl True if the collected sector should be timelike
-     * @return 
-     */
-    static TriSet getSectorTriangles(Vertex* v, Vertex* u, bool left, bool tl);
-
-    /**
      * Checks if a link is timelike.
      * @param link Link number
      * @return True if timelike, false if spacelike
@@ -229,6 +218,19 @@ public:
         }
 
         BOOST_ASSERT(false);
+    }
+    
+    /**
+     * Gets the neighbour that has u and v as vertices as well.
+     * @param u
+     * @param v
+     * @return 
+     */
+    Triangle* getNeighbour(Vertex* u, Vertex* v) {
+        Triangle* q, *r;
+        Vertex::getAdjacentTriangles(u, v, &q, &r);
+        q = q == this ? r : q;
+        return q;
     }
 
     /**

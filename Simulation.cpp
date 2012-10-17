@@ -128,7 +128,7 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 VertSet Simulation::Metropolis(double lambda, double alpha) {
     MoveFactory m;
 
-    for (int i = 0; i < 100; i++) // for testing
+    for (int i = 0; i < 1000; i++) // for testing
     {
         Move* move = m.createRandomMove(*this);
 
@@ -145,6 +145,8 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
         }
+        
+        BOOST_ASSERT(vertices.size() >= 14);
     }
 
     // write a part of the grid to a file

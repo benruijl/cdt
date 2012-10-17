@@ -25,7 +25,11 @@ public:
     }
 
     double getTransitionProbability(VertSet& vertices) {
-        return 1.0; // TODO
+        Triangle* start = *v->getTriangles().begin();
+        TriSet triRight = v->getSectorTriangles(start, false, false);
+        TriSet triLeft = v->getSectorTriangles(start, true, false);
+
+        return 1.0 / (vertices.size() * triRight.size() * triLeft.size() * 2);
     }
 
     bool isMovePossible(VertSet& vertices) {
@@ -34,21 +38,21 @@ public:
         }
 
         // TODO: this should always be the case for sector triangles, remove?
-        if (t->checkAdjacentSides(v) || t->isTimelike(v) ||
-                s->checkAdjacentSides(v) || s->isTimelike(v)) {
-            return false;
-        }
+        /*  if (t->checkAdjacentSides(v) || t->isTimelike(v, t->getNextVertex(v)) ||
+                  s->checkAdjacentSides(v) || s->isTimelike(v, t->getNextVertex(v))) {
+              return false;
+          }*/
 
         return true;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
         v = simulation.getRandomVertex(simulation.getVertices());
-        Vertex* u = *v->getNeighbouringVertices().begin();
+        Triangle* start = *v->getTriangles().begin();
 
-        TriSet tri = Triangle::getSectorTriangles(v, u, false, false);
+        TriSet tri = v->getSectorTriangles(start, false, false);
         t = simulation.getRandomElementFromSet(tri);
-        tri = Triangle::getSectorTriangles(v, u, true, false);
+        tri = v->getSectorTriangles(start, true, false);
         s = simulation.getRandomElementFromSet(tri);
 
         left = simulation.getRandomNumber() < 0.5;
@@ -56,7 +60,8 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        return 1.0; // TODO
+        return 1.0; // TODO: identify number of neighbours of v
+        // return 1.0 / (vertices.size() + 1) * v->getNeighbouringVertexCount());
     }
 
     void execute(VertSet& vertices) {
@@ -69,24 +74,34 @@ public:
         }
 
         TriSet tri;
-        Triangle* cur = t, *q, *r;
+        Triangle* cur = t;
         Vertex* edge = u;
-        // find the vertex which comes first
+
         while (edge != y && edge != z) {
+            cur = cur->getNeighbour(v, edge);
+            edge = cur->getThirdVertex(v, edge);
             tri.insert(cur);
-            Vertex::getAdjacentTriangles(v, edge, &q, &r);
-            cur = cur == q ? r : q;
-            edge = cur->getThirdVertex(u, edge);
         }
 
-        tri.insert(s);
-
         // the three vertices are now u -- v -- edge
-        // TODO: test extensively
+        Vertex* w = t->getThirdVertex(v, u);
+        z = s->getThirdVertex(v, edge);
+
+        // remove triangles, they are SST
+        if (t == s) {
+            std::cout << "Fail" << std::endl;
+            BOOST_ASSERT(!"fail");
+        }
+
+        t->removeVertices();
+        s->removeVertices();
+        delete t;
+        delete s;
+
         Vertex* x = new Vertex();
         vertices.insert(x);
 
-        x->getTriangles().insert(v->getTriangles());
+        x->getTriangles() += v->getTriangles();
         x->getTriangles() -= tri;
         v->getTriangles() -= x->getTriangles();
 
@@ -96,6 +111,13 @@ public:
 
         new Triangle(Triangle::TTS, u, x, v);
         new Triangle(Triangle::TTS, v, x, edge);
+        new Triangle(Triangle::TTS, w, u, x);
+        new Triangle(Triangle::TTS, x, edge, z);
+
+        Simulation s;
+        TriSet tri2;
+        s.collectTriangles(tri2, v, 2);
+        s.drawPartialTriangulation("graph.dot", v, tri2);
 
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(x->checkCausality());

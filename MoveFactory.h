@@ -68,7 +68,21 @@ public:
 
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
+
         bool inverse = simulation.getRandomNumber() < 0.5;
+
+        if (simulation.getRandomNumber() < 0.5) {
+            inverse = false;
+            move = ALEXANDER_TIMELIKE;
+
+            if (simulation.getRandomNumber() < 0.5) {
+                inverse = true;
+                move = COLLAPSE_TIMELIKE;
+            }
+        } else {
+            move = PINCH;
+            inverse = true;
+        }
 
         if (inverse) {
             return createInverseMove(move, simulation);
