@@ -145,13 +145,13 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
         }
-        
-        BOOST_ASSERT(vertices.size() >= 14);
+
+        BOOST_ASSERT(vertices.size() >= 14); // topological requirement
     }
 
     // write a part of the grid to a file
     TriSet tri;
-    collectTriangles(tri, *vertices.begin(), 2);
+    collectTriangles(tri, *vertices.begin(), 1);
     drawPartialTriangulation("graph.dot", *vertices.begin(), tri);
 
     return vertices;

@@ -114,11 +114,6 @@ public:
         new Triangle(Triangle::TTS, w, u, x);
         new Triangle(Triangle::TTS, x, edge, z);
 
-        Simulation s;
-        TriSet tri2;
-        s.collectTriangles(tri2, v, 2);
-        s.drawPartialTriangulation("graph.dot", v, tri2);
-
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(x->checkCausality());
 

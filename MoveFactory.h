@@ -71,7 +71,8 @@ public:
 
         bool inverse = simulation.getRandomNumber() < 0.5;
 
-        if (simulation.getRandomNumber() < 0.5) {
+        // enable for testing the pinch move
+      /*  if (simulation.getRandomNumber() < 0.5) {
             inverse = false;
             move = ALEXANDER_TIMELIKE;
 
@@ -82,7 +83,7 @@ public:
         } else {
             move = PINCH;
             inverse = true;
-        }
+        }*/
 
         if (inverse) {
             return createInverseMove(move, simulation);
