@@ -59,6 +59,16 @@ public:
      * @return True if vertex is causal, else false
      */
     bool checkCausality();
+    
+    /**
+     * Gets sector vertices starting from edge u of triangle start rotated
+     * around this triangle.
+     * @param start Triangle to start the search from
+     * @param u Edge vertex to start from
+     * @param tl True if the collected sector should be timelike
+     * @return 
+     */
+    VertSet getSectorVertices(Triangle* start, Vertex* u, bool tl);
 
     /**
      * Gets all the vertices that belong to one of the four sectors.

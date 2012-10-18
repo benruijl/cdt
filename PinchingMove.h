@@ -61,7 +61,21 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        return 1.0; // TODO
+        Triangle* l, *r;
+        Vertex::getAdjacentTriangles(u, v, &l, &r);
+
+        // count the number of triangles that belong in the spacelike
+        // sector after this move is done
+        int countLeft = u->getSectorVertices(l, true, false).size() - 1;
+        int countRight = u->getSectorVertices(r, false, false).size() - 1;
+
+        Vertex* w = l->getThirdVertex(u, v);
+        Vertex* x = r->getThirdVertex(u, v);
+
+        countLeft += v->getSectorVertices(l, w, false).size() - 1;
+        countRight += v->getSectorVertices(r, x, false).size() - 1;
+
+        return 1.0 / ((countLeft + 1) * (countRight + 1) * 2);
     }
 
     void execute(VertSet& vertices) {

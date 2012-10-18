@@ -52,6 +52,27 @@ void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triang
     }
 }
 
+VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
+    Triangle* cur = start;
+    Vertex* edge = u;
+
+    // always move to first sector transition
+    while (cur->getLightConeCount(this) == 0 || cur->isTimelike(this, edge) != tl) {
+        cur = cur->getNeighbour(this, edge);
+        edge = cur->getThirdVertex(this, edge);
+    }
+
+    VertSet vertices;
+    while (cur->isTimelike(this, edge) == tl) {
+
+        vertices.insert(edge);
+        cur = cur->getNeighbour(this, edge);
+        edge = cur->getThirdVertex(this, edge);
+    }
+
+    return vertices;
+}
+
 VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
     Triangle* cur = start;
     Vertex* edge = start->getNextVertex(this);
@@ -61,7 +82,7 @@ VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
         cur = cur->getNeighbour(this, edge);
         edge = cur->getThirdVertex(this, edge);
     }
-    
+
     if (!left) { // go the other way
         edge = cur->getThirdVertex(this, edge);
     }
