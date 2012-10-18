@@ -33,17 +33,7 @@ public:
     }
 
     bool isMovePossible(VertSet& vertices) {
-        if (t == NULL || s == NULL) {
-            return false;
-        }
-
-        // TODO: this should always be the case for sector triangles, remove?
-        /*  if (t->checkAdjacentSides(v) || t->isTimelike(v, t->getNextVertex(v)) ||
-                  s->checkAdjacentSides(v) || s->isTimelike(v, t->getNextVertex(v))) {
-              return false;
-          }*/
-
-        return true;
+        return t != NULL && s != NULL;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -60,8 +50,27 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        return 1.0; // TODO: identify number of neighbours of v
-        // return 1.0 / (vertices.size() + 1) * v->getNeighbouringVertexCount());
+        /* TODO: repetition of code, same thing done in execute as well*/
+        Vertex* u = t->getNextVertex(v);
+        Vertex* y = s->getNextVertex(v);
+        Vertex* z = s->getNextVertex(y);
+
+        if (left) {
+            u = t->getNextVertex(u);
+        }
+
+        int count = 1; // last vertex is not counted, so add it here
+        Triangle* cur = t;
+        Vertex* edge = u;
+
+        while (edge != y && edge != z) {
+            cur = cur->getNeighbour(v, edge);
+            edge = cur->getThirdVertex(v, edge);
+            count++;
+        }
+
+        // count + 1 because there is a new vertex
+        return 1.0 / ((vertices.size() + 1) * (count + 2));
     }
 
     void execute(VertSet& vertices) {
