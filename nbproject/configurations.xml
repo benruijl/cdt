@@ -15,6 +15,10 @@
         <itemPath>MoveFactory.h</itemPath>
         <itemPath>PinchingMove.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>Observable.h</itemPath>
+        <itemPath>SizeObservable.h</itemPath>
+      </logicalFolder>
       <itemPath>Simulation.h</itemPath>
       <itemPath>Triangle.h</itemPath>
       <itemPath>Utils.h</itemPath>

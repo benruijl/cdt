@@ -125,11 +125,11 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
     dotFile.close();
 }
 
-VertSet Simulation::Metropolis(double lambda, double alpha) {
+VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
     MoveFactory m;
 
-    for (int i = 0; i < 1000; i++) // for testing
-    {
+    // TODO: a convergence check should be added
+    for (int i = 0; i < numIter; i++) {
         Move* move = m.createRandomMove(*this);
 
         // TODO: only generate valid moves
@@ -144,6 +144,11 @@ VertSet Simulation::Metropolis(double lambda, double alpha) {
 
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
+        }
+
+        /* Measure observables from in the current state */
+        foreach(Observable* o, observables) {
+            o->measure(vertices);
         }
 
         BOOST_ASSERT(vertices.size() >= 14); // topological requirement

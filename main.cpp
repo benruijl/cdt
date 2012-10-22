@@ -9,16 +9,25 @@
 #include <iostream>
 
 #include "Simulation.h"
+#include "SizeObservable.h"
 
 using namespace std;
 
-int main(int argc, char** argv) {
+void systemSizeTest() {
     Simulation simulation;
-    
-    simulation.generateInitialTriangulation(10, 10);
-    simulation.Metropolis(1, 1);
-    std::cout << "Simulation ended." << std::endl;
+    SizeObservable* sizeObservable = new SizeObservable();
+    simulation.addObservable(sizeObservable);
 
+    simulation.generateInitialTriangulation(20, 20);
+    simulation.Metropolis(20, 1, 100000);
+    
+    sizeObservable->printResult("size.dat");
+}
+
+int main(int argc, char** argv) {
+    systemSizeTest();
+
+    std::cout << "Simulation ended." << std::endl;
     return 0;
 }
 

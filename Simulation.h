@@ -11,13 +11,21 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
 
+#include <vector>
 #include "Triangle.h"
+#include "Observable.h"
 
 class Simulation {
+private:
+    std::vector<Observable*> observables;
 public:
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
+    
+    void addObservable(Observable* obs) {
+        observables.push_back(obs);
+    }
 
     /**
      * Generates a triangulation that satisfies causality and CDT foliation constraints. 
@@ -33,14 +41,17 @@ public:
 
     /**
      * Perform Metropolis algorithm to improve a given triangulation. The triangulation
-     * shoul be created with the generateInitialTriangulation method.
+     * should be created with the generateInitialTriangulation method.
      * 
-     * @param lambda Action parameter
-     * @param alpha Ratio between length of spacelike and timelike links. should be positive
+     * @param lambda Action parameter. Controls system size.
+     * @param alpha Ratio between length of spacelike and timelike links. 
+     * The following should hold: 1/4 &lt; &alpha; &lt; 4 in order for the Wick rotation
+     * to be possible.
+     * @param numIter Number of iterations
      * 
-     * @return Improved triangulation
+     * @return New set of vertices that span the triangulation
      */
-    VertSet Metropolis(double lambda, double alpha);
+    VertSet Metropolis(double lambda, double alpha, int numIter);
 
     /**
      * Convenience function that 
