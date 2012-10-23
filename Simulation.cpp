@@ -24,6 +24,21 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
 }
 
+void Simulation::clearTriangulation() {
+    TriSet deleted;
+
+    foreach(Vertex* v, vertices) {
+
+        foreach(Triangle* t, v->getTriangles()) {
+            if (deleted.find(t) == deleted.end()) {
+                delete t;
+                deleted.insert(t);
+            }
+        }
+        delete v;
+    }
+}
+
 void Simulation::generateInitialTriangulation(int N, int T) {
     Vertex * vertices[N * T];
     Triangle * triangles[N * T * 2]; // TODO: remove, unnecessary
@@ -144,11 +159,11 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
 
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
-        }
 
-        /* Measure observables from in the current state */
-        foreach(Observable* o, observables) {
-            o->measure(vertices);
+            /* Measure observables from in the current state */
+            foreach(Observable* o, observables) {
+                o->measure(vertices);
+            }
         }
 
         BOOST_ASSERT(vertices.size() >= 14); // topological requirement

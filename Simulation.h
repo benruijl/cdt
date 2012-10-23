@@ -96,6 +96,11 @@ public:
      */
     template <typename T>
     T getRandomElementFromSet(const boost::unordered_set<T>& set);
+    
+    /**
+     * Free the complete triangulation.
+     */
+    void clearTriangulation();
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;

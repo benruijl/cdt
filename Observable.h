@@ -33,6 +33,14 @@ public:
      * Prints the result of the computation to a file.
      */
     virtual void printResult(const char* filename) = 0;
+    
+    /**
+     * Gets the variance of the <b>last</b> n measurements.
+     * @param n Should be less than total observations
+     */
+    virtual double getVariance(int n) = 0;
+    
+    virtual void getLinearFit(int n, double& a, double& b) = 0;
 };
 
 #endif	/* OBSERVABLE_H */

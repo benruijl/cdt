@@ -31,6 +31,46 @@ public:
         size.push_back(state.size());
     }
 
+    double getVariance(int n) {
+        if (n > size.size()) {
+            n = size.size();
+        }
+        n = size.size() - n;
+
+        double mean = 0;
+        for (int i = n; i < size.size(); i++) {
+            mean += size[i];
+        }
+        mean /= size.size();
+
+        double var = 0;
+        for (int i = n; i < size.size(); i++) {
+            var += (size[i] - mean) * (size[i] - mean);
+        }
+
+        var /= (size.size() - n - 1);
+    }
+
+    void getLinearFit(int n, double& a, double& b) {
+        double xy = 0, mx = 0, my = 0, sqmx = 0;
+
+        n = size.size() - n;
+        if (n < 0) {
+            n = 0;
+        }
+
+        for (int i = n; i < size.size(); i++) {
+            xy += i * size[i];
+            mx += i;
+            my += size[i];
+            sqmx += i * i;
+        }
+
+        b = (xy - mx * my / (size.size() - n)) / 
+                (sqmx - mx * mx / (size.size() - n));
+        a = (my - b * mx) / (size.size() - n);
+    }
+
     /**
      * Prints the result of the computation to the screen.
      */
