@@ -251,6 +251,10 @@ public:
         int i = indexFromVertex(v);
         return vertices[(i + 1) % 3];
     }
+    
+    TYPE getType() {
+        return type;
+    }
 
 private:
     TYPE type;

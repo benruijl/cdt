@@ -57,10 +57,10 @@ int main(int argc, char** argv) {
     // at 14 the size is kind of stable at around 150 vertices after 680 moves
     // TODO: should it check triangles or vertices?
     simulation.Metropolis(14, 1, 30000000);
-    simulation.clearTriangulation();
 
     sizeObservable->printResult("size.dat"); // for debugging
-
+    simulation.writeToFile("grid.dat");
+    simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;
     return 0;

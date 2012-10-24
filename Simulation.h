@@ -22,7 +22,7 @@ public:
     Simulation();
     Simulation(const Simulation& orig);
     virtual ~Simulation();
-    
+
     void addObservable(Observable* obs) {
         observables.push_back(obs);
     }
@@ -96,11 +96,21 @@ public:
      */
     template <typename T>
     T getRandomElementFromSet(const boost::unordered_set<T>& set);
-    
+
     /**
      * Free the complete triangulation.
      */
     void clearTriangulation();
+
+    /**
+     * Reads a triangulation from a file.
+     */
+    void readFromFile(const char* filename);
+
+    /**
+     * Writes the triangulation to a human readable file.
+     */
+    void writeToFile(const char* filename);
 private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;

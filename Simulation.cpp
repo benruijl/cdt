@@ -9,6 +9,7 @@
 #include "Utils.h"
 #include "MoveFactory.h"
 #include <boost/assign/std.hpp>
+#include <boost/unordered_map.hpp>
 #include <fstream>
 
 using namespace boost::assign;
@@ -37,6 +38,83 @@ void Simulation::clearTriangulation() {
         }
         delete v;
     }
+
+    vertices.clear();
+}
+
+void Simulation::readFromFile(const char* filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Unable to open file '" << filename << "'" << std::endl;
+        return;
+    }
+
+    char type;
+    int vCount, vertA, vertB, vertC;
+
+    file >> vCount;
+    Vertex * vertex_array[vCount];
+
+    clearTriangulation(); // clear old grid
+
+    for (int i = 0; i < vCount; i++) {
+        vertex_array[i] = new Vertex();
+        vertices.insert(vertex_array[i]);
+    }
+
+    while (!file.eof()) {
+        file >> type >> vertA >> vertB >> vertC;
+
+        new Triangle(type == 'T' ? Triangle::TTS : Triangle::SST, vertex_array[vertA],
+                vertex_array[vertB], vertex_array[vertC]);
+    }
+
+    file.close();
+}
+
+void Simulation::writeToFile(const char* filename) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Unable to open file '" << filename << "'" << std::endl;
+        return;
+    }
+
+    int vCount = 0;
+    typedef boost::unordered_map<Vertex*, int> vertex_map;
+    vertex_map vertexMap;
+
+    foreach(Vertex* v, vertices) {
+        vertexMap.insert(vertex_map::value_type(v, vCount));
+        vCount++;
+    }
+
+    file << vCount << std::endl;
+
+    TriSet visitedTri;
+
+    foreach(Vertex* v, vertices) {
+
+        foreach(Triangle* t, v->getTriangles()) {
+            if (visitedTri.find(t) != visitedTri.end()) {
+                continue;
+            }
+            visitedTri.insert(t);
+
+            if (t->getType() == Triangle::TTS) {
+                file << "T";
+            } else {
+                file << "S";
+            }
+
+            for (int i = 0; i < 3; i++) {
+                file << " " << vertexMap[t->getVertex(i)];
+            }
+
+            file << std::endl;
+        }
+    }
+
+    file.close();
 }
 
 void Simulation::generateInitialTriangulation(int N, int T) {
@@ -120,6 +198,7 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
     std::ofstream dotFile(filename);
     if (!dotFile.is_open()) {
         std::cout << "Unable to open file '" << filename << "'" << std::endl;
+        return;
     }
 
     dotFile << "strict graph G {" << std::endl << "node[shape=point];" << std::endl;
