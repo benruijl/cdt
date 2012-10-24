@@ -62,9 +62,8 @@ void Simulation::readFromFile(const char* filename) {
         vertices.insert(vertex_array[i]);
     }
 
-    while (!file.eof()) {
-        file >> type >> vertA >> vertB >> vertC;
-
+    // TODO: check if the triangulation is valid?
+    while (file >> type >> vertA >> vertB >> vertC) {
         new Triangle(type == 'T' ? Triangle::TTS : Triangle::SST, vertex_array[vertA],
                 vertex_array[vertB], vertex_array[vertC]);
     }

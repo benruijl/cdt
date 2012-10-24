@@ -53,13 +53,16 @@ int main(int argc, char** argv) {
     SizeObservable* sizeObservable = new SizeObservable();
     simulation.addObservable(sizeObservable);
 
-    simulation.generateInitialTriangulation(20, 20);
+    // read in a thermalized triangulation
+    simulation.readFromFile("grid.dat");
+
+    //simulation.generateInitialTriangulation(20, 20);
     // at 14 the size is kind of stable at around 150 vertices after 680 moves
     // TODO: should it check triangles or vertices?
-    simulation.Metropolis(14, 1, 30000000);
+    simulation.Metropolis(14, 1, 3000000);
 
     sizeObservable->printResult("size.dat"); // for debugging
-    simulation.writeToFile("grid.dat");
+    //simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;

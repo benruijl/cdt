@@ -27,7 +27,7 @@ public:
 
     }
 
-    void measure(VertSet state) {
+    void measure(const VertSet& state) {
         size.push_back(state.size());
     }
 

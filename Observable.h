@@ -22,7 +22,7 @@ public:
      * Perform a measurement on a certain state.
      * @param state System state
      */
-    virtual void measure(VertSet state) = 0;
+    virtual void measure(const VertSet& state) = 0;
 
     /**
      * Prints the result of the computation to the screen.
