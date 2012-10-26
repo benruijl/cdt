@@ -80,6 +80,10 @@ public:
         BOOST_ASSERT(c->checkCausality());
         BOOST_ASSERT(d->checkCausality());
     }
+
+    std::string printID() {
+        return std::string("FLIP_") + (isTimelike ? "TL" : "SL") + (change ? "_CH" : "");
+    }
 };
 
 #endif	/* FLIPMOVE_H */

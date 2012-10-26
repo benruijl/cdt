@@ -70,6 +70,9 @@ public:
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
         bool inverse = simulation.getRandomNumber() < 0.5;
 
+        //move = COLLAPSE_SPACELIKE; //  test this move, find asymmetry
+        //inverse = false;
+        //inverse = true;
         // enable for testing the pinch move
       /*  if (simulation.getRandomNumber() < 0.5) {
             inverse = false;

@@ -78,6 +78,10 @@ public:
         BOOST_ASSERT(d->checkCausality());
         BOOST_ASSERT(e->checkCausality());
     }
+    
+    std::string printID() {
+        return std::string("ALEX_") + (isTimelike ? "TL" : "SL"); 
+    }
 };
 
 #endif	/* ALEXANDERMOVE_H */

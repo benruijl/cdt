@@ -120,6 +120,10 @@ public:
         BOOST_ASSERT(x->checkCausality());
         BOOST_ASSERT(y->checkCausality());
     }
+
+    std::string printID() {
+        return std::string("PINCH");
+    }
 };
 
 #endif	/* PINCHINGMOVE_H */

@@ -19,7 +19,7 @@ void getFitOfSystemSize(double lambda, int iter, double& a, double &b) {
     simulation.addObservable(sizeObservable);
 
     simulation.generateInitialTriangulation(20, 20);
-    simulation.Metropolis(lambda, 1, iter);
+    simulation.Metropolis(lambda, -1, iter);
     simulation.clearTriangulation();
 
     sizeObservable->printResult("size.dat"); // for debugging
@@ -54,15 +54,16 @@ int main(int argc, char** argv) {
     simulation.addObservable(sizeObservable);
 
     // read in a thermalized triangulation
-    simulation.readFromFile("grid.dat");
+    //simulation.readFromFile("grid.dat");
 
-    //simulation.generateInitialTriangulation(20, 20);
+    simulation.generateInitialTriangulation(20, 20);
     // at 14 the size is kind of stable at around 150 vertices after 680 moves
     // TODO: should it check triangles or vertices?
-    simulation.Metropolis(14, 1, 3000000);
+    // at a = -0.5 there should be about the same TTS as SST triangles
+    simulation.Metropolis(3, -1, 300000);
 
     sizeObservable->printResult("size.dat"); // for debugging
-    //simulation.writeToFile("grid.dat");
+    simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;

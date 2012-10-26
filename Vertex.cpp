@@ -36,6 +36,11 @@ void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triang
 
     // NOTE: if this assertion fails it is mostly due to the fact that the grid
     // has less than 14 triangles.
+    if (t.size() != 2) {
+        std::cout << "Violated at " << a << " " << b << std::endl;
+    }
+   
+    
     BOOST_ASSERT(t.size() == 2); // each link should have 2 triangles
 
     *first = NULL;
@@ -89,7 +94,6 @@ VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
 
     VertSet vertices;
     while (cur->isTimelike(this, edge) == tl) {
-
         vertices.insert(edge);
         cur = cur->getNeighbour(this, edge);
         edge = cur->getThirdVertex(this, edge);

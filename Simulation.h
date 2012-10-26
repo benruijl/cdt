@@ -45,7 +45,7 @@ public:
      * 
      * @param lambda Action parameter. Controls system size.
      * @param alpha Ratio between length of spacelike and timelike links. 
-     * The following should hold: 1/4 &lt; &alpha; &lt; 4 in order for the Wick rotation
+     * The following should hold: -4 &lt; &alpha; &lt; -1/4 in order for the Wick rotation
      * to be possible.
      * @param numIter Number of iterations
      * 

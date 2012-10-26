@@ -91,10 +91,12 @@ public:
         Vertex::getAdjacentTriangles(u, w, &first, &second);
         bool lUW = first->isTimelike(u, w);
 
-        VertSet sameSector = getSectorVertices();
+        VertSet sector = u->getSectorVertices(first, true, !isTimelike);
 
-        return lUV == lUW && lUV != isTimelike && sameSector.find(w) ==
-                sameSector.end();
+       // std::cout << (lUV == lUW) << " " << (lUV != isTimelike) << " " <<
+         //       (sector.find(v) == sector.end()) << " " << (sector.find(w) == sector.end()) << std::endl;
+        return (lUV == lUW) && (lUV != isTimelike) &&
+                ((sector.find(v) == sector.end()) != (sector.find(w) == sector.end()));
     }
 
     Move * generateRandomMove(Simulation & simulation) {
@@ -111,6 +113,7 @@ public:
 
         while (w == v || w == first->getThirdVertex(u, v) ||
                 w == second->getThirdVertex(u, v)) {
+
             w = simulation.getRandomVertex(u->getNeighbouringVertices());
         }
 
@@ -128,6 +131,7 @@ public:
     }
 
     void execute(VertSet& vertices) {
+
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
         bool lUV = first->isTimelike(u, v);
@@ -141,6 +145,7 @@ public:
         x->getTriangles() += tri;
 
         foreach(Triangle* t, tri) {
+
             t->replaceVertex(u, x);
         }
 
@@ -154,6 +159,10 @@ public:
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(w->checkCausality());
         BOOST_ASSERT(x->checkCausality());
+    }
+
+    std::string printID() {
+        return std::string("INV_COLL_") + (isTimelike ? "TL" : "SL");
     }
 };
 

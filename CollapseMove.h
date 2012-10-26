@@ -9,6 +9,7 @@
 #define	COLLAPSEMOVE_H
 
 #include "Move.h"
+#include "Utils.h"
 
 class CollapseMove : public Move {
 private:
@@ -31,8 +32,6 @@ private:
         Vertex* c = first->getThirdVertex(u, v);
         Vertex* d = second->getThirdVertex(u, v);
 
-        bool isTimeLike = first->isTimelike(u, v);
-
         /* Count all relevant links */
         Triangle* cur = first;
         Vertex* edgeVertex = c;
@@ -42,7 +41,7 @@ private:
             cur = first == cur ? second : first;
             edgeVertex = cur->getThirdVertex(edgeVertex, u);
 
-            if (cur->isTimelike(u, edgeVertex) != isTimeLike) {
+            if (cur->isTimelike(u, edgeVertex) != isTimelike) {
                 count++;
             }
         }
@@ -57,13 +56,14 @@ private:
             cur = first == cur ? second : first;
             edgeVertex = cur->getThirdVertex(edgeVertex, v);
 
-            if (cur->isTimelike(v, edgeVertex) != isTimeLike) {
+            if (cur->isTimelike(v, edgeVertex) != isTimelike) {
                 count++;
             }
         }
 
         return (count) * (count - 1) / 2;
     }
+
 public:
 
     CollapseMove(bool timelike) : Move(!timelike * -2, timelike * -2) {
@@ -79,14 +79,35 @@ public:
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
-        // the same for spacelike and timelike
-        return !first->isTimelike(u, v) && first->checkAdjacentSides(u, v)
-                && second->checkAdjacentSides(u, v);
+        if (first->isTimelike(u, v) != isTimelike || !first->checkAdjacentSides(u, v)
+                || !second->checkAdjacentSides(u, v)) {
+            return false;
+        }
+
+        // topology constraint: because of periodic boundary conditions it could
+        // be that the collapse move fails and results in overlapping links
+        // TODO find cleaner way
+        Vertex x; // new test vector
+        x.getTriangles() += u->getTriangles();
+        x.getTriangles().erase(first);
+        x.getTriangles().erase(second);
+
+        Vertex y; // new test vector
+        y.getTriangles() += v->getTriangles();
+        y.getTriangles().erase(first);
+        y.getTriangles().erase(second);
+
+        VertSet verts = y.getNeighbouringVertices();
+        verts = verts & x.getNeighbouringVertices();
+
+        // the third vertex of first and second are always there
+        return verts.size() == 2;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
         v = simulation.getRandomVertex(u->getNeighbouringVertices());
+
         return this;
     }
 
@@ -123,6 +144,10 @@ public:
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(c->checkCausality());
         BOOST_ASSERT(d->checkCausality());
+    }
+
+    std::string printID() {
+        return std::string("COLL_") + (isTimelike ? "TL" : "SL");
     }
 };
 

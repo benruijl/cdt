@@ -162,6 +162,7 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 }
 
 Vertex* Simulation::getRandomVertex(const VertSet& vertices) {
+    BOOST_ASSERT(vertices.size() > 0);
     VertSet::iterator it = vertices.begin();
 
     std::advance(it, unireal(rng) * vertices.size());
@@ -221,12 +222,18 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
     MoveFactory m;
 
+    // store which moves have been done
+    std::ofstream moves("moves.dat");
+
+    int moveRejectedBecauseImpossible = 0;
     // TODO: a convergence check should be added
     for (int i = 0; i < numIter; i++) {
         Move* move = m.createRandomMove(*this);
 
-        // TODO: only generate valid moves
+        // some random moves can be impossible and to simplify the 
+        // probability checks, we can 
         if (!move->isMovePossible(vertices)) {
+            moveRejectedBecauseImpossible++;
             continue;
         }
 
@@ -235,6 +242,11 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
                 move->getInverseTransitionProbability(vertices) /
                 move->getTransitionProbability(vertices);
 
+        /*std::cout << move->getMoveProbability(lambda, alpha) << " " <<
+                move->getInverseTransitionProbability(vertices) << " " <<
+                move->getTransitionProbability(vertices) << " " <<
+                acceptance;
+         */
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
 
@@ -242,10 +254,17 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
             foreach(Observable* o, observables) {
                 o->measure(vertices);
             }
+
+            moves << move->printID() << std::endl;
         }
 
-        BOOST_ASSERT(vertices.size() >= 14); // topological requirement
+        // Topological constraint
+        BOOST_ASSERT(vertices.size() >= 14 * 2 + 1);
     }
+
+    moves.close();
+
+    std::cout << "Rejected imp: " << moveRejectedBecauseImpossible << std::endl;
 
     // write a part of the grid to a file
     TriSet tri;

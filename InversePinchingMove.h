@@ -127,6 +127,10 @@ public:
         BOOST_ASSERT(x->checkCausality());
 
     }
+
+    std::string printID() {
+        return std::string("INV_PINCH_");
+    }
 };
 
 #endif	/* INVERSEPINCHINGMOVE_H */

@@ -152,6 +152,10 @@ public:
         BOOST_ASSERT(x->checkCausality());
         BOOST_ASSERT(y->checkCausality());
     }
+
+    std::string printID() {
+        return std::string("INV_ALEX_") + (isTimelike ? "TL" : "SL");
+    }
 };
 
 #endif	/* INVERSEALEXANERMOVE_H */

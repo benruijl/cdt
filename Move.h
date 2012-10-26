@@ -67,6 +67,11 @@ public:
      * @param vertices Set of vertices
      */
     virtual void execute(VertSet& vertices) = 0;
+    
+    /**
+     * Prints the move id. Useful for debugging.
+     */
+    virtual std::string printID() = 0;
 private:
     int Ntts, Ntss; // Number of TTS and TSS triangles this move changes
 };
