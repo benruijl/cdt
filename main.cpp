@@ -54,16 +54,16 @@ int main(int argc, char** argv) {
     simulation.addObservable(sizeObservable);
 
     // read in a thermalized triangulation
-    //simulation.readFromFile("grid.dat");
+   // simulation.readFromFile("grid.dat");
 
     simulation.generateInitialTriangulation(20, 20);
     // at 14 the size is kind of stable at around 150 vertices after 680 moves
     // TODO: should it check triangles or vertices?
     // at a = -0.5 there should be about the same TTS as SST triangles
-    simulation.Metropolis(3, -1, 300000);
+    simulation.Metropolis(3, -1, 3000000);//1.81236
 
     sizeObservable->printResult("size.dat"); // for debugging
-    simulation.writeToFile("grid.dat");
+  //  simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;

@@ -15,6 +15,33 @@ class InverseAlexanderMove : public Move {
 private:
     Vertex* u;
     bool isTimelike;
+
+    /**
+     * Check if the moves does not cause two links to overlap.
+     * @return True if move is valid
+     */
+    bool doTopologyCheck() {
+        // TODO: improve code
+        Triangle *first, *second, *third, *fourth, *t, *r;
+        Vertex* v = *u->getNeighbouringVertices().begin();
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+        Vertex* w = first->getThirdVertex(u, v);
+        Vertex::getAdjacentTriangles(u, w, &t, &r);
+        third = t == first ? r : t;
+        Vertex* x = third->getThirdVertex(u, w);
+        Vertex::getAdjacentTriangles(u, x, &t, &r);
+        fourth = t == third ? r : t;
+        Vertex* y = fourth->getThirdVertex(u, x);
+
+        if (first->isTimelike(u, v) != isTimelike) {
+            v = w;
+            x = y;
+        }
+
+        VertSet verts = v->getNeighbouringVertices();
+
+        return verts.find(x) == verts.end();
+    }
 public:
 
     InverseAlexanderMove(bool timelike) : Move(!timelike * -2, timelike * -2) {
@@ -28,6 +55,10 @@ public:
     bool isMovePossible(VertSet& vertices) {
         // vertex needs to have 4 links: two spacelike and two timelike
         if (u->getTriangles().size() != 4) {
+            return false;
+        }
+
+        if (!doTopologyCheck()) {
             return false;
         }
 

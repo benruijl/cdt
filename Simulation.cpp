@@ -257,9 +257,13 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
 
             moves << move->printID() << std::endl;
         }
+        
+        if (vertices.size() < 14 * 2) {
+            observables[0]->printResult("size.dat");
+        }
 
         // Topological constraint
-        BOOST_ASSERT(vertices.size() >= 14 * 2 + 1);
+        BOOST_ASSERT(vertices.size() >= 14 * 2);
     }
 
     moves.close();
