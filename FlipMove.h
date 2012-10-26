@@ -38,6 +38,12 @@ public:
         Vertex* c = first->getThirdVertex(u, v);
         Vertex* d = second->getThirdVertex(u, v);
 
+        // prevent link overlap, could happen in a very rare cases
+        VertSet verts = c->getNeighbouringVertices();
+        if (verts.find(d) != verts.end()) {
+            return false;
+        }
+
         return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
                 && first->isTimelike(v, c) != second->isTimelike(v, d);
     }
