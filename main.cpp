@@ -54,14 +54,14 @@ int main(int argc, char** argv) {
     simulation.addObservable(sizeObservable);
 
     // read in a thermalized triangulation
-   // simulation.readFromFile("grid.dat");
+    //simulation.readFromFile("grid.dat");
 
-    simulation.generateInitialTriangulation(20, 20);
+    simulation.generateInitialTriangulation(30, 30);
     // at a = -0.5 there should be about the same TTS as SST triangles
-    simulation.Metropolis(3.05, -1, 30000000);
+    simulation.Metropolis(3, -1, 2000000000);
 
     sizeObservable->printResult("size.dat"); // for debugging
-  //  simulation.writeToFile("grid.dat");
+    simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;

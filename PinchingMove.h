@@ -136,19 +136,7 @@ public:
         delete third;
         delete fourth;
         delete v;
-
-        /* Check if no links are double */
-        foreach(Vertex* l, u->getNeighbouringVertices()) {
-            TriSet t = u->getTriangles() & l->getTriangles(); // intersection
-
-            if (t.size() != 2 && t.size() != 0) {
-                std::cerr << "Link duplicates: " << u << " " << l << " " << t.size() << std::endl;
-
-                BOOST_ASSERT(false);
-            }
-        }
-        // std::cout << "test passed" << std::endl;
-
+        
         BOOST_ASSERT(u->checkCausality());
         BOOST_ASSERT(w->checkCausality());
         BOOST_ASSERT(x->checkCausality());

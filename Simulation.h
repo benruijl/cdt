@@ -71,6 +71,8 @@ public:
     double getRandomNumber() {
         return unireal(rng);
     }
+    
+    bool checkLinkOverlap();
 
     /**
      * Collect triangles around a given vertex that are at most depth links away.
@@ -115,7 +117,6 @@ private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
     boost::uniform_real<> unireal;
-
     VertSet vertices; // a list of all the vertices in the simulation
 };
 

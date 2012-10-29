@@ -11,6 +11,7 @@
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
 #include <fstream>
+#include <sstream>
 
 using namespace boost::assign;
 
@@ -219,6 +220,26 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
     dotFile.close();
 }
 
+bool Simulation::checkLinkOverlap() {
+    // TODO: improve, use that check if symmetric
+
+    /* Check if no links are double */
+    foreach(Vertex* a, vertices) {
+
+        foreach(Vertex* b, vertices) {
+            if (a == b) {
+                continue;
+            }
+            TriSet t = a->getTriangles() & b->getTriangles(); // intersection
+
+            if (t.size() != 2 && t.size() != 0) {
+                std::cerr << "Link duplicates: " << a << " " << b << " " << t.size() << std::endl;
+                BOOST_ASSERT(false);
+            }
+        }
+    }
+}
+
 VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
     MoveFactory m;
 
@@ -228,6 +249,20 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
     int moveRejectedBecauseImpossible = 0;
     // TODO: a convergence check should be added
     for (int i = 0; i < numIter; i++) {
+        if (i % 100000 == 0) {
+            std::cout << "Iteration " << i << std::endl;
+            std::cout << "# Vertices " << vertices.size() << std::endl;
+        }
+
+        // output the grid after a certain amount of iterations
+        // TODO: make observable
+        if (i % 10000000 == 0) {
+            std::ostringstream fn;
+            fn << "grid_" << i << ".dat";
+            const std::string filename = fn.str();
+            writeToFile(filename.c_str());
+        }
+
         Move* move = m.createRandomMove(*this);
 
         // some random moves can be impossible and to simplify the 
@@ -256,29 +291,6 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
             }
 
             moves << move->printID() << std::endl;
-        }
-
-        if (vertices.size() < 14 * 2) {
-            observables[0]->printResult("size.dat");
-        }
-
-        if (i % 1000 == 0) {
-
-            /* Check if no links are double */
-            foreach(Vertex* a, vertices) {
-
-                foreach(Vertex* b, vertices) {
-                    if (a == b) {
-                        continue;
-                    }
-                    TriSet t = a->getTriangles() & b->getTriangles(); // intersection
-
-                    if (t.size() != 2 && t.size() != 0) {
-                        std::cerr << "Link duplicates: " << a << " " << b << " " << t.size() << std::endl;
-                        BOOST_ASSERT(false);
-                    }
-                }
-            }
         }
 
         // Topological constraint
