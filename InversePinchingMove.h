@@ -96,12 +96,6 @@ public:
         Vertex* w = t->getThirdVertex(v, u);
         z = s->getThirdVertex(v, edge);
 
-        // remove triangles, they are SST
-        if (t == s) {
-            std::cout << "Fail" << std::endl;
-            BOOST_ASSERT(!"fail");
-        }
-
         t->removeVertices();
         s->removeVertices();
         delete t;
@@ -129,7 +123,7 @@ public:
     }
 
     std::string printID() {
-        return std::string("INV_PINCH_");
+        return std::string("INV_PINCH");
     }
 };
 

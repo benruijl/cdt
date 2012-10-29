@@ -51,6 +51,23 @@ public:
             return false;
         }
 
+        // prevent link overlap
+        Vertex n;
+        n.getTriangles() += v->getTriangles();
+        n.getTriangles().erase(first);
+        n.getTriangles().erase(second);
+        VertSet verts = n.getNeighbouringVertices();
+
+        Vertex m;
+        m.getTriangles() += u->getTriangles();
+        m.getTriangles().erase(first);
+        m.getTriangles().erase(second);
+        VertSet verts2 = m.getNeighbouringVertices();
+
+        if ((verts & verts2).size() > 2) {
+            return false;
+        }
+
         return true;
     }
 
@@ -92,6 +109,11 @@ public:
         fourth = r == second ? t : r;
         Vertex* z = fourth->getThirdVertex(v, x);
 
+        Simulation s;
+        TriSet tri;
+        s.collectTriangles(tri, u, 1);
+        s.drawPartialTriangulation("graph.dot", u, tri);
+
         /* Clean-up */
         first->removeVertices();
         second->removeVertices();
@@ -114,6 +136,18 @@ public:
         delete third;
         delete fourth;
         delete v;
+
+        /* Check if no links are double */
+        foreach(Vertex* l, u->getNeighbouringVertices()) {
+            TriSet t = u->getTriangles() & l->getTriangles(); // intersection
+
+            if (t.size() != 2 && t.size() != 0) {
+                std::cerr << "Link duplicates: " << u << " " << l << " " << t.size() << std::endl;
+
+                BOOST_ASSERT(false);
+            }
+        }
+        // std::cout << "test passed" << std::endl;
 
         BOOST_ASSERT(u->checkCausality());
         BOOST_ASSERT(w->checkCausality());

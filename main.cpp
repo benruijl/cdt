@@ -57,10 +57,8 @@ int main(int argc, char** argv) {
    // simulation.readFromFile("grid.dat");
 
     simulation.generateInitialTriangulation(20, 20);
-    // at 14 the size is kind of stable at around 150 vertices after 680 moves
-    // TODO: should it check triangles or vertices?
     // at a = -0.5 there should be about the same TTS as SST triangles
-    simulation.Metropolis(3, -1, 3000000);//1.81236
+    simulation.Metropolis(3.05, -1, 30000000);
 
     sizeObservable->printResult("size.dat"); // for debugging
   //  simulation.writeToFile("grid.dat");

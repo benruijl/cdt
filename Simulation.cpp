@@ -257,13 +257,32 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
 
             moves << move->printID() << std::endl;
         }
-        
+
         if (vertices.size() < 14 * 2) {
             observables[0]->printResult("size.dat");
         }
 
+        if (i % 1000 == 0) {
+
+            /* Check if no links are double */
+            foreach(Vertex* a, vertices) {
+
+                foreach(Vertex* b, vertices) {
+                    if (a == b) {
+                        continue;
+                    }
+                    TriSet t = a->getTriangles() & b->getTriangles(); // intersection
+
+                    if (t.size() != 2 && t.size() != 0) {
+                        std::cerr << "Link duplicates: " << a << " " << b << " " << t.size() << std::endl;
+                        BOOST_ASSERT(false);
+                    }
+                }
+            }
+        }
+
         // Topological constraint
-        BOOST_ASSERT(vertices.size() >= 14 * 2);
+        // BOOST_ASSERT(vertices.size() >= 14 * 2);
     }
 
     moves.close();
