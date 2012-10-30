@@ -124,9 +124,9 @@ public:
 
         // the probability of the inverse is selecting a vertex and then one of their neighbours.
         // The number of neighbours depends on the vertex and is calculated in numTriLeft.
-
-        return 1.0 / ((vertices.size() - 1) * (numTriLeft + 3)) +
-                1.0 / ((vertices.size() - 1) * (u->getTriangles().size() - numTriLeft + 3));
+        return 1.0 / ((vertices.size() + 1) * (numTriLeft + 2)) +
+                1.0 / ((vertices.size() + 1) *
+                (u->getTriangles().size() - numTriLeft + 2));
     }
 
     void execute(VertSet& vertices) {

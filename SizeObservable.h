@@ -9,6 +9,7 @@
 #define	SIZEOBSERVABLE_H
 
 #include "Observable.h"
+#include <boost/circular_buffer.hpp>
 #include <fstream>
 
 /**
@@ -16,10 +17,12 @@
  */
 class SizeObservable : public Observable {
 private:
-    std::vector<int> size;
+    boost::circular_buffer<int> data; // measured data
 public:
 
-    SizeObservable() {
+    SizeObservable(int writeFrequency, int registerFrequency) :
+    Observable("size", writeFrequency, registerFrequency),
+    data(registerFrequency) {
 
     }
 
@@ -28,55 +31,56 @@ public:
     }
 
     void measure(const VertSet& state) {
-        size.push_back(state.size());
+        data.push_back(state.size());
+        Observable::measure(state);
     }
 
     double getVariance(int n) {
-        if (n > size.size()) {
-            n = size.size();
+        if (n > data.size()) {
+            n = data.size();
         }
-        n = size.size() - n;
+        n = data.size() - n;
 
         double mean = 0;
-        for (int i = n; i < size.size(); i++) {
-            mean += size[i];
+        for (int i = n; i < data.size(); i++) {
+            mean += data[i];
         }
-        mean /= size.size();
+        mean /= data.size();
 
         double var = 0;
-        for (int i = n; i < size.size(); i++) {
-            var += (size[i] - mean) * (size[i] - mean);
+        for (int i = n; i < data.size(); i++) {
+            var += (data[i] - mean) * (data[i] - mean);
         }
 
-        var /= (size.size() - n - 1);
+        var /= (data.size() - n - 1);
     }
 
     void getLinearFit(int n, double& a, double& b) {
         double xy = 0, mx = 0, my = 0, sqmx = 0;
 
-        n = size.size() - n;
+        n = data.size() - n;
         if (n < 0) {
             n = 0;
         }
 
-        for (int i = n; i < size.size(); i++) {
-            xy += i * size[i];
+        for (int i = n; i < data.size(); i++) {
+            xy += i * data[i];
             mx += i;
-            my += size[i];
+            my += data[i];
             sqmx += i * i;
         }
 
-        b = (xy - mx * my / (size.size() - n)) / 
-                (sqmx - mx * mx / (size.size() - n));
-        a = (my - b * mx) / (size.size() - n);
+        b = (xy - mx * my / (data.size() - n)) /
+                (sqmx - mx * mx / (data.size() - n));
+        a = (my - b * mx) / (data.size() - n);
     }
 
     /**
      * Prints the result of the computation to the screen.
      */
     void printResult() {
-        for (int i = 0; i < size.size(); i++)
-            std::cout << size[i] << ",";
+        for (int i = 0; i < data.size(); i++)
+            std::cout << data[i] << ",";
     }
 
     /**
@@ -88,8 +92,8 @@ public:
             std::cout << "Unable to open file '" << filename << "'" << std::endl;
         }
 
-        for (int i = 0; i < size.size(); i++)
-            file << size[i] << "\n";
+        for (int i = 0; i < data.size(); i++)
+            file << data[i] << "\n";
 
         file.close();
     };

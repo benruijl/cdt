@@ -69,9 +69,11 @@ public:
         VertSet neighbours = u->getNeighbouringVertices();
         neighbours += v->getNeighbouringVertices();
 
-        // -3 because the vertices should not belong to the same triangles
-        return 1.0 / ((vertices.size() + 1) * neighbours.size() *
-                (neighbours.size() - 3) / 2.0);
+        // -5 because the vertices should not belong to the same triangles,
+        // the vertex itself should not be included and different vertices
+        // have to be selected
+        return 1.0 / ((vertices.size() - 1) * (neighbours.size() - 2) *
+                (neighbours.size() - 5) / 2.0);
     }
 
     void execute(VertSet& vertices) {

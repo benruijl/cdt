@@ -285,13 +285,14 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
 
-            /* Measure observables from in the current state */
-            foreach(Observable* o, observables) {
-                o->measure(vertices);
-            }
-
-            //moves << move->printID() << std::endl;
+            moves << move->printID() << std::endl;
         }
+
+        /* Measure observables from in the current state */
+        foreach(Observable* o, observables) {
+            o->measure(vertices);
+        }
+
 
         // Topological constraint
         // BOOST_ASSERT(vertices.size() >= 14 * 2);
