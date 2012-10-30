@@ -120,10 +120,10 @@ public:
         foreach(Vertex* v, u->getNeighbouringVertices()) {
             Vertex::getAdjacentTriangles(u, v, &first, &second);
 
-            if (first->isTimelike(u, v) != isTimelike) {
+            if (first->isTimelike(u, v) == isTimelike) {
                 // -1 because vertex u does not exist
                 prob += 1.0 / ((vertices.size() - 1) *
-                        (v->getNeighbouringVertexCount() - 1));
+                        (v->getNeighbouringVertexCount()));
             }
         }
 

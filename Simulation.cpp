@@ -258,7 +258,7 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
         // TODO: make observable
         if (i % 10000000 == 0) {
             std::ostringstream fn;
-            fn << "grid_" << i << ".dat";
+            fn << "grid_" << i / 10000000 << ".dat";
             const std::string filename = fn.str();
             writeToFile(filename.c_str());
         }
