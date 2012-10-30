@@ -16,54 +16,6 @@ private:
     Vertex* u, *v;
     bool isTimelike;
 
-    /**
-     * Counts all ways to select three vertices from the correct surroundings
-     * after a move is done to collapse u and v.
-     * @param u
-     * @param v
-     * @return 
-     */
-    int getInverseCollapseMoveCount(Vertex* u, Vertex* v) {
-        int count = 0;
-
-        /* Find out if collapse is spatial */
-        Triangle* first, *second;
-        Vertex::getAdjacentTriangles(u, v, &first, &second);
-        Vertex* c = first->getThirdVertex(u, v);
-        Vertex* d = second->getThirdVertex(u, v);
-
-        /* Count all relevant links */
-        Triangle* cur = first;
-        Vertex* edgeVertex = c;
-
-        while (edgeVertex != d) {
-            Vertex::getAdjacentTriangles(edgeVertex, u, &first, &second);
-            cur = first == cur ? second : first;
-            edgeVertex = cur->getThirdVertex(edgeVertex, u);
-
-            if (cur->isTimelike(u, edgeVertex) != isTimelike) {
-                count++;
-            }
-        }
-
-        /* Count all relevant links */
-        Vertex::getAdjacentTriangles(u, v, &first, &second);
-        cur = first;
-        edgeVertex = c;
-
-        while (edgeVertex != d) {
-            Vertex::getAdjacentTriangles(edgeVertex, v, &first, &second);
-            cur = first == cur ? second : first;
-            edgeVertex = cur->getThirdVertex(edgeVertex, v);
-
-            if (cur->isTimelike(v, edgeVertex) != isTimelike) {
-                count++;
-            }
-        }
-
-        return (count) * (count - 1) / 2;
-    }
-
 public:
 
     CollapseMove(bool timelike) : Move(!timelike * -2, timelike * -2) {
@@ -112,8 +64,14 @@ public:
     }
 
     double getInverseTransitionProbability(VertSet& vertices) {
-        // FIXME: is this correct? Or do these yield different triangulations?
-        return (double) getInverseCollapseMoveCount(u, v) / (vertices.size() + 1);
+        // the inverse move selects two vertices from the surroundings of a
+        // chosen central vertex.
+        VertSet neighbours = u->getNeighbouringVertices();
+        neighbours += v->getNeighbouringVertices();
+
+        // -3 because the vertices should not belong to the same triangles
+        return 1.0 / ((vertices.size() + 1) * neighbours.size() *
+                (neighbours.size() - 3) / 2.0);
     }
 
     void execute(VertSet& vertices) {

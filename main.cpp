@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 
     simulation.generateInitialTriangulation(30, 30);
     // at a = -0.5 there should be about the same TTS as SST triangles
-    simulation.Metropolis(0.0625, -1, 20000000);
+    simulation.Metropolis(1.505, -1, 6000000);
 
     sizeObservable->printResult("size.dat"); // for debugging
     //simulation.writeToFile("grid.dat");

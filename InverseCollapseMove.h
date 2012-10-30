@@ -79,9 +79,9 @@ public:
     }
 
     double getTransitionProbability(VertSet& vertices) {
-        // -2 because the third vertex must not belong to the same triangle
+        // -3 because the third vertex must not belong to the same triangles
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount() *
-                (u->getNeighbouringVertexCount() - 2) / 2.0);
+                (u->getNeighbouringVertexCount() - 3) / 2.0);
     }
 
     bool isMovePossible(VertSet& vertices) {
@@ -91,15 +91,14 @@ public:
         Vertex::getAdjacentTriangles(u, w, &first, &second);
         bool lUW = first->isTimelike(u, w);
 
+        // the vertices should belong to different sectors
         VertSet sector = u->getSectorVertices(first, true, !isTimelike);
 
-       // std::cout << (lUV == lUW) << " " << (lUV != isTimelike) << " " <<
-         //       (sector.find(v) == sector.end()) << " " << (sector.find(w) == sector.end()) << std::endl;
         return (lUV == lUW) && (lUV != isTimelike) &&
                 ((sector.find(v) == sector.end()) != (sector.find(w) == sector.end()));
     }
 
-    Move * generateRandomMove(Simulation & simulation) {
+    Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
         v = simulation.getRandomVertex(u->getNeighbouringVertices());
 
@@ -126,8 +125,8 @@ public:
         // the probability of the inverse is selecting a vertex and then one of their neighbours.
         // The number of neighbours depends on the vertex and is calculated in numTriLeft.
 
-        return 1.0 / ((vertices.size() - 1) * numTriLeft) +
-                1.0 / ((vertices.size() - 1) * (u->getTriangles().size() - numTriLeft));
+        return 1.0 / ((vertices.size() - 1) * (numTriLeft + 3)) +
+                1.0 / ((vertices.size() - 1) * (u->getTriangles().size() - numTriLeft + 3));
     }
 
     void execute(VertSet& vertices) {

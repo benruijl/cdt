@@ -290,7 +290,7 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
                 o->measure(vertices);
             }
 
-            moves << move->printID() << std::endl;
+            //moves << move->printID() << std::endl;
         }
 
         // Topological constraint
