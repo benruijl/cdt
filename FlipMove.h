@@ -9,6 +9,7 @@
 #define	FLIPMOVE_H
 
 #include "Move.h"
+#include "Simulation.h"
 
 class FlipMove : public Move {
 private:
@@ -27,12 +28,12 @@ public:
         this->change = change;
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
                 1.0 / (vertices.size() * v->getNeighbouringVertexCount());
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
         Vertex* c = first->getThirdVertex(u, v);
@@ -50,16 +51,16 @@ public:
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
-        v = simulation.getRandomVertex(u->getNeighbouringVertices());
+        v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
                 1.0 / (vertices.size() * v->getNeighbouringVertexCount());
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 

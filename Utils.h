@@ -53,13 +53,12 @@ boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::un
  * @return A & B
  */
 template <typename T>
-boost::unordered_set<T> operator &(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+boost::unordered_set<T> operator &(const boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
     boost::unordered_set<T> out;
 
-    // FIXME: why isn't this allowed?
-    /*if (b.size() < a.size()) {
+   if (b.size() < a.size()) {
         return b & a;
-    }*/
+    }
     
     foreach(T e, a) {
         if (b.find(e) != b.end())

@@ -24,7 +24,7 @@ public:
         s = NULL;
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         Triangle* start = *v->getTriangles().begin();
         TriSet triRight = v->getSectorTriangles(start, false, false);
         TriSet triLeft = v->getSectorTriangles(start, true, false);
@@ -32,7 +32,7 @@ public:
         return 1.0 / (vertices.size() * triRight.size() * triLeft.size() * 2);
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         return t != NULL && s != NULL;
     }
 
@@ -49,7 +49,7 @@ public:
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         /* TODO: repetition of code, same thing done in execute as well*/
         Vertex* u = t->getNextVertex(v);
         Vertex* y = s->getNextVertex(v);
@@ -73,7 +73,7 @@ public:
         return 1.0 / ((vertices.size() + 1) * (count + 2));
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Vertex* u = t->getNextVertex(v);
         Vertex* y = s->getNextVertex(v);
         Vertex* z = s->getNextVertex(y);
@@ -102,7 +102,7 @@ public:
         delete s;
 
         Vertex* x = new Vertex();
-        vertices.insert(x);
+        vertices.push_back(x);
 
         x->getTriangles() += v->getTriangles();
         x->getTriangles() -= tri;

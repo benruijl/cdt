@@ -42,6 +42,8 @@ private:
                 return (new FlipMove(true, true))->generateRandomMove(simulation);
             case PINCH:
                 return (new PinchingMove())->generateRandomMove(simulation);
+            default:
+                return NULL;
         }
     }
 
@@ -61,6 +63,8 @@ private:
                 return (new FlipMove(false, true))->generateRandomMove(simulation);
             case PINCH:
                 return (new InversePinchingMove())->generateRandomMove(simulation);
+            default:
+                return NULL;
         }
     }
 
@@ -68,9 +72,9 @@ public:
 
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
-        move = COLLAPSE_SPACELIKE;
+        move = COLLAPSE_SPACELIKE; // FIXME: for testing
         bool inverse = simulation.getRandomNumber() < 0.5;
-        
+
         if (inverse) {
             return createInverseMove(move, simulation);
         } else {

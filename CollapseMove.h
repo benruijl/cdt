@@ -10,6 +10,7 @@
 
 #include "Move.h"
 #include "Utils.h"
+#include "Simulation.h"
 
 class CollapseMove : public Move {
 private:
@@ -22,12 +23,12 @@ public:
         isTimelike = timelike;
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
                 1.0 / (vertices.size() * v->getNeighbouringVertexCount());
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
@@ -58,12 +59,12 @@ public:
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
-        v = simulation.getRandomVertex(u->getNeighbouringVertices());
+        v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
 
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         // the inverse move selects two vertices from the surroundings of a
         // chosen central vertex.
         VertSet neighbours = u->getNeighbouringVertices();
@@ -76,7 +77,7 @@ public:
                 (neighbours.size() - 5) / 2.0);
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
@@ -96,7 +97,8 @@ public:
             t->replaceVertex(u, v);
         }
 
-        vertices.erase(u);
+        // remove vertex
+        vertices.erase(std::remove(vertices.begin(), vertices.end(), u), vertices.end());
         delete u;
         delete first;
         delete second;

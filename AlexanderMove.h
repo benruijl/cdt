@@ -21,12 +21,12 @@ public:
         isTimelike = timelike;
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
                 1.0 / (vertices.size() * v->getNeighbouringVertexCount());
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
@@ -35,17 +35,17 @@ public:
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
-        v = simulation.getRandomVertex(u->getNeighbouringVertices());
+        v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         // Alexander moves create one new vertex and the inverse needs
         // only this vertex to perform the move
         return 1.0 / (vertices.size() + 1);
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
@@ -66,7 +66,7 @@ public:
         new Triangle(u, e, d, lAB, newLink, lAD);
         new Triangle(e, v, d, lAB, lBD, newLink);
 
-        vertices.insert(e);
+        vertices.push_back(e);
         first->removeVertices();
         second->removeVertices();
         delete first;

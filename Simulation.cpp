@@ -60,7 +60,7 @@ void Simulation::readFromFile(const char* filename) {
 
     for (int i = 0; i < vCount; i++) {
         vertex_array[i] = new Vertex();
-        vertices.insert(vertex_array[i]);
+        vertices.push_back(vertex_array[i]);
     }
 
     // TODO: check if the triangulation is valid?
@@ -124,7 +124,7 @@ void Simulation::generateInitialTriangulation(int N, int T) {
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {
         vertices[t] = new Vertex();
-        this->vertices.insert(vertices[t]);
+        this->vertices.push_back(vertices[t]);
     }
 
     /* Create a foliation */
@@ -162,12 +162,9 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 
 }
 
-Vertex* Simulation::getRandomVertex(const VertSet& vertices) {
+Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
     BOOST_ASSERT(vertices.size() > 0);
-    VertSet::iterator it = vertices.begin();
-
-    std::advance(it, unireal(rng) * vertices.size());
-    return *it;
+    return vertices[unireal(rng) * vertices.size()];
 }
 
 template <typename T>
@@ -220,7 +217,7 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
     dotFile.close();
 }
 
-bool Simulation::checkLinkOverlap() {
+void Simulation::checkLinkOverlap() {
     // TODO: improve, use that check if symmetric
 
     /* Check if no links are double */
@@ -240,7 +237,7 @@ bool Simulation::checkLinkOverlap() {
     }
 }
 
-VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
+void Simulation::Metropolis(double lambda, double alpha, int numIter) {
     MoveFactory m;
 
     // store which moves have been done
@@ -306,7 +303,5 @@ VertSet Simulation::Metropolis(double lambda, double alpha, int numIter) {
     TriSet tri;
     collectTriangles(tri, *vertices.begin(), 1);
     drawPartialTriangulation("graph.dot", *vertices.begin(), tri);
-
-    return vertices;
 };
 

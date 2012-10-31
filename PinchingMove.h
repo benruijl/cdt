@@ -10,6 +10,7 @@
 
 #include "Vertex.h"
 #include "Triangle.h"
+#include "Simulation.h"
 
 class PinchingMove : public Move {
 private:
@@ -19,12 +20,12 @@ public:
     PinchingMove() : Move(-4, 2) {
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         // Note that this move is not symmetric, (u,v) and (v, u) are different moves.
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount());
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle *first, *second, *r, *t;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
         Vertex* w = first->getThirdVertex(u, v);
@@ -73,11 +74,11 @@ public:
 
     Move* generateRandomMove(Simulation& simulation) {
         u = simulation.getRandomVertex(simulation.getVertices());
-        v = simulation.getRandomVertex(u->getNeighbouringVertices());
+        v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         Triangle* l, *r;
         Vertex::getAdjacentTriangles(u, v, &l, &r);
 
@@ -95,7 +96,7 @@ public:
         return 1.0 / ((countLeft + 1) * (countRight + 1) * 2);
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Triangle *first, *second, *third, *fourth, *r, *t;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
         Vertex* w = first->getThirdVertex(u, v);
@@ -119,7 +120,7 @@ public:
         second->removeVertices();
         third->removeVertices();
         fourth->removeVertices();
-        vertices.erase(v);
+        vertices.erase(std::remove(vertices.begin(), vertices.end(), v), vertices.end());
 
         /* Relabel */
         foreach(Triangle* t, v->getTriangles()) {

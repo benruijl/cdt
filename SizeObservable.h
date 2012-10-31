@@ -30,7 +30,7 @@ public:
 
     }
 
-    void measure(const VertSet& state) {
+    void measure(const std::vector<Vertex*>& state) {
         data.push_back(state.size());
         Observable::measure(state);
     }

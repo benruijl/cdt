@@ -42,7 +42,7 @@ public:
      * 
      * @param state System state
      */
-    virtual void measure(const VertSet& state) {
+    virtual void measure(const std::vector<Vertex*>& state) {
 
         // should print to file?
         if (currentMeasurement > 0 && currentMeasurement % writeFrequency == 0) {

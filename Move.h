@@ -9,6 +9,7 @@
 #define	MOVE_H
 
 #include "Vertex.h"
+#include <vector>
 
 class Simulation;
 
@@ -36,7 +37,7 @@ public:
      * @param vertices Set of vertices
      * @return 
      */
-    virtual double getTransitionProbability(VertSet& vertices) = 0;
+    virtual double getTransitionProbability(std::vector<Vertex*>& vertices) = 0;
 
     /**
      * Gets the transition probability Q(x | x') after a move is done from x to
@@ -45,7 +46,7 @@ public:
      * @param vertices Set of vertices
      * @return Q(x | x')
      */
-    virtual double getInverseTransitionProbability(VertSet& vertices) = 0;
+    virtual double getInverseTransitionProbability(std::vector<Vertex*>& vertices) = 0;
 
     /**
      * Completes this move by generating enough vertices to do the move. The move
@@ -60,13 +61,13 @@ public:
      * @param vertices Set of vertices
      * @return True if possible, else false
      */
-    virtual bool isMovePossible(VertSet& vertices) = 0;
+    virtual bool isMovePossible(std::vector<Vertex*>& vertices) = 0;
 
     /**
      * Performs the move on the grid of vertices.
      * @param vertices Set of vertices
      */
-    virtual void execute(VertSet& vertices) = 0;
+    virtual void execute(std::vector<Vertex*>& vertices) = 0;
     
     /**
      * Prints the move id. Useful for debugging.

@@ -48,11 +48,11 @@ public:
         isTimelike = timelike;
     }
 
-    double getTransitionProbability(VertSet& vertices) {
+    double getTransitionProbability(std::vector<Vertex*>& vertices) {
         return 1.0 / vertices.size();
     }
 
-    bool isMovePossible(VertSet& vertices) {
+    bool isMovePossible(std::vector<Vertex*>& vertices) {
         // vertex needs to have 4 links: two spacelike and two timelike
         if (u->getTriangles().size() != 4) {
             return false;
@@ -113,7 +113,7 @@ public:
         return this;
     }
 
-    double getInverseTransitionProbability(VertSet& vertices) {
+    double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         Triangle *first, *second;
         double prob = 0;
 
@@ -130,7 +130,7 @@ public:
         return prob;
     }
 
-    void execute(VertSet& vertices) {
+    void execute(std::vector<Vertex*>& vertices) {
         Triangle *first, *second, *third, *fourth, *t, *r;
         Vertex *v, *w, *x, *y;
         bool lUV, lVW, lVY, lWX, lXY;
@@ -158,7 +158,7 @@ public:
         lXY = fourth->isTimelike(x, y);
 
         /* Perform cleanup */
-        vertices.erase(u);
+        vertices.erase(std::remove(vertices.begin(), vertices.end(), u), vertices.end());
         first->removeVertices();
         second->removeVertices();
         third->removeVertices();

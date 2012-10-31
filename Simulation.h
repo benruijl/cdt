@@ -49,18 +49,17 @@ public:
      * to be possible.
      * @param numIter Number of iterations
      * 
-     * @return New set of vertices that span the triangulation
      */
-    VertSet Metropolis(double lambda, double alpha, int numIter);
+    void Metropolis(double lambda, double alpha, int numIter);
 
     /**
      * Convenience function that 
      * @param vertices
      * @return 
      */
-    Vertex* getRandomVertex(const VertSet& vertices);
+    Vertex* getRandomVertex(const std::vector<Vertex*>& vertices);
 
-    VertSet& getVertices() {
+    std::vector<Vertex*>& getVertices() {
         return vertices;
     }
 
@@ -72,7 +71,7 @@ public:
         return unireal(rng);
     }
     
-    bool checkLinkOverlap();
+    void checkLinkOverlap();
 
     /**
      * Collect triangles around a given vertex that are at most depth links away.
@@ -117,7 +116,7 @@ private:
     static const int SEED = 1289730123;
     boost::mt19937 rng;
     boost::uniform_real<> unireal;
-    VertSet vertices; // a list of all the vertices in the simulation
+    std::vector<Vertex*> vertices; // a list of all the vertices in the simulation
 };
 
 #endif	/* SIMULATION_H */
