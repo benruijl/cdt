@@ -70,11 +70,9 @@ public:
         VertSet neighbours = u->getNeighbouringVertices();
         neighbours += v->getNeighbouringVertices();
 
-        // -5 because the vertices should not belong to the same triangles,
-        // the vertex itself should not be included and different vertices
-        // have to be selected
+        // -2 because u and v are included in the union
         return 1.0 / ((vertices.size() - 1) * (neighbours.size() - 2) *
-                (neighbours.size() - 5) / 2.0);
+                (neighbours.size() - 3) / 2.0);
     }
 
     void execute(std::vector<Vertex*>& vertices) {
@@ -83,10 +81,6 @@ public:
 
         Vertex* c = first->getThirdVertex(u, v);
         Vertex* d = second->getThirdVertex(u, v);
-
-        /* A collapse is only valid if the to be merged links are of the same type */
-        BOOST_ASSERT(first->checkAdjacentSides(u, v));
-        BOOST_ASSERT(second->checkAdjacentSides(u, v));
 
         first->removeVertices();
         second->removeVertices();
@@ -99,6 +93,7 @@ public:
 
         // remove vertex
         vertices.erase(std::remove(vertices.begin(), vertices.end(), u), vertices.end());
+
         delete u;
         delete first;
         delete second;

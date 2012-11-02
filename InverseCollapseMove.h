@@ -48,9 +48,8 @@ public:
     }
 
     double getTransitionProbability(std::vector<Vertex*>& vertices) {
-        // -3 because the third vertex must not belong to the same triangles
         return 1.0 / (vertices.size() * u->getNeighbouringVertexCount() *
-                (u->getNeighbouringVertexCount() - 3) / 2.0);
+                (u->getNeighbouringVertexCount() - 1) / 2.0);
     }
 
     bool isMovePossible(std::vector<Vertex*>& vertices) {
@@ -74,20 +73,8 @@ public:
         u = simulation.getRandomVertex(simulation.getVertices());
         VertSet neighbours = u->getNeighbouringVertices();
         v = simulation.getRandomElementFromSet(neighbours);
-
-        Triangle* first, *second;
-        Vertex::getAdjacentTriangles(u, v, &first, &second);
-
-
-        // select a third neighbouring vertex that is not v
-        // the triangle should also not belong to the same triangle as u and v
-        w = v;
-
-        while (w == v || w == first->getThirdVertex(u, v) ||
-                w == second->getThirdVertex(u, v)) {
-
-            w = simulation.getRandomElementFromSet(neighbours);
-        }
+        neighbours.erase(v);
+        w = simulation.getRandomElementFromSet(neighbours);
 
         return this;
     }
@@ -116,7 +103,6 @@ public:
         x->getTriangles() += tri;
 
         foreach(Triangle* t, tri) {
-
             t->replaceVertex(u, x);
         }
 

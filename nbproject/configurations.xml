@@ -16,6 +16,7 @@
         <itemPath>PinchingMove.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>GridObservable.h</itemPath>
         <itemPath>Observable.h</itemPath>
         <itemPath>SizeObservable.h</itemPath>
       </logicalFolder>
@@ -73,7 +74,6 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
-          <commandLine>-pg</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

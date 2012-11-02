@@ -12,8 +12,9 @@
 
 class Observable {
 private:
-    int registerFrequency, writeFrequency;
-    int currentMeasurement;
+    unsigned long registerFrequency, writeFrequency;
+    unsigned long currentMeasurement;
+    bool printToScreen;
     const char* name;
 public:
 
@@ -23,9 +24,11 @@ public:
      * @param writeFrequency Frequency to write the observed data to file
      * @param registerFrequency Number of items to measure. Old items will be dropped.
      */
-    Observable(const char* name, int writeFrequency, int registerFrequency) :
+    Observable(const char* name, unsigned long writeFrequency, unsigned long registerFrequency,
+            bool printToScreen) :
     registerFrequency(registerFrequency),
     writeFrequency(writeFrequency),
+    printToScreen(printToScreen),
     currentMeasurement(0),
     name(name) {
     }
@@ -46,6 +49,11 @@ public:
 
         // should print to file?
         if (currentMeasurement > 0 && currentMeasurement % writeFrequency == 0) {
+
+            if (printToScreen) {
+                printResult();
+            }
+
             std::ostringstream fn;
             fn << name << "_" << currentMeasurement / writeFrequency << ".dat";
             const std::string filename = fn.str();
@@ -54,9 +62,16 @@ public:
 
         currentMeasurement++;
     }
+    
+    /**
+     * Get the number of the current measurement.
+     */
+    unsigned long getMeasurementCount() {
+        return currentMeasurement;
+    }
 
     /**
-     * Prints the result of the computation to the screen.
+     * Prints the current value to the screen.
      */
     virtual void printResult() = 0;
 
@@ -69,9 +84,9 @@ public:
      * Gets the variance of the <b>last</b> n measurements.
      * @param n Should be less than total observations
      */
-    virtual double getVariance(int n) = 0;
+    virtual double getVariance(unsigned long n) = 0;
 
-    virtual void getLinearFit(int n, double& a, double& b) = 0;
+    virtual void getLinearFit(unsigned long n, double& a, double& b) = 0;
 };
 
 #endif	/* OBSERVABLE_H */

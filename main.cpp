@@ -54,11 +54,11 @@ int main(int argc, char** argv) {
     simulation.addObservable(sizeObservable);
 
     // read in a thermalized triangulation
-    //simulation.readFromFile("grid.dat");
+    simulation.readFromFile("grid.dat");
 
-    simulation.generateInitialTriangulation(30, 30);
+    //simulation.generateInitialTriangulation(30, 30);
     // at a = -0.5 there should be about the same TTS as SST triangles
-    simulation.Metropolis(1.2, -1, 12000000);
+    simulation.Metropolis(1.242, -1, 12000000ul);
 
     sizeObservable->printResult("size.dat"); // for debugging
     //simulation.writeToFile("grid.dat");

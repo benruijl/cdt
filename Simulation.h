@@ -50,7 +50,7 @@ public:
      * @param numIter Number of iterations
      * 
      */
-    void Metropolis(double lambda, double alpha, int numIter);
+    void Metropolis(double lambda, double alpha, unsigned long numIter);
 
     /**
      * Convenience function that 

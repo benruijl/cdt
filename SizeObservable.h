@@ -17,11 +17,11 @@
  */
 class SizeObservable : public Observable {
 private:
-    boost::circular_buffer<int> data; // measured data
+    boost::circular_buffer<unsigned int> data; // measured data
 public:
 
-    SizeObservable(int writeFrequency, int registerFrequency) :
-    Observable("size", writeFrequency, registerFrequency),
+    SizeObservable(unsigned long writeFrequency, unsigned long registerFrequency) :
+    Observable("size", writeFrequency, registerFrequency, true),
     data(registerFrequency) {
 
     }
@@ -35,7 +35,7 @@ public:
         Observable::measure(state);
     }
 
-    double getVariance(int n) {
+    double getVariance(unsigned long n) {
         if (n > data.size()) {
             n = data.size();
         }
@@ -55,7 +55,7 @@ public:
         var /= (data.size() - n - 1);
     }
 
-    void getLinearFit(int n, double& a, double& b) {
+    void getLinearFit(unsigned long n, double& a, double& b) {
         double xy = 0, mx = 0, my = 0, sqmx = 0;
 
         n = data.size() - n;
@@ -63,7 +63,7 @@ public:
             n = 0;
         }
 
-        for (int i = n; i < data.size(); i++) {
+        for (unsigned long i = n; i < data.size(); i++) {
             xy += i * data[i];
             mx += i;
             my += data[i];
@@ -75,17 +75,10 @@ public:
         a = (my - b * mx) / (data.size() - n);
     }
 
-    /**
-     * Prints the result of the computation to the screen.
-     */
     void printResult() {
-        for (int i = 0; i < data.size(); i++)
-            std::cout << data[i] << ",";
+        std::cout << "# Vertices: " <<  data.back() << std::endl;
     }
 
-    /**
-     * Prints the result of the computation to a file.
-     */
     void printResult(const char* filename) {
         std::ofstream file(filename);
         if (!file.is_open()) {
@@ -96,7 +89,7 @@ public:
             file << data[i] << "\n";
 
         file.close();
-    };
+    }
 };
 
 

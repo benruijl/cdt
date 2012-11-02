@@ -237,27 +237,23 @@ void Simulation::checkLinkOverlap() {
     }
 }
 
-void Simulation::Metropolis(double lambda, double alpha, int numIter) {
+void Simulation::Metropolis(double lambda, double alpha, unsigned long numIter) {
     MoveFactory m;
 
-    // store which moves have been done
+    // store which moves have been done, TODO: add to observable
     std::ofstream moves("moves.dat");
 
     int moveRejectedBecauseImpossible = 0;
     // TODO: a convergence check should be added
-    for (int i = 0; i < numIter; i++) {
-        if (i % 100000 == 0) {
+    for (unsigned long i = 0; i < numIter; i++) {
+        if (i % 100000 == 0) { // TODO: move to observable
             std::cout << "Iteration " << i << std::endl;
             std::cout << "# Vertices " << vertices.size() << std::endl;
         }
 
-        // output the grid after a certain amount of iterations
-        // TODO: make observable
-        if (i % 10000000 == 0) {
-            std::ostringstream fn;
-            fn << "grid_" << i / 10000000 << ".dat";
-            const std::string filename = fn.str();
-            writeToFile(filename.c_str());
+        /* Measure observables in the current state */
+        foreach(Observable* o, observables) {
+            o->measure(vertices);
         }
 
         Move* move = m.createRandomMove(*this);
@@ -282,14 +278,8 @@ void Simulation::Metropolis(double lambda, double alpha, int numIter) {
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
 
-            moves << move->printID() << std::endl;
+            // moves << move->printID() << std::endl;
         }
-
-        /* Measure observables from in the current state */
-        foreach(Observable* o, observables) {
-            o->measure(vertices);
-        }
-
 
         // Topological constraint
         // BOOST_ASSERT(vertices.size() >= 14 * 2);
