@@ -1,24 +1,30 @@
 /* 
- * File:   AlexanderMove.h
+ * File:   FlipMove.h
  * Author: bruijl
  *
- * Created on October 9, 2012, 1:37 PM
+ * Created on October 9, 2012, 2:34 PM
  */
 
-#ifndef ALEXANDERMOVE_H
-#define	ALEXANDERMOVE_H
+#ifndef FLIPMOVE_H
+#define	FLIPMOVE_H
 
 #include "Move.h"
-#include "Simulation.h"
 
-class AlexanderMove : public Move {
+class FlipMove : public Move {
 private:
     Vertex* u, *v;
-    bool isTimelike;
+    bool isTimelike, change;
 public:
 
-    AlexanderMove(bool timelike) : Move(!timelike * 2, timelike * 2) {
+    /**
+     * A flip move.
+     * The inverse flip move is a move with spacelike instead of timelike.
+     * @param timelike Is the link timelike?
+     * @param change Should the timelike link change to spacelike and vice versa?
+     */
+    FlipMove(bool timelike, bool change) : Move(!timelike * -2 * change, timelike * 2 * change) {
         isTimelike = timelike;
+        this->change = change;
     }
 
     double getTransitionProbability(std::vector<Vertex*>& vertices) {
@@ -29,8 +35,17 @@ public:
     bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
+        Vertex* c = first->getThirdVertex(u, v);
+        Vertex* d = second->getThirdVertex(u, v);
 
-        return isTimelike == first->isTimelike(u, v);
+        // prevent link overlap, could happen in a very rare cases
+        VertSet verts = c->getNeighbouringVertices();
+        if (verts.find(d) != verts.end()) {
+            return false;
+        }
+
+        return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
+                && first->isTimelike(v, c) != second->isTimelike(v, d);
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -40,9 +55,8 @@ public:
     }
 
     double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
-        // Alexander moves create one new vertex and the inverse needs
-        // only this vertex to perform the move
-        return 1.0 / (vertices.size() + 1);
+        return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
+                1.0 / (vertices.size() * v->getNeighbouringVertexCount());
     }
 
     void execute(std::vector<Vertex*>& vertices) {
@@ -53,20 +67,15 @@ public:
         Vertex* d = second->getThirdVertex(u, v);
 
         /* Get link types */
-        bool lAB = first->isTimelike(u, v);
+        bool lNew = first->isTimelike(u, v) ^ change;
         bool lAC = first->isTimelike(u, c);
         bool lCB = first->isTimelike(c, v);
         bool lAD = second->isTimelike(u, d);
         bool lBD = second->isTimelike(v, d);
-        bool newLink = !lAB;
 
-        Vertex* e = new Vertex(); // new vertex
-        new Triangle(u, c, e, lAC, newLink, lAB);
-        new Triangle(e, c, v, newLink, lCB, lAB);
-        new Triangle(u, e, d, lAB, newLink, lAD);
-        new Triangle(e, v, d, lAB, lBD, newLink);
+        new Triangle(u, c, d, lAC, lNew, lAD);
+        new Triangle(c, v, d, lCB, lBD, lNew);
 
-        vertices.push_back(e);
         first->removeVertices();
         second->removeVertices();
         delete first;
@@ -76,13 +85,12 @@ public:
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(c->checkCausality());
         BOOST_ASSERT(d->checkCausality());
-        BOOST_ASSERT(e->checkCausality());
     }
 
     std::string printID() {
-        return std::string("ALEX_") + (isTimelike ? "TL" : "SL");
+        return std::string("FLIP_") + (isTimelike ? "TL" : "SL") + (change ? "_CH" : "");
     }
 };
 
-#endif	/* ALEXANDERMOVE_H */
+#endif	/* FLIPMOVE_H */
 

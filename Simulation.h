@@ -13,7 +13,7 @@
 
 #include <vector>
 #include "Triangle.h"
-#include "Observable.h"
+#include "observables/Observable.h"
 
 class Simulation {
 private:

@@ -8,9 +8,7 @@
 #ifndef INVERSEPINCHINGMOVE_H
 #define	INVERSEPINCHINGMOVE_H
 
-#include "Vertex.h"
-#include "Triangle.h"
-#include "Simulation.h"
+#include "Move.h"
 
 class InversePinchingMove : public Move {
 private:

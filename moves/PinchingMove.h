@@ -8,9 +8,7 @@
 #ifndef PINCHINGMOVE_H
 #define	PINCHINGMOVE_H
 
-#include "Vertex.h"
-#include "Triangle.h"
-#include "Simulation.h"
+#include "Move.h"
 
 class PinchingMove : public Move {
 private:
@@ -109,11 +107,6 @@ public:
         Vertex::getAdjacentTriangles(v, x, &r, &t);
         fourth = r == second ? t : r;
         Vertex* z = fourth->getThirdVertex(v, x);
-
-        Simulation s;
-        TriSet tri;
-        s.collectTriangles(tri, u, 1);
-        s.drawPartialTriangulation("graph.dot", u, tri);
 
         /* Clean-up */
         first->removeVertices();

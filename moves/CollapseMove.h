@@ -9,8 +9,6 @@
 #define	COLLAPSEMOVE_H
 
 #include "Move.h"
-#include "Utils.h"
-#include "Simulation.h"
 
 class CollapseMove : public Move {
 private:
@@ -67,12 +65,11 @@ public:
     double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
         // the inverse move selects two vertices from the surroundings of a
         // chosen central vertex.
-        VertSet neighbours = u->getNeighbouringVertices();
-        neighbours += v->getNeighbouringVertices();
+        int neighbours = u->getNeighbouringVertexCount() +
+                v->getNeighbouringVertexCount() - 4;
 
-        // -2 because u and v are included in the union
-        return 1.0 / ((vertices.size() - 1) * (neighbours.size() - 2) *
-                (neighbours.size() - 3) / 2.0);
+        return 1.0 / ((vertices.size() - 1) * neighbours *
+                (neighbours - 1) / 2.0);
     }
 
     void execute(std::vector<Vertex*>& vertices) {

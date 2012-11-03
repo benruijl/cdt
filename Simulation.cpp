@@ -7,7 +7,7 @@
 
 #include "Simulation.h"
 #include "Utils.h"
-#include "MoveFactory.h"
+#include "moves/MoveFactory.h"
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
 #include <fstream>
@@ -278,7 +278,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned long numIter) 
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
 
-            // moves << move->printID() << std::endl;
+            moves << move->printID() << std::endl;
         }
 
         // Topological constraint

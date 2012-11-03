@@ -8,7 +8,9 @@
 #ifndef MOVE_H
 #define	MOVE_H
 
-#include "Vertex.h"
+#include "../Vertex.h"
+#include "../Simulation.h"
+#include "../Utils.h"
 #include <vector>
 
 class Simulation;

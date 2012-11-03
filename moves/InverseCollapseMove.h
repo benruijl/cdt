@@ -9,7 +9,6 @@
 #define	INVERSECOLLAPSEMOVE_H
 
 #include "Move.h"
-#include "Simulation.h"
 
 class InverseCollapseMove : public Move {
 private:

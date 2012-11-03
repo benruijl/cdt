@@ -9,7 +9,6 @@
 #define	INVERSEALEXANDERMOVE_H
 
 #include "Move.h"
-#include "Triangle.h"
 
 class InverseAlexanderMove : public Move {
 private:

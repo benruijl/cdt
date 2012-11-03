@@ -55,14 +55,14 @@ public:
             }
 
             std::ostringstream fn;
-            fn << name << "_" << currentMeasurement / writeFrequency << ".dat";
+            fn << "data/" << name << "_" << currentMeasurement / writeFrequency << ".dat";
             const std::string filename = fn.str();
             printResult(filename.c_str());
         }
 
         currentMeasurement++;
     }
-    
+
     /**
      * Get the number of the current measurement.
      */

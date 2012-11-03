@@ -9,7 +9,6 @@
 #define	MOVEFACTORY_H
 
 #include "Move.h"
-#include "Simulation.h"
 #include "AlexanderMove.h"
 #include "FlipMove.h"
 #include "InverseAlexanderMove.h"
@@ -72,7 +71,7 @@ public:
 
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
-        move = COLLAPSE_SPACELIKE; // FIXME: for testing
+        move = COLLAPSE_SPACELIKE;// simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : PINCH; // FIXME: for testing
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
