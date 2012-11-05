@@ -39,8 +39,8 @@ void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triang
     if (t.size() != 2) {
         std::cout << "Violated at " << a << " " << b << std::endl;
     }
-   
-    
+
+
     BOOST_ASSERT(t.size() == 2); // each link should have 2 triangles
 
     *first = NULL;
@@ -80,15 +80,15 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
 
 VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
     Triangle* cur = start;
-    Vertex* edge = start->getNextVertex(this);
+    Vertex* edge = cur->getNextVertex(this);
 
     // always move to first sector transition
-    while (cur->getLightConeCount(this) == 0 || (left && cur->isTimelike(this, edge) != tl)) {
+    while (cur->getLightConeCount(this) == 0 || left || cur->isTimelike(this, edge) != tl) {
+        if (cur->getLightConeCount(this) == 1 && cur->isTimelike(this, edge) == tl) {
+            left = false; // if left, go to second transition
+        }
+        
         cur = cur->getNeighbour(this, edge);
-        edge = cur->getThirdVertex(this, edge);
-    }
-
-    if (!left) { // go the other way
         edge = cur->getThirdVertex(this, edge);
     }
 
@@ -114,7 +114,6 @@ TriSet Vertex::getSectorTriangles(Triangle* start, bool left, bool tl) {
             tri.insert(t);
         }
         if (r->checkAdjacentSides(this)) {
-
             tri.insert(r);
         }
     }

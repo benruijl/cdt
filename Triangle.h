@@ -246,7 +246,11 @@ public:
     Vertex* getVertex(int index) {
         return vertices[index];
     }
-    
+    /**
+     * Gets the next vertex of the triangle. This process is deterministic.
+     * @param v Current vertex
+     * @return Next vertex
+     */
     Vertex* getNextVertex(Vertex* v) {
         int i = indexFromVertex(v);
         return vertices[(i + 1) % 3];
