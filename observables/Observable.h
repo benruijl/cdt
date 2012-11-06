@@ -12,8 +12,8 @@
 
 class Observable {
 private:
-    unsigned long registerFrequency, writeFrequency;
-    unsigned long currentMeasurement;
+    unsigned int registerFrequency, writeFrequency;
+    unsigned int currentMeasurement;
     bool doPrintToScreen;
     const char* name;
 
@@ -26,12 +26,12 @@ public:
 
     /**
      * Creates an observable.
-     * @param writeFrequency Frequency to write the observed data to file
+     * @param writeFrequency Sweep frequency to write the observed data to file.
      * @param registerFrequency Number of items to measure. Old items will be dropped.
      * 
      * TODO: currently registerFrequency is not used
      */
-    Observable(unsigned long writeFrequency, unsigned long registerFrequency,
+    Observable(unsigned int writeFrequency, unsigned int registerFrequency,
             bool printToScreen) :
     registerFrequency(registerFrequency),
     writeFrequency(writeFrequency),
@@ -55,11 +55,11 @@ public:
         // should print to file?
         if (currentMeasurement > 0 && currentMeasurement % writeFrequency == 0) {
             process(state); // gather data
-            
+
             if (doPrintToScreen) {
                 printToScreen();
             }
-            
+
             printToFile();
         }
 
@@ -79,7 +79,7 @@ public:
     /**
      * Get the number of the current measurement.
      */
-    unsigned long getMeasurementCount() {
+    unsigned int getMeasurementCount() {
         return currentMeasurement;
     }
 };

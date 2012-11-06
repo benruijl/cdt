@@ -37,7 +37,7 @@ public:
     }
 
     void printToScreen() {
-        std::cout << "Iteration " << getMeasurementCount() << "\n# Vertices: " << data << std::endl;
+        std::cout << "Sweep " << getMeasurementCount() << "\n# Vertices: " << data << std::endl;
     }
 
     void printToFile() {

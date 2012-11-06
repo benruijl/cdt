@@ -47,10 +47,12 @@ public:
      * @param alpha Ratio between length of spacelike and timelike links. 
      * The following should hold: -4 &lt; &alpha; &lt; -1/4 in order for the Wick rotation
      * to be possible.
-     * @param numIter Number of iterations
+     * @param numSweeps Number of sweeps
+     * @param sweepLength How many iterations should a sweep be?
      * 
      */
-    void Metropolis(double lambda, double alpha, unsigned long numIter);
+    void Metropolis(double lambda, double alpha, unsigned int numSweeps,
+            unsigned int sweepLength);
 
     /**
      * Convenience function that 
@@ -70,9 +72,9 @@ public:
     double getRandomNumber() {
         return unireal(rng);
     }
-    
+
     void checkLinkOverlap();
-    
+
     /**
      * Creates and ID for the current triangulation.
      */

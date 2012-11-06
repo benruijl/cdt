@@ -242,50 +242,54 @@ std::vector<int> Simulation::createID() {
 
 }
 
-void Simulation::Metropolis(double lambda, double alpha, unsigned long numIter) {
-    int moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
+void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
+        unsigned int sweepLength) {
+    unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m;
 
-    // TODO: a convergence check should be added
-    for (unsigned long i = 0; i < numIter; i++) {
+    for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {
             o->measure(vertices);
         }
 
-        Move* move = m.createRandomMove(*this);
+        for (int i = 0; i < sweepLength; i++) {
+            Move* move = m.createRandomMove(*this);
 
-        // some random moves can be impossible and to simplify the 
-        // probability checks, we can 
-        if (!move->isMovePossible(vertices)) {
-            moveRejectedBecauseImpossible++;
-            continue;
+            // some random moves can be impossible and to simplify the 
+            // probability checks, we can do this explicit check
+            if (!move->isMovePossible(vertices)) {
+                moveRejectedBecauseImpossible++;
+                continue;
+            }
+
+            /* acceptance = P(x') / P(x) * Q(x | x') / Q(x' | x) */
+            double acceptance = move->getMoveProbability(lambda, alpha) *
+                    move->getInverseTransitionProbability(vertices) /
+                    move->getTransitionProbability(vertices);
+
+            /*std::cout << move->getMoveProbability(lambda, alpha) << " " <<
+                    move->getInverseTransitionProbability(vertices) << " " <<
+                    move->getTransitionProbability(vertices) << " " <<
+                    acceptance;
+             */
+            if (acceptance > 1 || getRandomNumber() < acceptance) {
+                move->execute(vertices);
+            } else
+                moveRejectedBecauseDetBal++;
+
+            // Topological constraint
+            // BOOST_ASSERT(vertices.size() >= 14 * 2);
         }
-
-        /* acceptance = P(x') / P(x) * Q(x | x') / Q(x' | x) */
-        double acceptance = move->getMoveProbability(lambda, alpha) *
-                move->getInverseTransitionProbability(vertices) /
-                move->getTransitionProbability(vertices);
-
-        /*std::cout << move->getMoveProbability(lambda, alpha) << " " <<
-                move->getInverseTransitionProbability(vertices) << " " <<
-                move->getTransitionProbability(vertices) << " " <<
-                acceptance;
-         */
-        if (acceptance > 1 || getRandomNumber() < acceptance) {
-            move->execute(vertices);
-        } else
-            moveRejectedBecauseDetBal++;
-
-        // Topological constraint
-        // BOOST_ASSERT(vertices.size() >= 14 * 2);
     }
 
     std::cout << "Rejected imp: " << moveRejectedBecauseImpossible
-            << ", " << moveRejectedBecauseImpossible / (float) numIter << "%" << std::endl;
+            << ", " << 100 * moveRejectedBecauseImpossible /
+            ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
     std::cout << "Rejected det: " << moveRejectedBecauseDetBal
-            << ", " << moveRejectedBecauseDetBal / (float) numIter << "%" << std::endl;
+            << ", " << 100 * moveRejectedBecauseDetBal /
+            ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
 
     // write a part of the grid to a file
     TriSet tri;
