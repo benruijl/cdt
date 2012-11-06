@@ -28,6 +28,11 @@ public:
     bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
+        
+        if (!first->checkAdjacentSides(u, v) || 
+                !second->checkAdjacentSides(u, v)) {
+            return false; // fixme
+        }
 
         return isTimelike == first->isTimelike(u, v);
     }

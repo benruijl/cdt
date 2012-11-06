@@ -66,6 +66,8 @@ public:
         foreach(Triangle* t, u->getTriangles()) {
             tlCount += t->isOppositeLinkTimelike(u);
         }
+        
+        return tlCount ==4; // fixme
 
         if (tlCount != 2) {
             return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);

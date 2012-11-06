@@ -44,7 +44,14 @@ public:
             return false;
         }
 
-        return first->isTimelike(u, v) && first->isTimelike(u, c) != second->isTimelike(u, d)
+        if (first->isTimelike(u, v) == isTimelike) {
+            if (!((first->isTimelike(u, c) != second->isTimelike(u, d))
+                    && (first->isTimelike(v, c) != second->isTimelike(v, d)))) {
+                //  std::cout << "a";
+            }
+        }
+
+        return first->isTimelike(u, v) == isTimelike && first->isTimelike(u, c) != second->isTimelike(u, d)
                 && first->isTimelike(v, c) != second->isTimelike(v, d);
     }
 
@@ -55,8 +62,14 @@ public:
     }
 
     double getInverseTransitionProbability(std::vector<Vertex*>& vertices) {
-        return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
-                1.0 / (vertices.size() * v->getNeighbouringVertexCount());
+        Triangle* first, *second;
+        Vertex::getAdjacentTriangles(u, v, &first, &second);
+
+        Vertex* c = first->getThirdVertex(u, v);
+        Vertex* d = second->getThirdVertex(u, v);
+
+        return 1.0 / (vertices.size() * (c->getNeighbouringVertexCount() + 1)) +
+                1.0 / (vertices.size() * (d->getNeighbouringVertexCount() + 1));
     }
 
     void execute(std::vector<Vertex*>& vertices) {

@@ -72,6 +72,11 @@ public:
     }
     
     void checkLinkOverlap();
+    
+    /**
+     * Creates and ID for the current triangulation.
+     */
+    std::vector<int> createID();
 
     /**
      * Collect triangles around a given vertex that are at most depth links away.

@@ -19,7 +19,7 @@ private:
 public:
 
     GridObservable(Simulation& simulation, unsigned long writeFrequency) :
-    Observable("grid", writeFrequency, 1, false),
+    Observable(writeFrequency, 1, false),
     simulation(simulation) {
 
     }
@@ -28,30 +28,14 @@ public:
 
     }
 
-    void measure(const std::vector<Vertex*>& state) {
-        Observable::measure(state);
-    }
-
-    double getVariance(unsigned long n) {
-        return 0.0;
-    }
-
-    void getLinearFit(unsigned long n, double& a, double& b) {
-
-    }
-
-    /**
-     * Prints the result of the computation to the screen.
-     */
-    void printResult() {
-
+    void printToScreen() {
     }
 
     /**
      * Prints the result of the computation to a file.
      */
-    void printResult(const char* filename) {
-        simulation->writeToFile(filename);
+    void printToFile() {
+        simulation->writeToFile("grid.dat");
     }
 };
 

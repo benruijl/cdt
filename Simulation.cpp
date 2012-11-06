@@ -24,6 +24,7 @@ Simulation::Simulation(const Simulation& orig) {
 }
 
 Simulation::~Simulation() {
+    clearTriangulation();
 }
 
 void Simulation::clearTriangulation() {
@@ -237,19 +238,16 @@ void Simulation::checkLinkOverlap() {
     }
 }
 
+std::vector<int> Simulation::createID() {
+
+}
+
 void Simulation::Metropolis(double lambda, double alpha, unsigned long numIter) {
+    int moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m;
 
-    // store which moves have been done, TODO: add to observable
-    std::ofstream moves("moves.dat");
-
-    int moveRejectedBecauseImpossible = 0;
     // TODO: a convergence check should be added
     for (unsigned long i = 0; i < numIter; i++) {
-        if (i % 100000 == 0) { // TODO: move to observable
-            std::cout << "Iteration " << i << std::endl;
-            std::cout << "# Vertices " << vertices.size() << std::endl;
-        }
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {
@@ -277,17 +275,17 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned long numIter) 
          */
         if (acceptance > 1 || getRandomNumber() < acceptance) {
             move->execute(vertices);
-
-            moves << move->printID() << std::endl;
-        }
+        } else
+            moveRejectedBecauseDetBal++;
 
         // Topological constraint
         // BOOST_ASSERT(vertices.size() >= 14 * 2);
     }
 
-    moves.close();
-
-    std::cout << "Rejected imp: " << moveRejectedBecauseImpossible << std::endl;
+    std::cout << "Rejected imp: " << moveRejectedBecauseImpossible
+            << ", " << moveRejectedBecauseImpossible / (float) numIter << "%" << std::endl;
+    std::cout << "Rejected det: " << moveRejectedBecauseDetBal
+            << ", " << moveRejectedBecauseDetBal / (float) numIter << "%" << std::endl;
 
     // write a part of the grid to a file
     TriSet tri;

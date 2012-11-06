@@ -71,7 +71,7 @@ public:
 
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
-        move = COLLAPSE_SPACELIKE;// simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : PINCH; // FIXME: for testing
+        move = simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
