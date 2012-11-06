@@ -25,59 +25,52 @@ private:
         COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH, COUNT
     };
 
-    Move* createForwardMove(MOVES move, Simulation& simulation) {
-        switch (move) {
-            case ALEXANDER_SPACELIKE:
-                return (new AlexanderMove(false))->generateRandomMove(simulation);
-            case ALEXANDER_TIMELIKE:
-                return (new AlexanderMove(true))->generateRandomMove(simulation);
-            case COLLAPSE_SPACELIKE:
-                return (new CollapseMove(false))->generateRandomMove(simulation);
-            case COLLAPSE_TIMELIKE:
-                return (new CollapseMove(true))->generateRandomMove(simulation);
-            case FLIP:
-                return (new FlipMove(true, false))->generateRandomMove(simulation);
-            case FLIP_CHANGE:
-                return (new FlipMove(true, true))->generateRandomMove(simulation);
-            case PINCH:
-                return (new PinchingMove())->generateRandomMove(simulation);
-            default:
-                return NULL;
-        }
-    }
-
-    Move* createInverseMove(MOVES move, Simulation& simulation) {
-        switch (move) {
-            case ALEXANDER_SPACELIKE:
-                return (new InverseAlexanderMove(false))->generateRandomMove(simulation);
-            case ALEXANDER_TIMELIKE:
-                return (new InverseAlexanderMove(true))->generateRandomMove(simulation);
-            case COLLAPSE_SPACELIKE:
-                return (new InverseCollapseMove(false))->generateRandomMove(simulation);
-            case COLLAPSE_TIMELIKE:
-                return (new InverseCollapseMove(true))->generateRandomMove(simulation);
-            case FLIP:
-                return (new FlipMove(true, false))->generateRandomMove(simulation);
-            case FLIP_CHANGE:
-                return (new FlipMove(false, true))->generateRandomMove(simulation);
-            case PINCH:
-                return (new InversePinchingMove())->generateRandomMove(simulation);
-            default:
-                return NULL;
-        }
-    }
-
+    Move* moves[COUNT];
+    Move* invMoves[COUNT];
 public:
 
+    MoveFactory() {
+        moves[ALEXANDER_SPACELIKE] = new AlexanderMove(false);
+        moves[ALEXANDER_TIMELIKE] = new AlexanderMove(true);
+        moves[COLLAPSE_SPACELIKE] = new CollapseMove(false);
+        moves[COLLAPSE_TIMELIKE] = new CollapseMove(true);
+        moves[FLIP] = new FlipMove(true, false);
+        moves[FLIP_CHANGE] = new FlipMove(true, true);
+        moves[PINCH] = new PinchingMove();
+
+        invMoves[ALEXANDER_SPACELIKE] = new InverseAlexanderMove(false);
+        invMoves[ALEXANDER_TIMELIKE] = new InverseAlexanderMove(true);
+        invMoves[COLLAPSE_SPACELIKE] = new InverseCollapseMove(false);
+        invMoves[COLLAPSE_TIMELIKE] = new InverseCollapseMove(true);
+        invMoves[FLIP] = new FlipMove(true, false);
+        invMoves[FLIP_CHANGE] = new FlipMove(false, true);
+        invMoves[PINCH] = new InversePinchingMove();
+
+    }
+
+    virtual ~MoveFactory() {
+        for (int i = 0; i < COUNT; i++) {
+            delete moves[i];
+            delete invMoves[i];
+        }
+    }
+
+    /**
+     * Returns a random move. The move should not be freed.
+     * @param simulation Simulation
+     * @return Random move
+     */
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
         move = simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
-            return createInverseMove(move, simulation);
+            return invMoves[move]->generateRandomMove(simulation);
+            //return createInverseMove(move, simulation);
         } else {
-            return createForwardMove(move, simulation);
+            return moves[move]->generateRandomMove(simulation);
+            //return createForwardMove(move, simulation);
         }
     }
 };

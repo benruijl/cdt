@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     //simulation.readFromFile("grid.dat");
 
     simulation.generateInitialTriangulation(30, 30);
-    simulation.Metropolis(1.225, -1, 6000000ul);
+    simulation.Metropolis(1.225, -1, 10000000ul);
 
     simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
