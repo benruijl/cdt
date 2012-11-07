@@ -10,6 +10,7 @@
 #include "moves/MoveFactory.h"
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/array.hpp>
 #include <fstream>
 #include <sstream>
 
@@ -120,7 +121,7 @@ void Simulation::writeToFile(const char* filename) {
 
 void Simulation::generateInitialTriangulation(int N, int T) {
     Vertex * vertices[N * T];
-    Triangle * triangles[N * T * 2]; // TODO: remove, unnecessary
+    Triangle* triangles[N * T * 2]; // TODO: remove, unnecessary
 
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {

@@ -16,6 +16,7 @@
 #include "CollapseMove.h"
 #include "PinchingMove.h"
 #include "InversePinchingMove.h"
+#include <boost/array.hpp>
 
 class MoveFactory {
 private:
@@ -25,8 +26,8 @@ private:
         COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH, COUNT
     };
 
-    Move* moves[COUNT];
-    Move* invMoves[COUNT];
+    boost::array<Move*, COUNT> moves;
+    boost::array<Move*, COUNT> invMoves;
 public:
 
     MoveFactory() {

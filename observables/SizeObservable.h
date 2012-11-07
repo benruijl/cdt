@@ -41,7 +41,7 @@ public:
     }
 
     void printToFile() {
-        file << data << "\n";
+        file << data << std::endl; // fixme
     }
 };
 

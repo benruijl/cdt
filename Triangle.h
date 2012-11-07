@@ -9,6 +9,7 @@
 #define	TRIANGLE_H
 
 #include <iostream>
+#include <boost/array.hpp>
 #include "Vertex.h"
 
 class Triangle {
@@ -262,7 +263,7 @@ public:
 
 private:
     TYPE type;
-    Vertex* vertices[3]; /* Each triangle has three vertices */
+    boost::array<Vertex*,3> vertices; /* Each triangle has three vertices */
 };
 
 #endif	/* TRIANGLE_H */
