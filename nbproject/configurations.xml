@@ -60,6 +60,9 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <developmentMode>2</developmentMode>
+        </ccTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">
@@ -72,7 +75,7 @@
           <developmentMode>5</developmentMode>
         </cTool>
         <ccTool>
-          <developmentMode>4</developmentMode>
+          <developmentMode>5</developmentMode>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

@@ -174,10 +174,11 @@ T Simulation::getRandomElementFromSet(const boost::unordered_set<T>& set) {
     typename boost::unordered_set<T>::iterator it = set.begin();
 
     if (set.size() == 0) {
-        return NULL;
+        return NULL; // TODO: add assert?
     }
 
-    std::advance(it, unireal(rng) * set.size());
+    boost::uniform_int<> uint(0, set.size() - 1); // TODO: check if slow?
+    std::advance(it, uint(rng));
     return *it;
 }
 
@@ -246,7 +247,7 @@ std::vector<int> Simulation::createID() {
 void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
-    MoveFactory m;
+    MoveFactory m(*this);
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
 

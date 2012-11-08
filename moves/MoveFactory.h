@@ -28,9 +28,11 @@ private:
 
     boost::array<Move*, COUNT> moves;
     boost::array<Move*, COUNT> invMoves;
+    boost::uniform_int<> uint;
 public:
 
-    MoveFactory() {
+    MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
+        
         moves[ALEXANDER_SPACELIKE] = new AlexanderMove(false);
         moves[ALEXANDER_TIMELIKE] = new AlexanderMove(true);
         moves[COLLAPSE_SPACELIKE] = new CollapseMove(false);
@@ -62,7 +64,7 @@ public:
      * @return Random move
      */
     Move* createRandomMove(Simulation& simulation) {
-        MOVES move = static_cast<MOVES> ((int) (simulation.getRandomNumber() * COUNT));
+        MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
         move = simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 

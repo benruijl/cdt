@@ -10,10 +10,14 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
+#include <boost/random/uniform_int.hpp>
 
 #include <vector>
 #include "Triangle.h"
 #include "observables/Observable.h"
+
+typedef boost::mt19937 base_generator_type; // our RNG
+
 
 class Simulation {
 private:
@@ -119,11 +123,18 @@ public:
      * Writes the triangulation to a human readable file.
      */
     void writeToFile(const char* filename);
+    
+    /**
+     * Returns the current pseudo random number generator.
+     */
+    base_generator_type& getRNG() {
+        return rng;
+    }
 private:
     static const int SEED = 1289730123;
-    boost::mt19937 rng;
+    base_generator_type rng;
     boost::uniform_real<> unireal;
-    std::vector<Vertex*> vertices; // a list of all the vertices in the simulation
+    std::vector<Vertex*> vertices; // a list of all the vertices in the simulation    
 };
 
 #endif	/* SIMULATION_H */

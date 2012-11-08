@@ -13,7 +13,14 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {    
+int main(int argc, char** argv) {
+    boost::unordered_set<int> test;
+    for (int i = 0; i< 3; i++) test.insert(i);
+       
+    boost::unordered_set<int>::iterator it = test.begin();
+    std::advance(it, 3);
+    std::cout << *it;
+    
     Simulation simulation;
     SizeObservable sizeObservable(1, 0); // measure every sweep
     simulation.addObservable(&sizeObservable);
