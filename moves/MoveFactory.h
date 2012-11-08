@@ -65,7 +65,7 @@ public:
      */
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
-        move = simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
+        move = COLLAPSE_SPACELIKE;// simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
