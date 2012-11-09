@@ -121,7 +121,7 @@ void Simulation::writeToFile(const char* filename) {
 
 void Simulation::generateInitialTriangulation(int N, int T) {
     Vertex * vertices[N * T];
-    Triangle* triangles[N * T * 2]; // TODO: remove, unnecessary
+    Triangle * triangles[N * T * 2]; // TODO: remove, unnecessary
 
     /* Create vertices */
     for (int t = 0; t < T * N; t++) {
@@ -240,8 +240,30 @@ void Simulation::checkLinkOverlap() {
     }
 }
 
-std::vector<int> Simulation::createID() {
+std::vector<int> Simulation::createID(Triangle* t) {
+    std::vector<int> id;
 
+    TriSet tri;
+    std::queue<Triangle*> neighbours;
+    neighbours.push(t); // starting triangle
+
+    while (!neighbours.empty()) {
+        Triangle* cur = neighbours.front();
+        neighbours.pop();
+        
+        if (tri.find(cur) == tri.end()) {
+            continue;
+        }
+        
+        id.push_back(cur->getType() == Triangle::TTS);
+        tri.insert(cur);
+
+        for (int i = 0; i < 3; i++) {
+            neighbours.push(cur->getNeighbour(i));
+        }
+    }
+
+    return id;
 }
 
 void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,

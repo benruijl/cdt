@@ -220,7 +220,7 @@ public:
 
         BOOST_ASSERT(false);
     }
-    
+
     /**
      * Gets the neighbour that has u and v as vertices as well.
      * @param u
@@ -232,6 +232,10 @@ public:
         Vertex::getAdjacentTriangles(u, v, &q, &r);
         q = q == this ? r : q;
         return q;
+    }
+
+    Triangle* getNeighbour(int link) {
+        return getNeighbour(vertices[link], vertices[(link + 1) % 3]);
     }
 
     /**
@@ -247,6 +251,7 @@ public:
     Vertex* getVertex(int index) {
         return vertices[index];
     }
+
     /**
      * Gets the next vertex of the triangle. This process is deterministic.
      * @param v Current vertex
@@ -256,14 +261,14 @@ public:
         int i = indexFromVertex(v);
         return vertices[(i + 1) % 3];
     }
-    
+
     TYPE getType() {
         return type;
     }
 
 private:
     TYPE type;
-    boost::array<Vertex*,3> vertices; /* Each triangle has three vertices */
+    boost::array<Vertex*, 3 > vertices; /* Each triangle has three vertices */
 };
 
 #endif	/* TRIANGLE_H */

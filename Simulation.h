@@ -18,7 +18,6 @@
 
 typedef boost::mt19937 base_generator_type; // our RNG
 
-
 class Simulation {
 private:
     std::vector<Observable*> observables;
@@ -81,8 +80,10 @@ public:
 
     /**
      * Creates and ID for the current triangulation.
+     * @param t Starting triangle. In order to compare IDs, the simulation should
+     * not delete this triangle.
      */
-    std::vector<int> createID();
+    std::vector<int> createID(Triangle* t);
 
     /**
      * Collect triangles around a given vertex that are at most depth links away.
@@ -123,7 +124,7 @@ public:
      * Writes the triangulation to a human readable file.
      */
     void writeToFile(const char* filename);
-    
+
     /**
      * Returns the current pseudo random number generator.
      */
