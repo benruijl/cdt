@@ -79,7 +79,8 @@ public:
     void checkLinkOverlap();
 
     /**
-     * Creates and ID for the current triangulation.
+     * Creates and ID for the current triangulation. Note that it does not handle
+     * orientation changes.
      * @param t Starting triangle. In order to compare IDs, the simulation should
      * not delete this triangle.
      */

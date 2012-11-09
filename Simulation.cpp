@@ -162,6 +162,11 @@ void Simulation::generateInitialTriangulation(int N, int T) {
         }
     }
 
+    std::vector<int> id = createID(triangles[0]);
+    for (int i = 0; i < id.size(); i++) {
+        std::cout << id[i] << " ";
+    }
+
 }
 
 Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
@@ -243,21 +248,25 @@ void Simulation::checkLinkOverlap() {
 std::vector<int> Simulation::createID(Triangle* t) {
     std::vector<int> id;
 
-    TriSet tri;
+    int newId = 0; // TODO: add check for TTS and SST
+    boost::unordered_map<Triangle*, int> tri;
     std::queue<Triangle*> neighbours;
     neighbours.push(t); // starting triangle
 
     while (!neighbours.empty()) {
         Triangle* cur = neighbours.front();
         neighbours.pop();
-        
-        if (tri.find(cur) == tri.end()) {
+
+        boost::unordered_map<Triangle*, int>::iterator res = tri.find(cur);
+        if (res != tri.end()) {
+            id.push_back(res->second);
             continue;
         }
-        
-        id.push_back(cur->getType() == Triangle::TTS);
-        tri.insert(cur);
 
+        id.push_back(newId);
+        tri[cur] = newId;
+        newId++;
+        
         for (int i = 0; i < 3; i++) {
             neighbours.push(cur->getNeighbour(i));
         }
