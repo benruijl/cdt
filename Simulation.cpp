@@ -248,7 +248,7 @@ void Simulation::checkLinkOverlap() {
 std::vector<int> Simulation::createID(Triangle* t) {
     std::vector<int> id;
 
-    int newId = 0; // TODO: add check for TTS and SST
+    int newId = 0; // type of first triangle does not matter, because it should be fixed
     boost::unordered_map<Triangle*, int> tri;
     std::queue<Triangle*> neighbours;
     neighbours.push(t); // starting triangle
@@ -263,10 +263,11 @@ std::vector<int> Simulation::createID(Triangle* t) {
             continue;
         }
 
-        id.push_back(newId);
-        tri[cur] = newId;
+        int sign = cur->getType() == Triangle::TTS ? 1 : -1;
+        id.push_back(sign * newId);
+        tri[cur] = sign * newId;
         newId++;
-        
+
         for (int i = 0; i < 3; i++) {
             neighbours.push(cur->getNeighbour(i));
         }
