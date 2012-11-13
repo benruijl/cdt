@@ -13,9 +13,12 @@
 class PinchingMove : public Move {
 private:
     Vertex *u, *v;
+    bool isTimelike;
 public:
 
-    PinchingMove() : Move(-4, 2) {
+    PinchingMove(bool isTimelike) : Move(isTimelike * -4 + !isTimelike * 2, 
+            !isTimelike * -4 + isTimelike * 2) {
+        this->isTimelike = isTimelike;
     }
 
     double getTransitionProbability(std::vector<Vertex*>& vertices) {
@@ -29,8 +32,8 @@ public:
         Vertex* w = first->getThirdVertex(u, v);
         Vertex* x = second->getThirdVertex(u, v);
 
-        if (!first->isTimelike(u, v) || first->isTimelike(u, w) || second->isTimelike(u, x)
-                || !first->isTimelike(v, w) || !second->isTimelike(v, x)) {
+        if (first->isTimelike(u, v) != isTimelike || first->isTimelike(u, w)== isTimelike || second->isTimelike(u, x) == isTimelike
+                || first->isTimelike(v, w) != isTimelike || second->isTimelike(v, x) != isTimelike) {
             return false;
         }
 
@@ -38,7 +41,7 @@ public:
         r = r == first ? t : r;
         Vertex* y = r->getThirdVertex(v, w);
 
-        if (r->isTimelike(v, y) || !r->isTimelike(w, y)) {
+        if (r->isTimelike(v, y) != isTimelike || r->isTimelike(w, y) == isTimelike) {
             return false;
         }
 
@@ -46,7 +49,7 @@ public:
         r = r == second ? t : r;
         Vertex* z = r->getThirdVertex(v, x);
 
-        if (r->isTimelike(v, z) || !r->isTimelike(x, z)) {
+        if (r->isTimelike(v, z) == isTimelike || !r->isTimelike(x, z) == isTimelike) {
             return false;
         }
 
@@ -63,11 +66,7 @@ public:
         m.getTriangles().erase(second);
         VertSet verts2 = m.getNeighbouringVertices();
 
-        if ((verts & verts2).size() > 2) {
-            return false;
-        }
-
-        return true;
+        return (verts & verts2).size() == 2; 
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -80,16 +79,16 @@ public:
         Triangle* l, *r;
         Vertex::getAdjacentTriangles(u, v, &l, &r);
 
-        // count the number of triangles that belong in the spacelike
+        // count the number of triangles that belong in the other
         // sector after this move is done
-        int countLeft = u->getSectorVertices(l, true, false).size() - 1;
-        int countRight = u->getSectorVertices(r, false, false).size() - 1;
+        int countLeft = u->getSectorVertices(l, true, !isTimelike).size() - 1;
+        int countRight = u->getSectorVertices(r, false, !isTimelike).size() - 1;
 
         Vertex* w = l->getThirdVertex(u, v);
         Vertex* x = r->getThirdVertex(u, v);
 
-        countLeft += v->getSectorVertices(l, w, false).size() - 1;
-        countRight += v->getSectorVertices(r, x, false).size() - 1;
+        countLeft += v->getSectorVertices(l, w, !isTimelike).size() - 1;
+        countRight += v->getSectorVertices(r, x, !isTimelike).size() - 1;
 
         return 1.0 / ((countLeft + 1) * (countRight + 1) * 2);
     }
@@ -122,8 +121,8 @@ public:
         }
 
         /* Create new triangles */
-        new Triangle(w, u, y, false, false, true);
-        new Triangle(x, u, z, false, false, true);
+        new Triangle(w, u, y, !isTimelike, !isTimelike, isTimelike);
+        new Triangle(x, u, z, !isTimelike, !isTimelike, isTimelike);
 
         delete first;
         delete second;

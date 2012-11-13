@@ -15,17 +15,20 @@ private:
     Vertex* v;
     Triangle *t, *s;
     bool left; // orientation of the asymmetric expansion
+    bool isTimelike;
 public:
 
-    InversePinchingMove() : Move(4, -2) {
+    InversePinchingMove(bool isTimelike) : Move(isTimelike * 4 + !isTimelike * -2, 
+            !isTimelike * 4 + isTimelike * -2) {
         t = NULL;
         s = NULL;
+        this->isTimelike = isTimelike;
     }
 
     double getTransitionProbability(std::vector<Vertex*>& vertices) {
         Triangle* start = *v->getTriangles().begin();
-        TriSet triRight = v->getSectorTriangles(start, false, false);
-        TriSet triLeft = v->getSectorTriangles(start, true, false);
+        TriSet triRight = v->getSectorTriangles(start, false, !isTimelike);
+        TriSet triLeft = v->getSectorTriangles(start, true, !isTimelike);
 
         return 1.0 / (vertices.size() * triRight.size() * triLeft.size() * 2);
     }
@@ -38,9 +41,9 @@ public:
         v = simulation.getRandomVertex(simulation.getVertices());
         Triangle* start = *v->getTriangles().begin();
 
-        TriSet tri = v->getSectorTriangles(start, false, false);
+        TriSet tri = v->getSectorTriangles(start, false, !isTimelike);
         t = simulation.getRandomElementFromSet(tri);
-        tri = v->getSectorTriangles(start, true, false);
+        tri = v->getSectorTriangles(start, true, !isTimelike);
         s = simulation.getRandomElementFromSet(tri);
 
         left = simulation.getRandomNumber() < 0.5;
@@ -110,10 +113,10 @@ public:
             a->replaceVertex(v, x);
         }
 
-        new Triangle(Triangle::TTS, u, x, v);
-        new Triangle(Triangle::TTS, v, x, edge);
-        new Triangle(Triangle::TTS, w, u, x);
-        new Triangle(Triangle::TTS, x, edge, z);
+        new Triangle(u, x, v, isTimelike, isTimelike, !isTimelike);
+        new Triangle(v, x, edge, isTimelike, isTimelike, !isTimelike);
+        new Triangle(w, u, x, isTimelike, isTimelike, !isTimelike);
+        new Triangle(x, edge, z, isTimelike, isTimelike, !isTimelike);
 
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(x->checkCausality());

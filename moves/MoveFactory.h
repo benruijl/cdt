@@ -23,7 +23,8 @@ private:
 
     enum MOVES {
         ALEXANDER_TIMELIKE, ALEXANDER_SPACELIKE, FLIP_CHANGE, FLIP,
-        COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH, COUNT
+        COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH_SPACELIKE,
+        PINCH_TIMELIKE, COUNT
     };
 
     boost::array<Move*, COUNT> moves;
@@ -32,14 +33,15 @@ private:
 public:
 
     MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
-        
+
         moves[ALEXANDER_SPACELIKE] = new AlexanderMove(false);
         moves[ALEXANDER_TIMELIKE] = new AlexanderMove(true);
         moves[COLLAPSE_SPACELIKE] = new CollapseMove(false);
         moves[COLLAPSE_TIMELIKE] = new CollapseMove(true);
         moves[FLIP] = new FlipMove(true, false);
         moves[FLIP_CHANGE] = new FlipMove(true, true);
-        moves[PINCH] = new PinchingMove();
+        moves[PINCH_SPACELIKE] = new PinchingMove(false);
+        moves[PINCH_TIMELIKE] = new PinchingMove(true);
 
         invMoves[ALEXANDER_SPACELIKE] = new InverseAlexanderMove(false);
         invMoves[ALEXANDER_TIMELIKE] = new InverseAlexanderMove(true);
@@ -47,7 +49,8 @@ public:
         invMoves[COLLAPSE_TIMELIKE] = new InverseCollapseMove(true);
         invMoves[FLIP] = new FlipMove(true, false);
         invMoves[FLIP_CHANGE] = new FlipMove(false, true);
-        invMoves[PINCH] = new InversePinchingMove();
+        invMoves[PINCH_SPACELIKE] = new InversePinchingMove(false);
+        invMoves[PINCH_TIMELIKE] = new InversePinchingMove(true);
 
     }
 
@@ -65,15 +68,13 @@ public:
      */
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
-        move = COLLAPSE_SPACELIKE;// simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
+        move = COLLAPSE_SPACELIKE; // simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
             return invMoves[move]->generateRandomMove(simulation);
-            //return createInverseMove(move, simulation);
         } else {
             return moves[move]->generateRandomMove(simulation);
-            //return createForwardMove(move, simulation);
         }
     }
 };
