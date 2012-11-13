@@ -10,6 +10,7 @@
 #include "moves/MoveFactory.h"
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <boost/array.hpp>
 #include <fstream>
 #include <sstream>
@@ -141,32 +142,13 @@ void Simulation::generateInitialTriangulation(int N, int T) {
         }
     }
 
-    /* Check causality to make sure the grid is correct */
-    // TODO: remove from production release when satisfied with above algorithm
-    for (int t = 0; t < T; t++) {
-        for (int s = 0; s < N; s++) {
-            if (!vertices[t * N + s]->checkCausality()) {
-                std::cerr << "Causality failure at " << t << " " << s << std::endl;
-            }
-        }
-    }
-
-    /* Check if no links are double */
-    for (int i = 0; i < N * T - 1; i++) {
-        for (int j = i + 1; j < N * T; j++) {
-            TriSet t = vertices[i]->getTriangles() & vertices[j]->getTriangles(); // intersection
-
-            if (t.size() != 2 && t.size() != 0) {
-                std::cerr << "Link duplicates: " << i << " " << j << " " << t.size() << std::endl;
-            }
-        }
-    }
-
+    // for testing, print initial id
     std::vector<int> id = createID(triangles[0]);
     for (int i = 0; i < id.size(); i++) {
         std::cout << id[i] << " ";
     }
 
+    std::cout << std::endl << id.size() << std::endl;
 }
 
 Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
@@ -226,19 +208,12 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 }
 
 void Simulation::checkLinkOverlap() {
-    // TODO: improve, use that check if symmetric
-
-    /* Check if no links are double */
-    foreach(Vertex* a, vertices) {
-
-        foreach(Vertex* b, vertices) {
-            if (a == b) {
-                continue;
-            }
-            TriSet t = a->getTriangles() & b->getTriangles(); // intersection
+    for (int i = 0; i < vertices.size() - 1; i++) {
+        for (int j = i + 1; j < vertices.size(); j++) {
+            TriSet t = vertices[i]->getTriangles() & vertices[j]->getTriangles();
 
             if (t.size() != 2 && t.size() != 0) {
-                std::cerr << "Link duplicates: " << a << " " << b << " " << t.size() << std::endl;
+                std::cerr << "Link duplicates: " << i << " " << j << " " << t.size() << std::endl;
                 BOOST_ASSERT(false);
             }
         }
@@ -246,35 +221,100 @@ void Simulation::checkLinkOverlap() {
 }
 
 std::vector<int> Simulation::createID(Triangle* t) {
+    typedef boost::tuple<Triangle*, Vertex*, Vertex*> curpos;
     std::vector<int> id;
 
-    int newId = 0; // type of first triangle does not matter, because it should be fixed
+    int newId = 8; // start at 8, 8 > character
     boost::unordered_map<Triangle*, int> tri;
-    std::queue<Triangle*> neighbours;
-    neighbours.push(t); // starting triangle
+    std::queue<curpos> neighbours;
+
+    // add current triangle and first neighbour
+    neighbours.push(
+            boost::make_tuple(t, t->getVertex(0), t->getVertex(1)));
+    neighbours.push(
+            boost::make_tuple(t->getNeighbour(0), t->getVertex(0), t->getVertex(1)));
 
     while (!neighbours.empty()) {
-        Triangle* cur = neighbours.front();
+        curpos cur = neighbours.front();
         neighbours.pop();
 
-        boost::unordered_map<Triangle*, int>::iterator res = tri.find(cur);
+        Triangle* t = cur.get < 0 > ();
+
+        boost::unordered_map<Triangle*, int>::iterator res = tri.find(t);
         if (res != tri.end()) {
             id.push_back(res->second);
             continue;
         }
 
-        int sign = cur->getType() == Triangle::TTS ? 1 : -1;
-        id.push_back(sign * newId);
-        tri[cur] = sign * newId;
+        // create character of tri a - b - c
+        Vertex* a = cur.get < 1 > ();
+        Vertex* b = cur.get < 2 > ();
+        Vertex* c = t->getThirdVertex(a, b);
+
+        int character = t->isTimelike(a, b) * 4 + t->isTimelike(b, c) * 2 +
+                t->isTimelike(c, a);
+
+        id.push_back(character);
+        tri[t] = newId;
         newId++;
 
-        for (int i = 0; i < 3; i++) {
-            neighbours.push(cur->getNeighbour(i));
-        }
+        // add the two other neighbours to the stack
+        neighbours.push(boost::make_tuple(t->getNeighbour(b, c),
+                b, c));
+        neighbours.push(boost::make_tuple(t->getNeighbour(c, a),
+                c, a));
     }
 
     return id;
 }
+
+/*
+std::vector<int> Simulation::createID(Triangle* t) {
+    typedef boost::tuple<Triangle*, Vertex*, Vertex*> curpos;
+    std::vector<int> id;
+
+    int newId = 1;
+    boost::unordered_map<Triangle*, int> tri;
+    std::queue<curpos> neighbours;
+
+    // add current triangle and first neighbour
+    neighbours.push(
+            boost::make_tuple(t, t->getVertex(0), t->getVertex(1)));
+    neighbours.push(
+            boost::make_tuple(t->getNeighbour(0), t->getVertex(0), t->getVertex(1)));
+
+    while (!neighbours.empty()) {
+        curpos cur = neighbours.front();
+        neighbours.pop();
+
+        Triangle* t = cur.get < 0 > ();
+        Vertex* a = cur.get < 1 > ();
+        Vertex* b = cur.get < 2 > ();
+        Vertex* c = t->getThirdVertex(a, b);
+
+        // store the character of the link in the id
+        int sign = t->isTimelike(a, b) ? 1 : -1;
+
+        boost::unordered_map<Triangle*, int>::iterator res = tri.find(t);
+        if (res != tri.end()) {
+            id.push_back(sign * res->second);
+            continue;
+        }
+
+        tri[t] = newId;
+        id.push_back(sign * newId);
+        newId++;
+
+        // add the two other neighbours
+        neighbours.push(boost::make_tuple(t->getNeighbour(b, c),
+                b, c));
+        neighbours.push(boost::make_tuple(t->getNeighbour(c, a),
+                c, a));
+    }
+
+    return id;
+}
+ */
 
 void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {

@@ -31,7 +31,8 @@ VertSet Vertex::getNeighbouringVertices() {
     return neighbours;
 }
 
-void Vertex::getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second) {
+void Vertex::getAdjacentTriangles(const Vertex* a, const Vertex* b,
+        Triangle** first, Triangle** second) {
     TriSet t = a->triangles & b->triangles; // intersection
 
     // NOTE: if this assertion fails it is mostly due to the fact that the grid

@@ -124,7 +124,7 @@ public:
     }
 
     std::string printID() {
-        return std::string("INV_PINCH");
+        return std::string("INV_PINCH_") + (isTimelike ? "TL" : "SL");
     }
 };
 

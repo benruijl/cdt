@@ -137,7 +137,7 @@ public:
     }
 
     std::string printID() {
-        return std::string("PINCH");
+        return std::string("PINCH_") + (isTimelike ? "TL" : "SL");
     }
 };
 

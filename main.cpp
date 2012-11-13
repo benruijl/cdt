@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     // read in a thermalized triangulation
     //simulation.readFromFile("grid.dat");
 
-    simulation.generateInitialTriangulation(30, 30);    
+    simulation.generateInitialTriangulation(4, 4);    
     simulation.Metropolis(1.24, -1, 18100, 1000000); // should run for 12 hours
 
     simulation.writeToFile("grid.dat");

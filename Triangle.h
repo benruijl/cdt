@@ -227,7 +227,7 @@ public:
      * @param v
      * @return 
      */
-    Triangle* getNeighbour(Vertex* u, Vertex* v) {
+    Triangle* getNeighbour(const Vertex* u, const Vertex* v) {
         Triangle* q, *r;
         Vertex::getAdjacentTriangles(u, v, &q, &r);
         q = q == this ? r : q;

@@ -38,7 +38,8 @@ public:
      * @param first
      * @param second
      */
-    static void getAdjacentTriangles(Vertex* a, Vertex* b, Triangle** first, Triangle** second);
+    static void getAdjacentTriangles(const Vertex* a, const Vertex* b, 
+        Triangle** first, Triangle** second);
 
     /**
      * Gets the amount of neighbouring vertices.

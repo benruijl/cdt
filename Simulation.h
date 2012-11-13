@@ -79,10 +79,11 @@ public:
     void checkLinkOverlap();
 
     /**
-     * Creates and ID for the current triangulation. Note that it does not handle
-     * orientation changes.
+     * Creates a unique ID for the current triangulation.
      * @param t Starting triangle. In order to compare IDs, the simulation should
      * not delete this triangle.
+     * 
+     * TODO: make bytestream?
      */
     std::vector<int> createID(Triangle* t);
 
