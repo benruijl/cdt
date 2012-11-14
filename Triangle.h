@@ -266,6 +266,12 @@ public:
         return type;
     }
 
+    // swaps vertices 0 and 1 
+    void swapVertices() {
+        Vertex* a = vertices[0];
+        vertices[0] = vertices[2];
+        vertices[2] = a;
+    }
 private:
     TYPE type;
     boost::array<Vertex*, 3 > vertices; /* Each triangle has three vertices */

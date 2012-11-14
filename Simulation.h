@@ -86,6 +86,12 @@ public:
      * TODO: make bytestream?
      */
     std::vector<int> createID(Triangle* t);
+    
+    /**
+     * Perform a simple Boltzmann test. Counts the frequency of the lowest energy
+     * states.
+     */
+    void doBoltmannTest();
 
     /**
      * Collect triangles around a given vertex that are at most depth links away.

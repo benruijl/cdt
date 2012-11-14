@@ -21,10 +21,10 @@ int main(int argc, char** argv) {
     // read in a thermalized triangulation
     //simulation.readFromFile("grid.dat");
 
-    simulation.generateInitialTriangulation(4, 4);    
-    simulation.Metropolis(1.24, -1, 18100, 1000000); // should run for 12 hours
+    simulation.generateInitialTriangulation(20, 20);    
+    simulation.Metropolis(1.5, -1, 200, 1000000); // 18100 should run for 12 hours
 
-    simulation.writeToFile("grid.dat");
+    //simulation.writeToFile("grid.dat");
     simulation.clearTriangulation();
 
     std::cout << "Simulation ended." << std::endl;

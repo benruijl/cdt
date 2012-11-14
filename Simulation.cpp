@@ -8,6 +8,7 @@
 #include "Simulation.h"
 #include "Utils.h"
 #include "moves/MoveFactory.h"
+#include "Boltmann.h"
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -130,7 +131,7 @@ void Simulation::generateInitialTriangulation(int N, int T) {
         this->vertices.push_back(vertices[t]);
     }
 
-    /* Create a foliation */
+    /* Create foliation */
     for (int t = 0; t < T; t++) {
         for (int s = 0; s < N; s++) {
             Triangle* u = new Triangle(Triangle::TTS, vertices[t * N + s], vertices[((t + 1) % T) * N + s],
@@ -141,14 +142,6 @@ void Simulation::generateInitialTriangulation(int N, int T) {
             triangles[t * 2 * N + 2 * s + 1] = v;
         }
     }
-
-    // for testing, print initial id
-    std::vector<int> id = createID(triangles[0]);
-    for (int i = 0; i < id.size(); i++) {
-        std::cout << id[i] << " ";
-    }
-
-    std::cout << std::endl << id.size() << std::endl;
 }
 
 Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
@@ -268,58 +261,15 @@ std::vector<int> Simulation::createID(Triangle* t) {
     return id;
 }
 
-/*
-std::vector<int> Simulation::createID(Triangle* t) {
-    typedef boost::tuple<Triangle*, Vertex*, Vertex*> curpos;
-    std::vector<int> id;
-
-    int newId = 1;
-    boost::unordered_map<Triangle*, int> tri;
-    std::queue<curpos> neighbours;
-
-    // add current triangle and first neighbour
-    neighbours.push(
-            boost::make_tuple(t, t->getVertex(0), t->getVertex(1)));
-    neighbours.push(
-            boost::make_tuple(t->getNeighbour(0), t->getVertex(0), t->getVertex(1)));
-
-    while (!neighbours.empty()) {
-        curpos cur = neighbours.front();
-        neighbours.pop();
-
-        Triangle* t = cur.get < 0 > ();
-        Vertex* a = cur.get < 1 > ();
-        Vertex* b = cur.get < 2 > ();
-        Vertex* c = t->getThirdVertex(a, b);
-
-        // store the character of the link in the id
-        int sign = t->isTimelike(a, b) ? 1 : -1;
-
-        boost::unordered_map<Triangle*, int>::iterator res = tri.find(t);
-        if (res != tri.end()) {
-            id.push_back(sign * res->second);
-            continue;
-        }
-
-        tri[t] = newId;
-        id.push_back(sign * newId);
-        newId++;
-
-        // add the two other neighbours
-        neighbours.push(boost::make_tuple(t->getNeighbour(b, c),
-                b, c));
-        neighbours.push(boost::make_tuple(t->getNeighbour(c, a),
-                c, a));
-    }
-
-    return id;
-}
- */
-
 void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m(*this);
+    BoltzmannTester boltzmannTester;
+
+    // choose a triangle that remains fixed
+    // TODO: enforce this!
+    Triangle* fixed = *vertices[0]->getTriangles().begin();
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
 
@@ -334,6 +284,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
+                boltzmannTester.addStateId(createID(fixed));
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -352,18 +303,20 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
                 move->execute(vertices);
             } else
                 moveRejectedBecauseDetBal++;
-
-            // Topological constraint
-            // BOOST_ASSERT(vertices.size() >= 14 * 2);
+            
+            boltzmannTester.addStateId(createID(fixed));
         }
     }
 
-    std::cout << "Rejected imp: " << moveRejectedBecauseImpossible
+    /* Write some statistics*/
+    std::cout << "Rejected impossible: " << moveRejectedBecauseImpossible
             << ", " << 100 * moveRejectedBecauseImpossible /
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
-    std::cout << "Rejected det: " << moveRejectedBecauseDetBal
+    std::cout << "Rejected detailed balance: " << moveRejectedBecauseDetBal
             << ", " << 100 * moveRejectedBecauseDetBal /
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
+    
+    boltzmannTester.printFrequencies();
 
     // write a part of the grid to a file
     TriSet tri;

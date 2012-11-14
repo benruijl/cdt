@@ -77,6 +77,7 @@ public:
             return moves[move]->generateRandomMove(simulation);
         }
     }
+
 };
 
 #endif	/* MOVEFACTORY_H */
