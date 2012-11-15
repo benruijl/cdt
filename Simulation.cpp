@@ -8,7 +8,7 @@
 #include "Simulation.h"
 #include "Utils.h"
 #include "moves/MoveFactory.h"
-#include "Boltmann.h"
+#include "Boltzmann.h"
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -284,7 +284,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
-                boltzmannTester.addStateId(createID(fixed));
+                //boltzmannTester.addStateId(createID(fixed));
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -304,7 +304,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             } else
                 moveRejectedBecauseDetBal++;
             
-            boltzmannTester.addStateId(createID(fixed));
+            //boltzmannTester.addStateId(createID(fixed));
         }
     }
 
@@ -316,7 +316,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             << ", " << 100 * moveRejectedBecauseDetBal /
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
     
-    boltzmannTester.printFrequencies();
+    //boltzmannTester.printFrequencies();
 
     // write a part of the grid to a file
     TriSet tri;

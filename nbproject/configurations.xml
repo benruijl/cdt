@@ -19,7 +19,7 @@
         <itemPath>observables/Observable.h</itemPath>
         <itemPath>observables/SizeObservable.h</itemPath>
       </logicalFolder>
-      <itemPath>Boltmann.h</itemPath>
+      <itemPath>Boltzmann.h</itemPath>
       <itemPath>Simulation.h</itemPath>
       <itemPath>Triangle.h</itemPath>
       <itemPath>Utils.h</itemPath>

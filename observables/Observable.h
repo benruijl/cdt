@@ -9,6 +9,7 @@
 #define	OBSERVABLE_H
 
 #include <sstream>
+#include <boost/date_time.hpp>
 
 class Observable {
 private:
@@ -16,6 +17,7 @@ private:
     unsigned int currentMeasurement;
     bool doPrintToScreen;
     const char* name;
+    std::string timeStamp;
 
     /**
      * Process a given state.
@@ -25,7 +27,8 @@ private:
 public:
 
     /**
-     * Creates an observable.
+     * Creates an observable. The timestamp appended to the output file is
+     * the one at creation of this observable.
      * @param writeFrequency Sweep frequency to write the observed data to file.
      * @param registerFrequency Number of items to measure. Old items will be dropped.
      * 
@@ -38,6 +41,12 @@ public:
     doPrintToScreen(printToScreen),
     currentMeasurement(0),
     name(name) {
+        boost::posix_time::time_facet* facet = new boost::posix_time::time_facet("%d%m%Y_%H%M%S");
+        boost::posix_time::ptime cur(boost::posix_time::second_clock::local_time());
+        std::stringstream ss;
+        ss.imbue(std::locale(ss.getloc(), facet));
+        ss << cur;
+        timeStamp = ss.str();
     }
 
     virtual ~Observable() {
@@ -81,6 +90,22 @@ public:
      */
     unsigned int getMeasurementCount() {
         return currentMeasurement;
+    }
+
+    std::string getTimestamp() {
+        return timeStamp;
+    }
+
+    /**
+     * Creates a filename given a certain prefix. The filename includes
+     * the timestamp.
+     * @param prefix Prefix, for example 'size' or 'grid'
+     * @return Filename, path included
+     */
+    std::string createFilename(const char* prefix) {
+        std::stringstream ss;
+        ss << "data/" << prefix << "_" << getTimestamp() << ".dat";
+        return ss.str();
     }
 };
 

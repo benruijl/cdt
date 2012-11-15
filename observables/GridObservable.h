@@ -8,7 +8,7 @@
 #ifndef GRIDOBSERVABLE_H
 #define	GRIDOBSERVABLE_H
 
-#include "Simulation.h"
+#include "../Simulation.h"
 
 /**
  * Stores the grid.
@@ -16,12 +16,17 @@
 class GridObservable : public Observable {
 private:
     Simulation& simulation;
+    std::string filename;
+    
+    void process(const std::vector<Vertex*>& state) {
+        
+    }
 public:
 
     GridObservable(Simulation& simulation, unsigned long writeFrequency) :
     Observable(writeFrequency, 1, false),
-    simulation(simulation) {
-
+    simulation(simulation),
+    filename(createFilename("grid")) {
     }
 
     virtual ~GridObservable() {
@@ -35,7 +40,7 @@ public:
      * Prints the result of the computation to a file.
      */
     void printToFile() {
-        simulation->writeToFile("grid.dat");
+        simulation.writeToFile(filename.c_str());
     }
 };
 

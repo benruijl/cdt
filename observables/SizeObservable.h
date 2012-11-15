@@ -25,11 +25,12 @@ private:
 public:
 
     SizeObservable(unsigned long writeFrequency, unsigned long registerFrequency) :
-    Observable(writeFrequency, registerFrequency, true) {
-        file.open("data/size.dat");
+    Observable(writeFrequency, registerFrequency, true) { 
+        std::string filename =  createFilename("size");
+        file.open(filename.c_str());
 
         if (!file.is_open()) {
-            std::cerr << "Could not open file 'data/size.dat'" << std::endl;
+            std::cerr << "Could not open file '" << filename << "'" << std::endl;
         }
     }
 
