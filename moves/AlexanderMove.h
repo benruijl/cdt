@@ -28,10 +28,15 @@ public:
     bool isMovePossible(std::vector<Vertex*>& vertices) {
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
-        
-        if (!first->checkAdjacentSides(u, v) || 
+
+        if (!first->checkAdjacentSides(u, v) ||
                 !second->checkAdjacentSides(u, v)) {
-            return false; // fixme
+            return false; // fixme, hacked in for comparing to collapse
+        }
+
+        /* A fixed triangle should not be deleted. */
+        if (first == getFixedTriangle() || second == getFixedTriangle()) {
+            return false;
         }
 
         return isTimelike == first->isTimelike(u, v);

@@ -38,17 +38,15 @@ public:
         Vertex* c = first->getThirdVertex(u, v);
         Vertex* d = second->getThirdVertex(u, v);
 
+        /* A fixed triangle should not be deleted. */
+        if (first == getFixedTriangle() || second == getFixedTriangle()) {
+            return false;
+        }
+
         // prevent link overlap, could happen in a very rare cases
         VertSet verts = c->getNeighbouringVertices();
         if (verts.find(d) != verts.end()) {
             return false;
-        }
-
-        if (first->isTimelike(u, v) == isTimelike) {
-            if (!((first->isTimelike(u, c) != second->isTimelike(u, d))
-                    && (first->isTimelike(v, c) != second->isTimelike(v, d)))) {
-                //  std::cout << "a";
-            }
         }
 
         return first->isTimelike(u, v) == isTimelike && first->isTimelike(u, c) != second->isTimelike(u, d)

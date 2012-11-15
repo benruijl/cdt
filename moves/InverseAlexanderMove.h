@@ -66,13 +66,7 @@ public:
         foreach(Triangle* t, u->getTriangles()) {
             tlCount += t->isOppositeLinkTimelike(u);
         }
-        
-        return tlCount ==4; // fixme
 
-        if (tlCount != 2) {
-            return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);
-
-        }
 
         // The check for tlCount == 2 is more complicated
         // TODO: find a better way
@@ -86,6 +80,19 @@ public:
         Vertex::getAdjacentTriangles(u, x, &t, &r);
         fourth = t == third ? r : t;
         Vertex* y = fourth->getThirdVertex(u, x);
+
+        /* A fixed triangle should not be deleted. */
+        if (first == getFixedTriangle() || second == getFixedTriangle() ||
+                third == getFixedTriangle() || fourth == getFixedTriangle()) {
+            return false;
+        }
+
+        return tlCount == 4; // fixme, hacked in to compare to collapse move
+
+        if (tlCount != 2) {
+            return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);
+
+        }
 
         bool lUV = first->isTimelike(u, v);
         bool lVW = first->isTimelike(v, w);

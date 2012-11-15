@@ -35,6 +35,11 @@ public:
             return false;
         }
 
+        /* A fixed triangle should not be deleted. */
+        if (first == getFixedTriangle() || second == getFixedTriangle()) {
+            return false;
+        }
+
         // topology constraint: because of periodic boundary conditions it could
         // be that the collapse move fails and results in overlapping links
         // TODO find cleaner way

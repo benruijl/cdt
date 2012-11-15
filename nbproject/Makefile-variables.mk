@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/cdt
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=cdt.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/cdt.tar
+# DebugRelease configuration
+CND_PLATFORM_DebugRelease=GNU-Linux-x86
+CND_ARTIFACT_DIR_DebugRelease=dist/DebugRelease/GNU-Linux-x86
+CND_ARTIFACT_NAME_DebugRelease=cdt
+CND_ARTIFACT_PATH_DebugRelease=dist/DebugRelease/GNU-Linux-x86/cdt
+CND_PACKAGE_DIR_DebugRelease=dist/DebugRelease/GNU-Linux-x86/package
+CND_PACKAGE_NAME_DebugRelease=cdt.tar
+CND_PACKAGE_PATH_DebugRelease=dist/DebugRelease/GNU-Linux-x86/package/cdt.tar
 #
 # include compiler specific variables
 #

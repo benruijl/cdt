@@ -77,6 +77,7 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <commandLine>-pg</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -84,6 +85,19 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+      </compileType>
+    </conf>
+    <conf name="DebugRelease" type="1">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <developmentMode>0</developmentMode>
+          <commandLine>-O1 -pg</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
       </compileType>
     </conf>
   </confs>

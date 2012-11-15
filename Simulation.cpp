@@ -201,8 +201,8 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
 }
 
 void Simulation::checkLinkOverlap() {
-    for (int i = 0; i < vertices.size() - 1; i++) {
-        for (int j = i + 1; j < vertices.size(); j++) {
+    for (unsigned int i = 0; i < vertices.size() - 1; i++) {
+        for (unsigned int j = i + 1; j < vertices.size(); j++) {
             TriSet t = vertices[i]->getTriangles() & vertices[j]->getTriangles();
 
             if (t.size() != 2 && t.size() != 0) {
@@ -267,9 +267,9 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
     MoveFactory m(*this);
     BoltzmannTester boltzmannTester;
 
-    // choose a triangle that remains fixed
-    // TODO: enforce this!
+    // Choose a triangle that remains fixed
     Triangle* fixed = *vertices[0]->getTriangles().begin();
+    std::vector<int> id = createID(fixed);
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
 
@@ -278,13 +278,14 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             o->measure(vertices);
         }
 
-        for (int i = 0; i < sweepLength; i++) {
+        for (unsigned int i = 0; i < sweepLength; i++) {
             Move* move = m.createRandomMove(*this);
+            move->setFixedTriangle(fixed);
 
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
-                //boltzmannTester.addStateId(createID(fixed));
+                boltzmannTester.addStateId(id);
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -301,10 +302,11 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
              */
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
+                id = createID(fixed);
             } else
                 moveRejectedBecauseDetBal++;
             
-            //boltzmannTester.addStateId(createID(fixed));
+            boltzmannTester.addStateId(id);
         }
     }
 
@@ -316,7 +318,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             << ", " << 100 * moveRejectedBecauseDetBal /
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
     
-    //boltzmannTester.printFrequencies();
+    boltzmannTester.printFrequencies(lambda, alpha);
 
     // write a part of the grid to a file
     TriSet tri;

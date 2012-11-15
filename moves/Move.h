@@ -33,7 +33,7 @@ public:
      * @return P(x')/P(x)
      */
     double getMoveProbability(double lambda, double alpha);
-    
+
     /**
      * Gets the probability of performing this particular move.
      * @param vertices Set of vertices
@@ -57,7 +57,7 @@ public:
      * @return This move
      */
     virtual Move* generateRandomMove(Simulation& simulation) = 0;
-    
+
     /**
      * Checks if this move is possible.
      * @param vertices Set of vertices
@@ -70,13 +70,31 @@ public:
      * @param vertices Set of vertices
      */
     virtual void execute(std::vector<Vertex*>& vertices) = 0;
-    
+
     /**
      * Prints the move id. Useful for debugging.
      */
     virtual std::string printID() = 0;
+
+    /**
+     * Set a triangle that should not be altered by moves. Useful for some
+     * measurements or debugging.
+     * @param t Static triangle, could be NULL
+     */
+    void setFixedTriangle(Triangle* t) {
+        fixedTriangle = t;
+    }
+
+    /**
+     * Gets the fixed triangle
+     * @return Fixed triangle, can be NULL
+     */
+    Triangle* getFixedTriangle() {
+        return fixedTriangle;
+    }
 private:
     int Ntts, Ntss; // Number of TTS and TSS triangles this move changes
+    Triangle* fixedTriangle; // TODO: implement for pinching move as well
 };
 
 #endif	/* MOVE_H */

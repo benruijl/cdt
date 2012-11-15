@@ -38,8 +38,8 @@ public:
             bool printToScreen) :
     registerFrequency(registerFrequency),
     writeFrequency(writeFrequency),
-    doPrintToScreen(printToScreen),
     currentMeasurement(0),
+    doPrintToScreen(printToScreen),
     name(name) {
         boost::posix_time::time_facet* facet = new boost::posix_time::time_facet("%d%m%Y_%H%M%S");
         boost::posix_time::ptime cur(boost::posix_time::second_clock::local_time());
