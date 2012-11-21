@@ -18,6 +18,7 @@
         <itemPath>observables/GridObservable.h</itemPath>
         <itemPath>observables/Observable.h</itemPath>
         <itemPath>observables/SizeObservable.h</itemPath>
+        <itemPath>observables/TimeSliceObservable.h</itemPath>
       </logicalFolder>
       <itemPath>Boltzmann.h</itemPath>
       <itemPath>Simulation.h</itemPath>
