@@ -11,7 +11,11 @@
 #include <boost/unordered_map.hpp>
 #include <fstream>
 
-
+/**
+ * This class keeps track of how many times the Monte Carlo process ends up in a
+ * given state. Given enough time, the probabilities should be equal to the 
+ * probabilities of the action, due to detailed balance.
+ */
 class BoltzmannTester {
 private:
     typedef boost::unordered_map<std::vector<int>, unsigned long long> freqmap;
@@ -36,16 +40,14 @@ public:
         /* Calculate the difference between the real frequencies and expected
          frequencies based on lambda and alpha.*/
         std::cout << "There are " << freq.size() << " states" << std::endl;
-        
-        std::ofstream file("freq.dat"); 
-        
+
+        std::ofstream file("freq.dat");
+
         /* Print data points */
         foreach(freqmap::value_type v, freq) {
-            // TODO: retrieving action this way only works for the CDT 
-            //double action = exp(-lambda / 4.0 * (sqrt(1 - 4 * alpha) * 
-            //((v.first.size() -2) / 2.0)));
-            file << (v.first.size() - 2) / 2.0 << " " << v.second / (double) total << "\n";
-        } 
+            file << (v.first.size() - 2) / 2.0 << " " <<
+                    v.second << " " << v.second / (double) total << "\n";
+        }
     }
 
 };

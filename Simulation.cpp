@@ -274,7 +274,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
             boltzmannTester.printFrequencies(lambda, alpha);
-        }        
+        }
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {
@@ -308,7 +308,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
                 id = createID(fixed);
             } else
                 moveRejectedBecauseDetBal++;
-            
+
             boltzmannTester.addStateId(id);
         }
     }
@@ -319,8 +319,9 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
     std::cout << "Rejected detailed balance: " << moveRejectedBecauseDetBal
             << ", " << 100 * moveRejectedBecauseDetBal /
-            ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
-    
+            ((float) sweepLength * (float) numSweeps - (float)moveRejectedBecauseImpossible) 
+            << "%" << std::endl;
+
     boltzmannTester.printFrequencies(lambda, alpha);
 
     // write a part of the grid to a file

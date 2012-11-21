@@ -20,7 +20,7 @@
  * @return 
  */
 template <typename T>
-boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+        boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
 
     foreach(T e, b) {
         a.insert(e);
@@ -36,7 +36,7 @@ boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::un
  * @return 
  */
 template <typename T>
-boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+        boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
 
     foreach(T e, b) {
         a.erase(e);
@@ -56,16 +56,32 @@ template <typename T>
 boost::unordered_set<T> operator &(const boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
     boost::unordered_set<T> out;
 
-   if (b.size() < a.size()) {
+    if (b.size() < a.size()) {
         return b & a;
     }
-    
+
     foreach(T e, a) {
         if (b.find(e) != b.end())
             out.insert(e);
     }
-    
+
     return out;
+}
+
+template <typename T>
+unsigned int countOverlap(const boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+    unsigned int count = 0;
+
+    if (b.size() < a.size()) {
+        return countOverlap(b, a);
+    }
+
+    foreach(T e, a) {
+        if (b.find(e) != b.end())
+            count++;
+    }
+
+    return count;
 }
 
 #endif	/* UTILS_H */

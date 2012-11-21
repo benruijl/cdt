@@ -30,34 +30,20 @@ public:
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
-        if (first->isTimelike(u, v) != isTimelike || !first->checkAdjacentSides(u, v)
-                || !second->checkAdjacentSides(u, v)) {
-            return false;
-        }
-
         /* A fixed triangle should not be deleted. */
         if (first == getFixedTriangle() || second == getFixedTriangle()) {
             return false;
         }
 
+        if (first->isTimelike(u, v) != isTimelike || !first->checkAdjacentSides(u, v)
+                || !second->checkAdjacentSides(u, v)) {
+            return false;
+        }
+
         // topology constraint: because of periodic boundary conditions it could
         // be that the collapse move fails and results in overlapping links
-        // TODO find cleaner way
-        Vertex x; // new test vector
-        x.getTriangles() += u->getTriangles();
-        x.getTriangles().erase(first);
-        x.getTriangles().erase(second);
-
-        Vertex y; // new test vector
-        y.getTriangles() += v->getTriangles();
-        y.getTriangles().erase(first);
-        y.getTriangles().erase(second);
-
-        VertSet verts = y.getNeighbouringVertices();
-        verts = verts & x.getNeighbouringVertices();
-
-        // the third vertex of first and second are always there
-        return verts.size() == 2;
+        // note that the vertices should have 2 neighbours in common
+        return countOverlap(u->getNeighbouringVertices(), v->getNeighbouringVertices()) == 2;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
