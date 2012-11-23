@@ -38,8 +38,8 @@ public:
      * @param first
      * @param second
      */
-    static void getAdjacentTriangles(const Vertex* a, const Vertex* b, 
-        Triangle** first, Triangle** second);
+    static void getAdjacentTriangles(const Vertex* a, const Vertex* b,
+            Triangle** first, Triangle** second);
 
     /**
      * Gets the amount of neighbouring vertices.
@@ -60,7 +60,7 @@ public:
      * @return True if vertex is causal, else false
      */
     bool checkCausality();
-    
+
     /**
      * Gets sector vertices starting from edge u of triangle start rotated
      * around this triangle.
@@ -79,6 +79,12 @@ public:
      * @return 
      */
     VertSet getSectorVertices(Triangle* start, bool left, bool tl);
+
+    /**
+     * Gets the sector vertices of the same type that does not contain u
+     * @param u Vertex to take the opposite sector of
+     */
+    VertSet getOtherSectorVertices(Vertex* u);
 
     /**
      * Gets all the triangles that belong to one of the four sectors. The two links

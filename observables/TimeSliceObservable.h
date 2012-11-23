@@ -46,11 +46,9 @@ private:
         if (pos != distance.end()) {
             return pos->second;
         }
-
+        
         /* Get the correct timelike sector */
-        Triangle* t, *r;
-        Vertex::getAdjacentTriangles(v, prev, &t, &r);
-        VertSet tlSector = v->getSectorVertices(t, prev, true);
+        VertSet tlSector = v->getOtherSectorVertices(prev);
         unsigned int dist = 0, tot = 0;
         averageLabel p;
 
@@ -61,7 +59,7 @@ private:
         }
 
         averageLabel res(dist, tot);
-        std::cout<< dist << " " << tot << std::endl;
+        std::cout << dist << " " << tot << std::endl;
         distance[v] = res;
         return res;
     }
@@ -84,9 +82,8 @@ private:
             order.push_back(curVertex);
             timeslice.insert(curVertex);
 
-
             // get spacelike vertices in other sector. Pick the first one.
-            VertSet neighbours = curVertex->getSectorVertices(curTriangle, edgeVertex, false);
+            VertSet neighbours = curVertex->getOtherSectorVertices(edgeVertex);
 
             edgeVertex = curVertex;
             curVertex = *neighbours.begin();
@@ -97,11 +94,19 @@ private:
         // TODO: if this is not the case, identify subloop and remove
         // vertices that are not in the subloop
         BOOST_ASSERT(curVertex == order[0]);
-        
+
         std::cout << "ts " << timeslice.size() << std::endl;
-        labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex);
-        return;
         
+        // for testing choose one timelike path
+        if (curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex)) {
+            labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex);
+        } else {
+            BOOST_ASSERT(curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex));
+            labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex);
+        }
+        
+        return;
+
         typedef std::pair<Vertex*, Vertex*> dirVertex;
 
         /* Find all vertices in T = -1 */
@@ -127,7 +132,7 @@ private:
 
 
         } while (curTriangle != start);
-        
+
         std::cout << nextslice.size() << std::endl;
 
         /* Generate labels for first slice, and as a result, this calculates

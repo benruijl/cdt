@@ -79,6 +79,16 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
     return vertices;
 }
 
+VertSet Vertex::getOtherSectorVertices(Vertex* u) {
+    Triangle* t, *r;
+    Vertex::getAdjacentTriangles(this, u, &t, &r);
+    bool tl = t->isTimelike(this, u);
+
+    // start from the next vertex, to avoid returning u, if u is the only element
+    // of its sector
+    return getSectorVertices(t, t->getThirdVertex(this, u), t->isTimelike(this, u));
+}
+
 VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
     Triangle* cur = start;
     Vertex* edge = cur->getNextVertex(this);
@@ -88,7 +98,7 @@ VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
         if (cur->getLightConeCount(this) == 1 && cur->isTimelike(this, edge) == tl) {
             left = false; // if left, go to second transition
         }
-        
+
         cur = cur->getNeighbour(this, edge);
         edge = cur->getThirdVertex(this, edge);
     }
