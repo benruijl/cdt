@@ -29,10 +29,12 @@ public:
         Triangle* first, *second;
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
+#ifdef ALEXANDER_COMPARE_COLLAPSE
         if (!first->checkAdjacentSides(u, v) ||
                 !second->checkAdjacentSides(u, v)) {
-            return false; // fixme, hacked in for comparing to collapse
+            return false;
         }
+#endif
 
         /* A fixed triangle should not be deleted. */
         if (first == getFixedTriangle() || second == getFixedTriangle()) {

@@ -87,8 +87,10 @@ public:
             return false;
         }
 
-        return tlCount == 4; // fixme, hacked in to compare to collapse move
-
+#ifdef ALEXANDER_COMPARE_COLLAPSE
+        return tlCount == 4;
+#endif
+        
         if (tlCount != 2) {
             return (isTimelike && tlCount <= 2) || (!isTimelike && tlCount >= 2);
 
