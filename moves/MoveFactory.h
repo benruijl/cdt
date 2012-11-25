@@ -68,13 +68,20 @@ public:
      */
     Move* createRandomMove(Simulation& simulation) {
         MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
-        move = ALEXANDER_SPACELIKE; // simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
+        move = COLLAPSE_SPACELIKE; // simulation.getRandomNumber() < 0.5 ? ALEXANDER_SPACELIKE : FLIP;
         bool inverse = simulation.getRandomNumber() < 0.5;
 
         if (inverse) {
             return invMoves[move]->generateRandomMove(simulation);
         } else {
             return moves[move]->generateRandomMove(simulation);
+        }
+    }
+
+    void setFixedTriangle(Triangle* t) {
+        for (int i = 0; i < COUNT; i++) {
+            moves[i]->setFixedTriangle(t);
+            invMoves[i]->setFixedTriangle(t);
         }
     }
 

@@ -1,6 +1,6 @@
 #include "Move.h"
 
-Move::Move(int Ntts, int Ntss) {
+Move::Move(int Ntts, int Ntss) : fixedTriangle(NULL) {
     this->Ntss = Ntss;
     this->Ntts = Ntts;
 }

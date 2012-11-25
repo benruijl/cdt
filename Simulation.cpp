@@ -265,11 +265,12 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m(*this);
-    BoltzmannTester boltzmannTester;
 
+    BoltzmannTester boltzmannTester;
     // Choose a triangle that remains fixed
     Triangle* fixed = *vertices[0]->getTriangles().begin();
-    std::vector<int> id = createID(fixed);
+    m.setFixedTriangle(fixed);
+    std::vector<int>id = createID(fixed);
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
@@ -283,7 +284,6 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
 
         for (unsigned int i = 0; i < sweepLength; i++) {
             Move* move = m.createRandomMove(*this);
-            move->setFixedTriangle(fixed);
 
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
@@ -319,10 +319,8 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             ((float) sweepLength * (float) numSweeps) << "%" << std::endl;
     std::cout << "Rejected detailed balance: " << moveRejectedBecauseDetBal
             << ", " << 100 * moveRejectedBecauseDetBal /
-            ((float) sweepLength * (float) numSweeps - (float)moveRejectedBecauseImpossible) 
+            ((float) sweepLength * (float) numSweeps - (float) moveRejectedBecauseImpossible)
             << "%" << std::endl;
-
-    boltzmannTester.printFrequencies(lambda, alpha);
 
     // write a part of the grid to a file
     TriSet tri;

@@ -46,7 +46,7 @@ private:
         if (pos != distance.end()) {
             return pos->second;
         }
-        
+
         /* Get the correct timelike sector */
         VertSet tlSector = v->getOtherSectorVertices(prev);
         unsigned int dist = 0, tot = 0;
@@ -91,12 +91,29 @@ private:
             curTriangle = first;
         }
 
-        // TODO: if this is not the case, identify subloop and remove
-        // vertices that are not in the subloop
+        // identify subloop and remove vertices that are not in the subloop
+        if (order[0] != curVertex) {
+            std::cout << "Adjusting spatial slice, length " << timeslice.size() << std::endl;
+            
+            std::vector<Vertex*>::iterator pos = std::find(order.begin(), order.end(), curVertex);
+            order.erase(order.begin(), pos);
+            timeslice.clear();
+
+            foreach(Vertex* v, order) {
+                timeslice.insert(v);
+            }
+        }
+        
         BOOST_ASSERT(curVertex == order[0]);
 
-        std::cout << "ts " << timeslice.size() << std::endl;
-        
+        std::cout << "# Spatial links at T=0: " << timeslice.size() << std::endl;
+
+        // for debugging
+        Simulation s;
+        TriSet tri;
+        s.collectTriangles(tri, curVertex, 1);
+        s.drawPartialTriangulation("graph.dot", curVertex, tri);
+
         // for testing choose one timelike path
         if (curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex)) {
             labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex);
@@ -104,7 +121,7 @@ private:
             BOOST_ASSERT(curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex));
             labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex);
         }
-        
+
         return;
 
         typedef std::pair<Vertex*, Vertex*> dirVertex;
