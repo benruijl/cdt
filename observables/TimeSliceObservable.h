@@ -21,10 +21,11 @@ class TimeSliceObservable : public Observable {
 private:
     std::string filename;
 
-    typedef std::pair<unsigned int, unsigned int> averageLabel;
+    typedef std::pair<double, double> averageLabel;
     typedef boost::unordered_map<Vertex*, averageLabel> vertexTimeLabel;
     vertexTimeLabel distance;
     VertSet timeslice; // time slice T = 0
+    double maxTime;
 
     /**
      * Calculate time labels recursively.
@@ -38,7 +39,7 @@ private:
      */
     averageLabel labelTime(Vertex* v, Vertex* prev) {
         if (timeslice.find(v) != timeslice.end()) {
-            return std::pair<unsigned int, unsigned int>(0, 1);
+            return averageLabel(0.0, 1.0);
         }
 
         vertexTimeLabel::iterator pos = distance.find(v);
@@ -49,17 +50,16 @@ private:
 
         /* Get the correct timelike sector */
         VertSet tlSector = v->getOtherSectorVertices(prev);
-        unsigned int dist = 0, tot = 0;
+        double dist = 0, tot = 0;
         averageLabel p;
 
         foreach(Vertex* n, tlSector) {
             p = labelTime(n, v);
-            dist += p.first + 1;
+            dist += (p.first + 1) * p.second;
             tot += p.second;
         }
 
-        averageLabel res(dist, tot);
-        std::cout << dist << " " << tot << std::endl;
+        averageLabel res(dist / tot, tot);
         distance[v] = res;
         return res;
     }
@@ -74,9 +74,9 @@ private:
 
         Triangle* first, *second;
         Triangle* curTriangle = *state[0]->getTriangles().begin();
-        Vertex* curVertex = curTriangle->getVertex(1); // always has S link
+        Vertex* curVertex = curTriangle->getVertex(0); // always has S link
         Vertex* edgeVertex = curTriangle->getType() == Triangle::TTS ?
-                curTriangle->getVertex(2) : curTriangle->getVertex(0);
+                curTriangle->getVertex(2) : curTriangle->getVertex(1);
 
         while (timeslice.find(curVertex) == timeslice.end()) {
             order.push_back(curVertex);
@@ -93,8 +93,8 @@ private:
 
         // identify subloop and remove vertices that are not in the subloop
         if (order[0] != curVertex) {
-            std::cout << "Adjusting spatial slice, length " << timeslice.size() << std::endl;
-            
+            std::cout << "Adjusting spatial slice to be circular" << std::endl;
+
             std::vector<Vertex*>::iterator pos = std::find(order.begin(), order.end(), curVertex);
             order.erase(order.begin(), pos);
             timeslice.clear();
@@ -103,26 +103,6 @@ private:
                 timeslice.insert(v);
             }
         }
-        
-        BOOST_ASSERT(curVertex == order[0]);
-
-        std::cout << "# Spatial links at T=0: " << timeslice.size() << std::endl;
-
-        // for debugging
-        Simulation s;
-        TriSet tri;
-        s.collectTriangles(tri, curVertex, 1);
-        s.drawPartialTriangulation("graph.dot", curVertex, tri);
-
-        // for testing choose one timelike path
-        if (curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex)) {
-            labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), curVertex);
-        } else {
-            BOOST_ASSERT(curTriangle->isTimelike(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex));
-            labelTime(curTriangle->getThirdVertex(curVertex, edgeVertex), edgeVertex);
-        }
-
-        return;
 
         typedef std::pair<Vertex*, Vertex*> dirVertex;
 
@@ -150,19 +130,26 @@ private:
 
         } while (curTriangle != start);
 
-        std::cout << nextslice.size() << std::endl;
+
+        maxTime = 0;
 
         /* Generate labels for first slice, and as a result, this calculates
           labels for all slices */
         foreach(dirVertex p, nextslice) {
             labelTime(p.first, p.second);
+
+            double d = distance[p.first].first;
+
+            if (d > maxTime) {
+                maxTime = d;
+            }
         }
 
     }
 public:
 
     TimeSliceObservable(unsigned long writeFrequency) :
-    Observable(writeFrequency, 0, false),
+    Observable(writeFrequency, 0, true),
     filename(createFilename("timelabel")) {
     }
 
@@ -170,15 +157,15 @@ public:
     }
 
     void printToScreen() {
+        std::cout << "Maximum time: " << maxTime << std::endl;
     }
 
     void printToFile() {
         std::ofstream file(filename.c_str());
 
         foreach(vertexTimeLabel::value_type v, distance) {
-            file << v.first << " " << v.second.first / (double) v.second.second << "\n";
+            file << v.first << " " << v.second.first << " " << v.second.second << "\n";
         }
-        std::cout << "Done writing " << distance.size() << std::endl;
     }
 };
 

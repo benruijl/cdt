@@ -70,7 +70,6 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
 
     VertSet vertices;
     while (cur->isTimelike(this, edge) == tl) {
-
         vertices.insert(edge);
         cur = cur->getNeighbour(this, edge);
         edge = cur->getThirdVertex(this, edge);
@@ -81,8 +80,7 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
 
 VertSet Vertex::getOtherSectorVertices(Vertex* u) {
     Triangle* t, *r;
-    Vertex::getAdjacentTriangles(this, u, &t, &r);
-    bool tl = t->isTimelike(this, u);
+    Vertex::getAdjacentTriangles(this, u, &t, &r); 
 
     // start from the next vertex, to avoid returning u, if u is the only element
     // of its sector
