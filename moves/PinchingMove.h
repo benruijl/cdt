@@ -16,8 +16,8 @@ private:
     bool isTimelike;
 public:
 
-    PinchingMove(bool isTimelike) : Move(isTimelike * -4 + !isTimelike * 2, 
-            !isTimelike * -4 + isTimelike * 2) {
+    PinchingMove(bool isTimelike) : Move(isTimelike * -4 + !isTimelike * 2,
+    !isTimelike * -4 + isTimelike * 2) {
         this->isTimelike = isTimelike;
     }
 
@@ -32,41 +32,28 @@ public:
         Vertex* w = first->getThirdVertex(u, v);
         Vertex* x = second->getThirdVertex(u, v);
 
-        if (first->isTimelike(u, v) != isTimelike || first->isTimelike(u, w)== isTimelike || second->isTimelike(u, x) == isTimelike
+        if (first->isTimelike(u, v) != isTimelike || first->isTimelike(u, w) == isTimelike || second->isTimelike(u, x) == isTimelike
                 || first->isTimelike(v, w) != isTimelike || second->isTimelike(v, x) != isTimelike) {
             return false;
         }
 
-        Vertex::getAdjacentTriangles(v, w, &r, &t);
-        r = r == first ? t : r;
+        r = first->getNeighbour(v, w);
         Vertex* y = r->getThirdVertex(v, w);
 
-        if (r->isTimelike(v, y) != isTimelike || r->isTimelike(w, y) == isTimelike) {
+        if (r->isTimelike(v, y) == isTimelike || r->isTimelike(w, y) != isTimelike) {
             return false;
         }
 
-        Vertex::getAdjacentTriangles(v, x, &r, &t);
-        r = r == second ? t : r;
+        r = second->getNeighbour(v, x);
         Vertex* z = r->getThirdVertex(v, x);
 
-        if (r->isTimelike(v, z) == isTimelike || !r->isTimelike(x, z) == isTimelike) {
+        if (r->isTimelike(v, z) == isTimelike || r->isTimelike(x, z) != isTimelike) {
             return false;
         }
 
         // prevent link overlap
-        Vertex n;
-        n.getTriangles() += v->getTriangles();
-        n.getTriangles().erase(first);
-        n.getTriangles().erase(second);
-        VertSet verts = n.getNeighbouringVertices();
-
-        Vertex m;
-        m.getTriangles() += u->getTriangles();
-        m.getTriangles().erase(first);
-        m.getTriangles().erase(second);
-        VertSet verts2 = m.getNeighbouringVertices();
-
-        return (verts & verts2).size() == 2; 
+        VertSet verts = v->getNeighbouringVertices();
+        return (verts & u->getNeighbouringVertices()).size() == 2;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
@@ -129,7 +116,7 @@ public:
         delete third;
         delete fourth;
         delete v;
-        
+
         BOOST_ASSERT(u->checkCausality());
         BOOST_ASSERT(w->checkCausality());
         BOOST_ASSERT(x->checkCausality());

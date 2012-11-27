@@ -13,6 +13,7 @@
         <itemPath>moves/InversePinchingMove.h</itemPath>
         <itemPath>moves/Move.h</itemPath>
         <itemPath>moves/MoveFactory.h</itemPath>
+        <itemPath>/misc/users2/student/bruijl/cdt/moves/PinchingMove.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
         <itemPath>observables/GridObservable.h</itemPath>
