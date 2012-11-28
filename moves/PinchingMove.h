@@ -44,10 +44,16 @@ public:
             return false;
         }
 
-        r = second->getNeighbour(v, x);
-        Vertex* z = r->getThirdVertex(v, x);
+        t = second->getNeighbour(v, x);
+        Vertex* z = t->getThirdVertex(v, x);
 
-        if (r->isTimelike(v, z) == isTimelike || r->isTimelike(x, z) != isTimelike) {
+        if (t->isTimelike(v, z) == isTimelike || t->isTimelike(x, z) != isTimelike) {
+            return false;
+        }
+        
+        /* A fixed triangle should not be deleted. */
+        if (getFixedTriangle() == t || getFixedTriangle() == r ||
+                getFixedTriangle() == first || getFixedTriangle() == second) {
             return false;
         }
 

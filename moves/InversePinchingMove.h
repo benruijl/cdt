@@ -34,7 +34,8 @@ public:
     }
 
     bool isMovePossible(std::vector<Vertex*>& vertices) {
-        return t != NULL && s != NULL;
+        return t != NULL && s != NULL && getFixedTriangle() != t &&
+                getFixedTriangle() != s;
     }
 
     Move* generateRandomMove(Simulation& simulation) {
