@@ -266,12 +266,12 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m(*this);
 
-    /*
+    
     BoltzmannTester boltzmannTester;
     // Choose a triangle that remains fixed
     Triangle* fixed = *vertices[0]->getTriangles().begin();
     m.setFixedTriangle(fixed);
-    std::vector<int>id = createID(fixed);*/
+   /* std::vector<int>id = createID(fixed);*/
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing

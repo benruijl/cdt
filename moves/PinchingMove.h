@@ -50,7 +50,7 @@ public:
         if (t->isTimelike(v, z) == isTimelike || t->isTimelike(x, z) != isTimelike) {
             return false;
         }
-        
+
         /* A fixed triangle should not be deleted. */
         if (getFixedTriangle() == t || getFixedTriangle() == r ||
                 getFixedTriangle() == first || getFixedTriangle() == second) {
@@ -127,6 +127,7 @@ public:
         BOOST_ASSERT(w->checkCausality());
         BOOST_ASSERT(x->checkCausality());
         BOOST_ASSERT(y->checkCausality());
+        BOOST_ASSERT(z->checkCausality());
     }
 
     std::string printID() {

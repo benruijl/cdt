@@ -18,8 +18,8 @@ private:
     bool isTimelike;
 public:
 
-    InversePinchingMove(bool isTimelike) : Move(isTimelike * 4 + !isTimelike * -2, 
-            !isTimelike * 4 + isTimelike * -2) {
+    InversePinchingMove(bool isTimelike) : Move(isTimelike * 4 + !isTimelike * -2,
+    !isTimelike * 4 + isTimelike * -2) {
         t = NULL;
         s = NULL;
         this->isTimelike = isTimelike;
@@ -121,7 +121,10 @@ public:
 
         BOOST_ASSERT(v->checkCausality());
         BOOST_ASSERT(x->checkCausality());
-
+        BOOST_ASSERT(w->checkCausality());
+        BOOST_ASSERT(z->checkCausality());
+        BOOST_ASSERT(u->checkCausality());
+        BOOST_ASSERT(edge->checkCausality());
     }
 
     std::string printID() {

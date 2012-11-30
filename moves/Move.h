@@ -94,7 +94,7 @@ public:
     }
 private:
     int Ntts, Ntss; // Number of TTS and TSS triangles this move changes
-    Triangle* fixedTriangle; // TODO: implement for pinching move as well
+    Triangle* fixedTriangle;
 };
 
 #endif	/* MOVE_H */
