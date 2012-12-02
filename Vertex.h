@@ -96,6 +96,8 @@ public:
      * @return 
      */
     TriSet getSectorTriangles(Triangle* start, bool left, bool tl);
+    
+    void printConnectivity();
 
 private:
     TriSet triangles; // set of all triangles 

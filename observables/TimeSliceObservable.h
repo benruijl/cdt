@@ -26,6 +26,7 @@ private:
     vertexTimeLabel distance;
     VertSet timeslice; // time slice T = 0
     double maxTime;
+    std::vector<Vertex*> vertices;
 
     VertSet fail;
 
@@ -42,14 +43,21 @@ private:
         if (fail.find(v) != fail.end()) {
             std::cout << fail.size() << std::endl;
             std::cout << v << " " << prev << std::endl;
-            
+
             foreach(Vertex* l, timeslice) {
+                std::cout << l << " ";
+            }
+
+            std::cout << std::endl;
+
+            foreach(Vertex* l, fail) {
                 std::cout << l << " ";
             }
             
             std::cout << std::endl;
-            foreach(Vertex* l, fail) {
-                std::cout << l << " ";
+
+            foreach(Vertex* a, vertices) {
+                a->printConnectivity();
             }
 
             Simulation s;
@@ -155,11 +163,12 @@ private:
 
             std::cout << "check done" << std::endl;
         }
-        
+
         return order;
     }
 
     void process(const std::vector<Vertex*>& state) {
+        vertices = state;
         distance.clear();
 
         std::vector<Vertex*> order = createInitialSlice(state[0]);
@@ -170,18 +179,27 @@ private:
 
         /* Find all vertices in T = -1 */
         boost::unordered_set<dirVertex> nextslice;
-        
-        
+
+
         Vertex* curVertex = order[0];
         Vertex* sec = order[1];
         Triangle* t, *r;
         Vertex::getAdjacentTriangles(curVertex, sec, &t, &r);
-        
+
         Triangle* curTriangle = t;
         Triangle* start = curTriangle;
+
+        BOOST_ASSERT(timeslice.find(curVertex) != timeslice.end() &&
+                timeslice.find(sec) != timeslice.end());
+
         // vertex not in current slice
         sec = curTriangle->getThirdVertex(curVertex, sec);
+
+
+        int c = 0;
         do {
+            BOOST_ASSERT(timeslice.find(curVertex) != timeslice.end());
+
             if (curTriangle->isTimelike(curVertex, sec)) {
                 nextslice.insert(std::make_pair(sec, curVertex));
             }
@@ -190,13 +208,22 @@ private:
 
             // fix the propagation
             Vertex* third = curTriangle->getThirdVertex(curVertex, sec);
+
+            // is the triangle trapped?
+            if (timeslice.find(sec) != timeslice.end()) {
+                std::cerr << "WARNING: trapped triangle, results may be inacurate" << std::endl;
+                break;
+            }
+
             if (timeslice.find(third) != timeslice.end()) {
                 curVertex = third;
             } else {
                 sec = third;
             }
 
+            c++;
 
+            BOOST_ASSERT(c < 80);
         } while (curTriangle != start);
 
 

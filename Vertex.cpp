@@ -80,18 +80,18 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
 
 VertSet Vertex::getOtherSectorVertices(Vertex* u) {
     Triangle* t, *r;
-    Vertex::getAdjacentTriangles(this, u, &t, &r); 
+    Vertex::getAdjacentTriangles(this, u, &t, &r);
 
     // start from the next vertex, to avoid returning u, if u is the only element
     // of its sector
     VertSet o = getSectorVertices(t, t->getThirdVertex(this, u), t->isTimelike(this, u));
-    
+
     VertSet v = getSectorVertices(t, true, t->isTimelike(this, u));
     VertSet w = getSectorVertices(t, false, t->isTimelike(this, u));
     BOOST_ASSERT((v & w).size() == 0);
     BOOST_ASSERT(((v & o).size() == 0 && w == o) || ((w & o).size() == 0 && v == o));
-    
-    return o;    
+
+    return o;
 }
 
 VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
@@ -149,3 +149,20 @@ bool Vertex::checkCausality() {
     return lightConeCount == 4;
 }
 
+void Vertex::printConnectivity() {
+    Triangle* t, *r;
+    Vertex* u = (*triangles.begin())->getNextVertex(this);
+    Vertex::getAdjacentTriangles(this, u, &t, &r);
+    
+    std::cout << this << ": ";
+    r = t;
+    
+    do
+    {
+        std::cout << (t->isTimelike(this, u) ? "T " : "S ") << u << " ";
+        t = t->getNeighbour(this, u);
+        u = t->getThirdVertex(this, u);
+    } while (r != t);
+
+    std::cout << std::endl;
+}
