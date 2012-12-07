@@ -213,6 +213,51 @@ void Simulation::checkLinkOverlap() {
     }
 }
 
+void Simulation::printTriangleConnectivity(Triangle* t) {
+    typedef boost::tuple<Triangle*, Vertex*, Vertex*> curpos;
+
+    int newId = 0;
+    boost::unordered_map<Triangle*, int> tri;
+    std::queue<curpos> neighbours;
+
+    // add current triangle and first neighbour
+    neighbours.push(
+            boost::make_tuple(t, t->getVertex(0), t->getVertex(1)));
+    neighbours.push(
+            boost::make_tuple(t->getNeighbour(0), t->getVertex(0), t->getVertex(1)));
+
+    while (!neighbours.empty()) {
+        curpos cur = neighbours.front();
+        neighbours.pop();
+
+        Triangle* t = cur.get < 0 > ();
+
+        boost::unordered_map<Triangle*, int>::iterator res = tri.find(t);
+        if (res != tri.end()) {
+            std::cout << res->second << std::endl;
+            continue;
+        }
+
+        // create character of tri a - b - c
+        Vertex* a = cur.get < 1 > ();
+        Vertex* b = cur.get < 2 > ();
+        Vertex* c = t->getThirdVertex(a, b);
+        
+        std::cout << (t->isTimelike(a, b) ? "T" : "S") << 
+                (t->isTimelike(b, c) ? "T" : "S") <<
+                (t->isTimelike(c, a) ? "T" : "S") << ": " << newId << std::endl;
+
+        tri[t] = newId;
+        newId++;
+
+        // add the two other neighbours to the stack
+        neighbours.push(boost::make_tuple(t->getNeighbour(b, c),
+                b, c));
+        neighbours.push(boost::make_tuple(t->getNeighbour(c, a),
+                c, a));
+    }
+}
+
 std::vector<int> Simulation::createID(Triangle* t) {
     typedef boost::tuple<Triangle*, Vertex*, Vertex*> curpos;
     std::vector<int> id;
@@ -266,17 +311,19 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m(*this);
 
-    
+
     BoltzmannTester boltzmannTester;
     // Choose a triangle that remains fixed
     Triangle* fixed = *vertices[0]->getTriangles().begin();
     m.setFixedTriangle(fixed);
-   /* std::vector<int>id = createID(fixed);*/
+    /* std::vector<int>id = createID(fixed);*/
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
             //boltzmannTester.printFrequencies(lambda, alpha);
         }
+
+        checkLinkOverlap(); // for testing
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {

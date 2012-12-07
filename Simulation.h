@@ -109,6 +109,12 @@ public:
      * @param tri Set of triangulation
      */
     void drawPartialTriangulation(const char* filename, Vertex* v, const TriSet& tri);
+    
+    /**
+     * Prints which triangles are connected to which three others.
+     * @param tri Triangle set
+     */
+    void printTriangleConnectivity(Triangle* t);
 
     /**
      * Selects a random element from a set.
