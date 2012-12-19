@@ -86,7 +86,7 @@ public:
      * TODO: make bytestream?
      */
     std::vector<int> createID(Triangle* t);
-    
+
     /**
      * Perform a simple Boltzmann test. Counts the frequency of the lowest energy
      * states.
@@ -109,7 +109,7 @@ public:
      * @param tri Set of triangulation
      */
     void drawPartialTriangulation(const char* filename, Vertex* v, const TriSet& tri);
-    
+
     /**
      * Prints which triangles are connected to which three others.
      * @param tri Triangle set
@@ -145,8 +145,13 @@ public:
     base_generator_type& getRNG() {
         return rng;
     }
+
+    void setSeed(unsigned int seed) {
+        // don't paste the seed, because it is not very useful yet.
+        //std::cout << "Using seed: " << seed << std::endl;
+        rng.seed(seed);
+    }
 private:
-    static const int SEED = 1289730123;
     base_generator_type rng;
     boost::uniform_real<> unireal;
     std::vector<Vertex*> vertices; // a list of all the vertices in the simulation    

@@ -15,12 +15,13 @@
 #include <boost/array.hpp>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 using namespace boost::assign;
 
 Simulation::Simulation() {
     /* Initialize random number generator */
-    rng.seed(static_cast<boost::mt19937::result_type> (SEED));
+    setSeed(std::time(0));
 }
 
 Simulation::Simulation(const Simulation& orig) {
@@ -242,8 +243,8 @@ void Simulation::printTriangleConnectivity(Triangle* t) {
         Vertex* a = cur.get < 1 > ();
         Vertex* b = cur.get < 2 > ();
         Vertex* c = t->getThirdVertex(a, b);
-        
-        std::cout << (t->isTimelike(a, b) ? "T" : "S") << 
+
+        std::cout << (t->isTimelike(a, b) ? "T" : "S") <<
                 (t->isTimelike(b, c) ? "T" : "S") <<
                 (t->isTimelike(c, a) ? "T" : "S") << ": " << newId << std::endl;
 
@@ -310,7 +311,6 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     MoveFactory m(*this);
-
 
     BoltzmannTester boltzmannTester;
     // Choose a triangle that remains fixed

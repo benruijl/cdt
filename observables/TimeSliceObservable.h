@@ -60,15 +60,15 @@ private:
             foreach(Vertex* a, vertices) {
                 a->printConnectivity();
             }
-                       
+
 
             Simulation s;
             TriSet tri;
             s.collectTriangles(tri, v, 1);
             s.drawPartialTriangulation("graph.dot", v, tri);
-            
+
             s.printTriangleConnectivity(*tri.begin());
-            
+
             BOOST_ASSERT(false);
         }
 
@@ -107,179 +107,89 @@ private:
         return res;
     }
 
-    struct SearchItem {
-        int score;
-        Vertex* vertex;
-        Vertex* prev;
-
-        SearchItem(int score, Vertex* vertex,
-                Vertex * prev) : score(score), vertex(vertex), prev(prev) {
-        }
-        
-        // top item in queue should have minimal score, FIXME: checl
-        inline bool operator<(SearchItem const & rhs) const { return score > rhs.score; }
-    };
-
     /**
-     * Find shortest slice using Dijkstra's search algorithm.
-     * TODO: run the algorithm once and keep track from which sector the
-     * path is coming.
-     * @param start Starting position, also position to finish
-     * @param neighbour A neighbour to start the loop from
-     * @return 
-     */
-    std::vector<Vertex*> findShortestSlice(Vertex* start, Vertex* neighbour) {
-        typedef boost::heap::fibonacci_heap<SearchItem> search;
-
-        boost::unordered_map<Vertex*, Vertex*> previous;
-        Vertex* cur = start;
-        std::vector<Vertex*> path;
-        boost::unordered_map<Vertex*, search::handle_type> handles;
-        search open;
-        boost::unordered_map<Vertex*, int> distance;
-        VertSet closed; // for debugging
-
-        /* Add all initial neighbours */
-        search::handle_type h = open.push(SearchItem(1, neighbour, start));
-        handles[neighbour] = h;
-        distance[neighbour] = 1;
-
-        while (!open.empty()) {
-            SearchItem c = open.top();
-            open.pop();
-
-            if (c.vertex == start) { // found it                
-                Vertex* cur = c.vertex;
-                while(cur != neighbour) {
-                    path.push_back(cur);
-                    cur = previous[cur];
-                }
-                
-                path.push_back(neighbour); 
-                return path;
-            }
-
-            VertSet neighbours = c.vertex->getOtherSectorVertices(c.prev);
-
-            foreach(Vertex* n, neighbours) {
-                boost::unordered_map<Vertex*, int>::iterator dist =
-                        distance.find(n);
-                
-                // if n is in distance, it is visited
-                // nodes should not be closed, but this is always the case? FIXME: CHECK
-                if (dist == distance.end() || dist->second < c.score + 1) {
-                    BOOST_ASSERT(closed.find(n) == closed.end());
-                    if (dist == distance.end()) {
-                        search::handle_type h = open.push(SearchItem(c.score + 1, n, c.vertex));
-                        handles[n] = h;
-                    } else {
-                        open.update(handles[n], SearchItem(c.score + 1, n, c.vertex));
-                    }
-
-                    distance[n] = c.score + 1;
-                    previous[n] = c.vertex;
-                }
-
-            }
-            
-            closed.insert(c.vertex);
-        }
-
-        BOOST_ASSERT(false);
-    }
-    
-    /**
-     * Find shortest path using breadth-first search.
+     * Find shortest slice using breadth-first search.
      * @param start
      * @param neighbour
      * @return 
      */
-    std::vector<Vertex*> findShortestSlice2(Vertex* start, Vertex* neighbour) {
+    std::vector<Vertex*> findShortestSlice(Vertex* start, Vertex* neighbour) {
         typedef std::pair<Vertex*, Vertex*> linkDir;
         std::queue<linkDir> queue;
         VertSet visited;
-        
-        while(!queue.empty()) {
+        boost::unordered_map<Vertex*, Vertex*> prev;
+
+        queue.push(linkDir(neighbour, start));
+        prev[neighbour] = start;
+        visited.insert(neighbour);
+
+        while (!queue.empty()) {
             linkDir cur = queue.front();
             queue.pop();
-            
+
+            if (cur.first == start) {
+                // collect path
+                Vertex* p = start;
+                std::vector<Vertex*> path;
+
+                int i = 0;
+                do {
+                    path.push_back(p);
+                    p = prev[p];
+                    i++;
+
+                    BOOST_ASSERT(i < 30);
+                } while (p != start);
+
+                return path;
+            }
+
             VertSet neighbours = cur.first->getOtherSectorVertices(cur.second);
-            
+
             foreach(Vertex* n, neighbours) {
                 if (visited.find(n) == visited.end()) {
-                        visited.insert(n);
-                        queue.push(linkDir(n, cur.first));
+                    visited.insert(n);
+                    prev[n] = cur.first;
+                    queue.push(linkDir(n, cur.first));
                 }
-                
+
             }
         }
+
+        return std::vector<Vertex*>(); // no path found
     }
 
     std::vector<Vertex*> createInitialSlice(Vertex* start) {
+        Triangle* t, *r;
+
         timeslice.clear();
 
-        /* Create an initial timeslice T = 0 */
-        // TODO find shortest timeslice
-        std::vector<Vertex*> order;
+        int bestTime = -1;
+        std::vector<Vertex*> slice;
 
-        Triangle* first, *second;
-        Triangle* curTriangle = *start->getTriangles().begin();
-        Vertex* curVertex = curTriangle->getVertex(0); // always has S link
-        Vertex* edgeVertex = curTriangle->getType() == Triangle::TTS ?
-                curTriangle->getVertex(2) : curTriangle->getVertex(1);
+        /* For each outgoing vertex, find a shortest path */
+        foreach(Vertex* n, start->getNeighbouringVertices()) {
+            Vertex::getAdjacentTriangles(start, n, &t, &r);
 
-       // std::cout << "LEN: " << findShortestSlice(curVertex, edgeVertex).size() << std::endl;
+            if (!t->isTimelike(n, start)) {
+                std::vector<Vertex*> newSlice = findShortestSlice(n, start);
 
-        while (timeslice.find(curVertex) == timeslice.end()) {
-            order.push_back(curVertex);
-            timeslice.insert(curVertex);
-
-            // for testing
-            BOOST_ASSERT(!curTriangle->isTimelike(curVertex, edgeVertex));
-
-
-            // get spacelike vertices in other sector. Pick the first one.
-            VertSet neighbours = curVertex->getOtherSectorVertices(edgeVertex);
-
-            edgeVertex = curVertex;
-            curVertex = *neighbours.begin();
-            Vertex::getAdjacentTriangles(curVertex, edgeVertex, &first, &second);
-            curTriangle = first;
-            BOOST_ASSERT(!curTriangle->isTimelike(curVertex, edgeVertex));
-        }
-
-        // identify subloop and remove vertices that are not in the subloop
-        if (order[0] != curVertex) {
-            std::cout << "Adjusting spatial slice to be circular" << std::endl;
-            std::cout << "tl_before " << order.size() << std::endl;
-
-            timeslice.clear();
-            for (int i = 0; i < order.size(); i++) {
-                if (order[i] == curVertex) {
-                    std::cout << "index: " << i << std::endl;
-
-                    for (int j = i; j < order.size(); j++) {
-                        timeslice.insert(order[j]);
-                    }
-
-                    // for testing
-                    order.erase(order.begin(), order.begin() + i);
-                    BOOST_ASSERT(timeslice.size() == order.size());
-                    break;
+                if (newSlice.size() == 0) {
+                    continue; // no path found
                 }
 
+                if (bestTime < 0 || newSlice.size() < bestTime) {
+                    slice = newSlice;
+                    bestTime = newSlice.size();
+                }
             }
-
-            // test subloop
-            for (int i = 1; i < order.size(); i++) {
-                VertSet vs = order[i % order.size()]->getOtherSectorVertices(order[(i - 1) % order.size()]);
-                BOOST_ASSERT(vs.find(order[(i + 1) % order.size()]) != vs.end());
-            }
-
-            std::cout << "check done" << std::endl;
         }
 
-        return order;
+        foreach(Vertex* v, slice) {
+            timeslice.insert(v);
+        }
+
+        return slice;
     }
 
     void process(const std::vector<Vertex*>& state) {
@@ -288,7 +198,14 @@ private:
 
         std::vector<Vertex*> order = createInitialSlice(state[0]);
 
-        std::cout << "tl " << timeslice.size() << std::endl;
+        if (order.size() == 0) {
+            foreach(Vertex* a, state) {
+                a->printConnectivity();
+            }
+            BOOST_ASSERT(false);
+        }
+
+        std::cout << "T=0 size: " << timeslice.size() << std::endl;
 
         typedef std::pair<Vertex*, Vertex*> dirVertex;
 
