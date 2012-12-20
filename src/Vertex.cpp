@@ -18,6 +18,10 @@ Vertex::Vertex(const Vertex& orig) {
 Vertex::~Vertex() {
 }
 
+Vertex* Vertex::getNeighbouringVertex() {
+    return (*triangles.begin())->getNextVertex(this);
+}
+
 VertSet Vertex::getNeighbouringVertices() {
     VertSet neighbours;
 
@@ -35,27 +39,15 @@ void Vertex::getAdjacentTriangles(const Vertex* a, const Vertex* b,
         Triangle** first, Triangle** second) {
     TriSet t = a->triangles & b->triangles; // intersection
 
-    // NOTE: if this assertion fails it is mostly due to the fact that the grid
-    // has less than 14 triangles.
+    // Is the symplectic manifold condition broken?
     if (t.size() != 2) {
-        std::cout << "Violated at " << a << " " << b << std::endl;
+        std::cout << "Symplectic manifold broken at " << a << " " << b << std::endl;
     }
-
 
     BOOST_ASSERT(t.size() == 2); // each link should have 2 triangles
-
-    *first = NULL;
-
-    // TODO: improve
-
-    foreach(Triangle* tr, t) {
-        if (*first == NULL) {
-            *first = tr;
-        } else {
-            *second = tr;
-            return;
-        }
-    }
+    
+    *first = *t.begin();
+    *second = *(++t.begin());
 }
 
 VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {

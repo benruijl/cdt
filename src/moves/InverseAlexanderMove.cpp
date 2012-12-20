@@ -3,7 +3,7 @@
 bool InverseAlexanderMove::doTopologyCheck() {
     // TODO: improve code
     Triangle *first, *second, *third, *fourth, *t, *r;
-    Vertex* v = *u->getNeighbouringVertices().begin();
+    Vertex* v = u->getNeighbouringVertex();
     Vertex::getAdjacentTriangles(u, v, &first, &second);
     Vertex* w = first->getThirdVertex(u, v);
     Vertex::getAdjacentTriangles(u, w, &t, &r);
@@ -51,7 +51,7 @@ bool InverseAlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
     // The check for tlCount == 2 is more complicated
     // TODO: find a better way
     Triangle *first, *second, *third, *fourth, *t, *r;
-    Vertex* v = *u->getNeighbouringVertices().begin();
+    Vertex* v = u->getNeighbouringVertex();
     Vertex::getAdjacentTriangles(u, v, &first, &second);
     Vertex* w = first->getThirdVertex(u, v);
     Vertex::getAdjacentTriangles(u, w, &t, &r);

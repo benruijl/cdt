@@ -48,6 +48,12 @@ public:
     int getNeighbouringVertexCount() {
         return triangles.size();
     }
+    
+    /**
+     * Gets a single neighbouring vertex.
+     * @return 
+     */
+    Vertex* getNeighbouringVertex();
 
     /**
      * Gets the neighbouring vertices of this vertex.

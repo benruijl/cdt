@@ -76,6 +76,9 @@
       <compileType>
         <ccTool>
           <developmentMode>2</developmentMode>
+          <incDir>
+            <pElem>include</pElem>
+          </incDir>
         </ccTool>
       </compileType>
     </conf>

@@ -22,11 +22,11 @@ int main(int argc, char** argv) {
     TimeSliceObservable timeSliceObservable(1);
     simulation.addObservable(&sizeObservable);
     simulation.addObservable(&gridObservable);
-    simulation.addObservable(&timeSliceObservable);
+    //simulation.addObservable(&timeSliceObservable);
 
     //simulation.readFromFile("grid.dat"); // read in a thermalized triangulation    
     simulation.generateInitialTriangulation(25, 25);
-    simulation.Metropolis(6, -1, 100, 1000000); // 18100 should run for 12 hours
+    simulation.Metropolis(1.5, -1, 6, 1000000); // 18100 should run for 12 hours
     std::cout << "Simulation ended." << std::endl;
 
     return 0;

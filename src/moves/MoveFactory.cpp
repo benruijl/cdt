@@ -31,6 +31,8 @@ MoveFactory::~MoveFactory() {
 
 Move* MoveFactory::createRandomMove(Simulation& simulation) {
     MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
+    
+    // FIXME: for testing
     move = simulation.getRandomNumber() < 0.5 ? COLLAPSE_SPACELIKE :
             FLIP_CHANGE;
     bool inverse = simulation.getRandomNumber() < 0.5;
