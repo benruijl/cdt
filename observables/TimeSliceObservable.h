@@ -14,6 +14,8 @@
 #include <boost/heap/fibonacci_heap.hpp> // not available in scientific linux...
 #include <utility>
 
+#define WINDING_ERROR 1
+
 /**
  *  Tries to see if the topology of a 'time slice' that is 1 time unit removed
  * from a random initial time slice is that of a circle.
@@ -27,9 +29,8 @@ private:
     vertexTimeLabel distance;
     VertSet timeslice; // time slice T = 0
     double maxTime;
-    std::vector<Vertex*> vertices;
 
-    VertSet fail;
+    VertSet loopCheck; // detect infinite loops
 
     /**
      * Calculate time labels recursively.
@@ -41,35 +42,10 @@ private:
      *
      */
     averageLabel labelTime(Vertex* v, Vertex* prev) {
-        if (fail.find(v) != fail.end()) {
-            std::cout << fail.size() << std::endl;
-            std::cout << v << " " << prev << std::endl;
-
-            foreach(Vertex* l, timeslice) {
-                std::cout << l << " ";
-            }
-
-            std::cout << std::endl;
-
-            foreach(Vertex* l, fail) {
-                std::cout << l << " ";
-            }
-
-            std::cout << std::endl;
-
-            foreach(Vertex* a, vertices) {
-                a->printConnectivity();
-            }
-
-
-            Simulation s;
-            TriSet tri;
-            s.collectTriangles(tri, v, 1);
-            s.drawPartialTriangulation("graph.dot", v, tri);
-
-            s.printTriangleConnectivity(*tri.begin());
-
-            BOOST_ASSERT(false);
+        if (loopCheck.find(v) != loopCheck.end()) {
+            std::cerr << "Timelike loop detected with same winding as spacelike loop"
+                    << ", skipping time labeling." << std::endl;
+            throw (WINDING_ERROR);
         }
 
         if (timeslice.find(v) != timeslice.end()) {
@@ -82,19 +58,16 @@ private:
             return pos->second;
         }
 
-        fail.insert(v);
+        loopCheck.insert(v);
 
         /* Get the correct timelike sector */
         VertSet tlSector = v->getOtherSectorVertices(prev);
         double dist = 0, tot = 0;
         averageLabel p;
 
-        BOOST_ASSERT(tlSector.find(prev) == tlSector.end());
-
         foreach(Vertex* n, tlSector) {
             Triangle* first, *second;
             Vertex::getAdjacentTriangles(n, v, &first, &second);
-            BOOST_ASSERT(first->isTimelike(v, n));
 
             p = labelTime(n, v);
             dist += (p.first + 1) * p.second;
@@ -103,7 +76,7 @@ private:
 
         averageLabel res(dist / tot, tot);
         distance[v] = res;
-        fail.erase(v);
+        loopCheck.erase(v);
         return res;
     }
 
@@ -123,7 +96,7 @@ private:
         queue.push(linkDir(neighbour, start));
         prev[neighbour] = start;
         visited.insert(neighbour);
-        
+
         linkDir cur;
 
         while (!queue.empty()) {
@@ -135,13 +108,9 @@ private:
                 Vertex* p = start;
                 std::vector<Vertex*> path;
 
-                int i = 0;
                 do {
                     path.push_back(p);
                     p = prev[p];
-                    i++;
-
-                    BOOST_ASSERT(i < 30);
                 } while (p != start);
 
                 return path;
@@ -158,7 +127,7 @@ private:
 
             }
         }
-        
+
         // path could not be found, this means that there is a subcycle.
         // the last searched node should be a part of this, or else it would
         // have reached the starting node. So run a new search from this node
@@ -166,6 +135,12 @@ private:
         return findShortestSlice(cur.first, cur.second);
     }
 
+    /**
+     * Creates an initial minimal spacelike slice, which attempts to include
+     * vertex start. This may not be possible in all cases.
+     * @param start Vertex to start search from
+     * @return Spacelike slice
+     */
     std::vector<Vertex*> createInitialSlice(Vertex* start) {
         Triangle* t, *r;
 
@@ -200,18 +175,10 @@ private:
     }
 
     void process(const std::vector<Vertex*>& state) {
-        vertices = state;
+        maxTime = 0;
         distance.clear();
 
         std::vector<Vertex*> order = createInitialSlice(state[0]);
-
-        if (order.size() == 0) {
-            foreach(Vertex* a, state) {
-                a->printConnectivity();
-            }
-            BOOST_ASSERT(false);
-        }
-
         std::cout << "T=0 size: " << timeslice.size() << std::endl;
 
         typedef std::pair<Vertex*, Vertex*> dirVertex;
@@ -228,17 +195,10 @@ private:
         Triangle* curTriangle = t;
         Triangle* start = curTriangle;
 
-        BOOST_ASSERT(timeslice.find(curVertex) != timeslice.end() &&
-                timeslice.find(sec) != timeslice.end());
-
         // vertex not in current slice
         sec = curTriangle->getThirdVertex(curVertex, sec);
 
-
-        int c = 0;
         do {
-            BOOST_ASSERT(timeslice.find(curVertex) != timeslice.end());
-
             if (curTriangle->isTimelike(curVertex, sec)) {
                 nextslice.insert(std::make_pair(sec, curVertex));
             }
@@ -259,19 +219,16 @@ private:
             } else {
                 sec = third;
             }
-
-            c++;
-
-            BOOST_ASSERT(c < 80);
         } while (curTriangle != start);
-
-
-        maxTime = 0;
 
         /* Generate labels for first slice, and as a result, this calculates
           labels for all slices */
         foreach(dirVertex p, nextslice) {
-            labelTime(p.first, p.second);
+            try {
+                labelTime(p.first, p.second);
+            } catch (int err) {
+                break; // break up the calculations
+            }
 
             double d = distance[p.first].first;
 
@@ -296,10 +253,12 @@ public:
     }
 
     void printToFile() {
-        std::ofstream file(filename.c_str());
+        if (maxTime > 0) {
+            std::ofstream file(filename.c_str());
 
-        foreach(vertexTimeLabel::value_type v, distance) {
-            file << v.first << " " << v.second.first << " " << v.second.second << "\n";
+            foreach(vertexTimeLabel::value_type v, distance) {
+                file << v.first << " " << v.second.first << " " << v.second.second << "\n";
+            }
         }
     }
 };
