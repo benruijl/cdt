@@ -46,6 +46,7 @@
         <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>src/observables/TimeSliceObservable.cpp</itemPath>
       </logicalFolder>
       <itemPath>src/Simulation.cpp</itemPath>
       <itemPath>src/Triangle.cpp</itemPath>
@@ -90,7 +91,6 @@
         <ccTool>
           <developmentMode>5</developmentMode>
           <incDir>
-            <pElem>/misc/users2/student/bruijl/includes</pElem>
             <pElem>include</pElem>
           </incDir>
         </ccTool>

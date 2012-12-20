@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/src/observables/TimeSliceObservable.o \
 	${OBJECTDIR}/src/main.o \
 	${OBJECTDIR}/src/moves/FlipMove.o \
 	${OBJECTDIR}/src/moves/AlexanderMove.o \
@@ -74,6 +75,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cdt: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cdt ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/src/observables/TimeSliceObservable.o: src/observables/TimeSliceObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/TimeSliceObservable.o src/observables/TimeSliceObservable.cpp
 
 ${OBJECTDIR}/src/main.o: src/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

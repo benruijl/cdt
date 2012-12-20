@@ -11,6 +11,8 @@
 #include <sstream>
 #include <boost/date_time.hpp>
 
+class Vertex;
+
 class Observable {
 private:
     unsigned int registerFrequency, writeFrequency;
