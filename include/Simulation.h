@@ -14,6 +14,7 @@
 
 #include <vector>
 #include "Triangle.h"
+#include "Vertex.h"
 #include "observables/Observable.h"
 
 typedef boost::mt19937 base_generator_type; // our RNG
@@ -122,7 +123,17 @@ public:
      * @return 
      */
     template <typename T>
-    T getRandomElementFromSet(const boost::unordered_set<T>& set);
+    T getRandomElementFromSet(const boost::unordered_set<T>& set) {
+        typename boost::unordered_set<T>::iterator it = set.begin();
+
+        if (set.size() == 0) {
+            return NULL; // TODO: add assert?
+        }
+
+        boost::uniform_int<> uint(0, set.size() - 1); // TODO: check if slow?
+        std::advance(it, uint(rng));
+        return *it;
+    }
 
     /**
      * Free the complete triangulation.

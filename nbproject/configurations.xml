@@ -5,27 +5,27 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Moves" projectFiles="true">
-        <itemPath>moves/AlexanderMove.h</itemPath>
-        <itemPath>moves/CollapseMove.h</itemPath>
-        <itemPath>moves/FlipMove.h</itemPath>
-        <itemPath>moves/InverseAlexanderMove.h</itemPath>
-        <itemPath>moves/InverseCollapseMove.h</itemPath>
-        <itemPath>moves/InversePinchingMove.h</itemPath>
-        <itemPath>moves/Move.h</itemPath>
-        <itemPath>moves/MoveFactory.h</itemPath>
-        <itemPath>moves/PinchingMove.h</itemPath>
+        <itemPath>include/moves/AlexanderMove.h</itemPath>
+        <itemPath>include/moves/CollapseMove.h</itemPath>
+        <itemPath>include/moves/FlipMove.h</itemPath>
+        <itemPath>include/moves/InverseAlexanderMove.h</itemPath>
+        <itemPath>include/moves/InverseCollapseMove.h</itemPath>
+        <itemPath>include/moves/InversePinchingMove.h</itemPath>
+        <itemPath>include/moves/Move.h</itemPath>
+        <itemPath>include/moves/MoveFactory.h</itemPath>
+        <itemPath>include/moves/PinchingMove.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
-        <itemPath>observables/GridObservable.h</itemPath>
-        <itemPath>observables/Observable.h</itemPath>
-        <itemPath>observables/SizeObservable.h</itemPath>
-        <itemPath>observables/TimeSliceObservable.h</itemPath>
+        <itemPath>include/observables/GridObservable.h</itemPath>
+        <itemPath>include/observables/Observable.h</itemPath>
+        <itemPath>include/observables/SizeObservable.h</itemPath>
+        <itemPath>include/observables/TimeSliceObservable.h</itemPath>
       </logicalFolder>
-      <itemPath>Boltzmann.h</itemPath>
-      <itemPath>Simulation.h</itemPath>
-      <itemPath>Triangle.h</itemPath>
-      <itemPath>Utils.h</itemPath>
-      <itemPath>Vertex.h</itemPath>
+      <itemPath>include/Boltzmann.h</itemPath>
+      <itemPath>include/Simulation.h</itemPath>
+      <itemPath>include/Triangle.h</itemPath>
+      <itemPath>include/Utils.h</itemPath>
+      <itemPath>include/Vertex.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -35,13 +35,23 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Moves" projectFiles="true">
-        <itemPath>moves/Move.cpp</itemPath>
+        <itemPath>src/moves/AlexanderMove.cpp</itemPath>
+        <itemPath>src/moves/CollapseMove.cpp</itemPath>
+        <itemPath>src/moves/FlipMove.cpp</itemPath>
+        <itemPath>src/moves/InverseAlexanderMove.cpp</itemPath>
+        <itemPath>src/moves/InverseCollapseMove.cpp</itemPath>
+        <itemPath>src/moves/InversePinchingMove.cpp</itemPath>
+        <itemPath>src/moves/Move.cpp</itemPath>
+        <itemPath>src/moves/MoveFactory.cpp</itemPath>
+        <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
-      <itemPath>Simulation.cpp</itemPath>
-      <itemPath>Triangle.cpp</itemPath>
-      <itemPath>Utils.cpp</itemPath>
-      <itemPath>Vertex.cpp</itemPath>
-      <itemPath>main.cpp</itemPath>
+      <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+      </logicalFolder>
+      <itemPath>src/Simulation.cpp</itemPath>
+      <itemPath>src/Triangle.cpp</itemPath>
+      <itemPath>src/Utils.cpp</itemPath>
+      <itemPath>src/Vertex.cpp</itemPath>
+      <itemPath>src/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -81,6 +91,7 @@
           <developmentMode>5</developmentMode>
           <incDir>
             <pElem>/misc/users2/student/bruijl/includes</pElem>
+            <pElem>include</pElem>
           </incDir>
         </ccTool>
         <fortranCompilerTool>

@@ -150,19 +150,6 @@ Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
     return vertices[unireal(rng) * vertices.size()];
 }
 
-template <typename T>
-T Simulation::getRandomElementFromSet(const boost::unordered_set<T>& set) {
-    typename boost::unordered_set<T>::iterator it = set.begin();
-
-    if (set.size() == 0) {
-        return NULL; // TODO: add assert?
-    }
-
-    boost::uniform_int<> uint(0, set.size() - 1); // TODO: check if slow?
-    std::advance(it, uint(rng));
-    return *it;
-}
-
 void Simulation::collectTriangles(TriSet& triSet, Vertex* v, int depth) {
     if (depth <= 0) {
         triSet += v->getTriangles();

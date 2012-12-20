@@ -153,12 +153,11 @@ void Vertex::printConnectivity() {
     Triangle* t, *r;
     Vertex* u = (*triangles.begin())->getNextVertex(this);
     Vertex::getAdjacentTriangles(this, u, &t, &r);
-    
+
     std::cout << this << ": ";
     r = t;
-    
-    do
-    {
+
+    do {
         std::cout << (t->isTimelike(this, u) ? "T " : "S ") << u << " ";
         t = t->getNeighbour(this, u);
         u = t->getThirdVertex(this, u);

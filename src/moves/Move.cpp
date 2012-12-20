@@ -1,4 +1,4 @@
-#include "Move.h"
+#include "moves/Move.h"
 
 Move::Move(int Ntts, int Ntss) : fixedTriangle(NULL) {
     this->Ntss = Ntss;

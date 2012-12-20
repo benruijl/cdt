@@ -35,12 +35,20 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Triangle.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/Simulation.o \
-	${OBJECTDIR}/Vertex.o \
-	${OBJECTDIR}/moves/Move.o \
-	${OBJECTDIR}/Utils.o
+	${OBJECTDIR}/src/main.o \
+	${OBJECTDIR}/src/moves/FlipMove.o \
+	${OBJECTDIR}/src/moves/AlexanderMove.o \
+	${OBJECTDIR}/src/moves/Move.o \
+	${OBJECTDIR}/src/moves/InversePinchingMove.o \
+	${OBJECTDIR}/src/moves/InverseAlexanderMove.o \
+	${OBJECTDIR}/src/moves/PinchingMove.o \
+	${OBJECTDIR}/src/moves/InverseCollapseMove.o \
+	${OBJECTDIR}/src/Simulation.o \
+	${OBJECTDIR}/src/Utils.o \
+	${OBJECTDIR}/src/moves/MoveFactory.o \
+	${OBJECTDIR}/src/Triangle.o \
+	${OBJECTDIR}/src/moves/CollapseMove.o \
+	${OBJECTDIR}/src/Vertex.o
 
 
 # C Compiler Flags
@@ -67,35 +75,75 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cdt: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cdt ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/Triangle.o: Triangle.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/main.o: src/main.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/Triangle.o Triangle.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.cpp
 
-${OBJECTDIR}/main.o: main.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/moves/FlipMove.o: src/moves/FlipMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/FlipMove.o src/moves/FlipMove.cpp
 
-${OBJECTDIR}/Simulation.o: Simulation.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/moves/AlexanderMove.o: src/moves/AlexanderMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/Simulation.o Simulation.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/AlexanderMove.o src/moves/AlexanderMove.cpp
 
-${OBJECTDIR}/Vertex.o: Vertex.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/moves/Move.o: src/moves/Move.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/Vertex.o Vertex.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/Move.o src/moves/Move.cpp
 
-${OBJECTDIR}/moves/Move.o: moves/Move.cpp 
-	${MKDIR} -p ${OBJECTDIR}/moves
+${OBJECTDIR}/src/moves/InversePinchingMove.o: src/moves/InversePinchingMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/moves/Move.o moves/Move.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InversePinchingMove.o src/moves/InversePinchingMove.cpp
 
-${OBJECTDIR}/Utils.o: Utils.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/src/moves/InverseAlexanderMove.o: src/moves/InverseAlexanderMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -MMD -MP -MF $@.d -o ${OBJECTDIR}/Utils.o Utils.cpp
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseAlexanderMove.o src/moves/InverseAlexanderMove.cpp
+
+${OBJECTDIR}/src/moves/PinchingMove.o: src/moves/PinchingMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/PinchingMove.o src/moves/PinchingMove.cpp
+
+${OBJECTDIR}/src/moves/InverseCollapseMove.o: src/moves/InverseCollapseMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseCollapseMove.o src/moves/InverseCollapseMove.cpp
+
+${OBJECTDIR}/src/Simulation.o: src/Simulation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Simulation.o src/Simulation.cpp
+
+${OBJECTDIR}/src/Utils.o: src/Utils.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Utils.o src/Utils.cpp
+
+${OBJECTDIR}/src/moves/MoveFactory.o: src/moves/MoveFactory.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/MoveFactory.o src/moves/MoveFactory.cpp
+
+${OBJECTDIR}/src/Triangle.o: src/Triangle.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Triangle.o src/Triangle.cpp
+
+${OBJECTDIR}/src/moves/CollapseMove.o: src/moves/CollapseMove.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/moves
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/CollapseMove.o src/moves/CollapseMove.cpp
+
+${OBJECTDIR}/src/Vertex.o: src/Vertex.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/misc/users2/student/bruijl/includes -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Vertex.o src/Vertex.cpp
 
 # Subprojects
 .build-subprojects:

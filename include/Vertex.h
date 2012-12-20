@@ -10,11 +10,11 @@
 
 #include "Utils.h"
 
-
 class Triangle;
 class Vertex;
-typedef boost::unordered_set<Triangle*> TriSet;
+
 typedef boost::unordered_set<Vertex*> VertSet;
+typedef boost::unordered_set<Triangle*> TriSet;
 
 class Vertex {
 public:

@@ -17,8 +17,8 @@
 #define WINDING_ERROR 1
 
 /**
- *  Tries to see if the topology of a 'time slice' that is 1 time unit removed
- * from a random initial time slice is that of a circle.
+ *  This class tries to identify a time for each vertex. It uses the average
+ * distance to a time slice 
  */
 class TimeSliceObservable : public Observable {
 private:
