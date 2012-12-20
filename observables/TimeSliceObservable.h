@@ -108,10 +108,11 @@ private:
     }
 
     /**
-     * Find shortest slice using breadth-first search.
-     * @param start
-     * @param neighbour
-     * @return 
+     * Find shortest slice using breadth-first search. If the vertex start
+     * is not a member of a slice, another slice in the search path is picked.
+     * @param start Starting vertex
+     * @param neighbour Neighbour of the vertex, specifying direction
+     * @return Cycle
      */
     std::vector<Vertex*> findShortestSlice(Vertex* start, Vertex* neighbour) {
         typedef std::pair<Vertex*, Vertex*> linkDir;
@@ -122,9 +123,11 @@ private:
         queue.push(linkDir(neighbour, start));
         prev[neighbour] = start;
         visited.insert(neighbour);
+        
+        linkDir cur;
 
         while (!queue.empty()) {
-            linkDir cur = queue.front();
+            cur = queue.front();
             queue.pop();
 
             if (cur.first == start) {
@@ -155,8 +158,12 @@ private:
 
             }
         }
-
-        return std::vector<Vertex*>(); // no path found
+        
+        // path could not be found, this means that there is a subcycle.
+        // the last searched node should be a part of this, or else it would
+        // have reached the starting node. So run a new search from this node
+        // TODO: verify if this is always correct
+        return findShortestSlice(cur.first, cur.second);
     }
 
     std::vector<Vertex*> createInitialSlice(Vertex* start) {
