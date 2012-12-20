@@ -49,6 +49,7 @@ private:
         }
 
         if (timeslice.find(v) != timeslice.end()) {
+            distance[v] = averageLabel(0.0, 1.0); 
             return averageLabel(0.0, 1.0);
         }
 
@@ -211,7 +212,7 @@ private:
             // is the triangle trapped?
             if (timeslice.find(sec) != timeslice.end()) {
                 std::cerr << "WARNING: trapped triangle, results may be inacurate" << std::endl;
-                break;
+                return;
             }
 
             if (timeslice.find(third) != timeslice.end()) {
@@ -227,7 +228,7 @@ private:
             try {
                 labelTime(p.first, p.second);
             } catch (int err) {
-                break; // break up the calculations
+                return; // break up the calculations
             }
 
             double d = distance[p.first].first;
