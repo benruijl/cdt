@@ -152,7 +152,8 @@ void Simulation::generateInitialTriangulation(int N, int T) {
 
 Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
     BOOST_ASSERT(vertices.size() > 0);
-    return vertices[unireal(rng) * vertices.size()];
+    boost::uniform_int<> uint(0, vertices.size() - 1);
+    return vertices[uint(rng)];
 }
 
 void Simulation::collectTriangles(TriSet& triSet, Vertex* v, int depth) {
@@ -303,15 +304,14 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
 
-    //BoltzmannTester boltzmannTester;
-    // Choose a triangle that remains fixed
-    //Triangle* fixed = *vertices[0]->getTriangles().begin();
-    //m.setFixedTriangle(fixed);
-    /* std::vector<int>id = createID(fixed);*/
+    BoltzmannTester boltzmannTester;
+    Triangle* fixed = *vertices[0]->getTriangles().begin();
+    moveFactory->setFixedTriangle(fixed);
+    std::vector<int> id = createID(fixed);
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
-            //boltzmannTester.printFrequencies(lambda, alpha);
+            boltzmannTester.printFrequencies(lambda, alpha);
         }
 
         /* Measure observables in the current state */
@@ -325,7 +325,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
-                //boltzmannTester.addStateId(id);
+                boltzmannTester.addStateId(id);
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -342,11 +342,11 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
              */
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
-                //id = createID(fixed);
+                id = createID(fixed);
             } else
                 moveRejectedBecauseDetBal++;
 
-            //boltzmannTester.addStateId(id);
+            boltzmannTester.addStateId(id);
         }
     }
 

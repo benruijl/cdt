@@ -9,6 +9,7 @@
 #define	BOLTMANN_H
 
 #include <boost/unordered_map.hpp>
+#include <boost/date_time.hpp>
 #include <fstream>
 
 /**
@@ -18,13 +19,19 @@
  */
 class BoltzmannTester {
 private:
-    typedef boost::unordered_map<std::vector<int>, unsigned long long> freqmap;
+    typedef boost::unordered_map<std::vector<int>, double> freqmap;
     freqmap freq; // state frequency map
-    unsigned long long total;
+    double total; // double because this will become very large, TODO: use gmp
+    std::string filename;
 public:
 
     BoltzmannTester() : total(0) {
-
+        boost::posix_time::time_facet* facet = new boost::posix_time::time_facet("%d%m%Y_%H%M%S");
+        boost::posix_time::ptime cur(boost::posix_time::second_clock::local_time());
+        std::stringstream ss;
+        ss.imbue(std::locale(ss.getloc(), facet));
+        ss << "freq_" << cur << ".dat";
+        filename = ss.str();
     }
 
     virtual ~BoltzmannTester() {
@@ -32,8 +39,8 @@ public:
     }
 
     void addStateId(std::vector<int> stateID) {
-        freq[stateID]++;
-        total++;
+        freq[stateID] += 1.0;
+        total += 1.0;
     }
 
     void printFrequencies(double lambda, double alpha) {
@@ -41,7 +48,7 @@ public:
          frequencies based on lambda and alpha.*/
         std::cout << "There are " << freq.size() << " states" << std::endl;
 
-        std::ofstream file("freq.dat");
+        std::ofstream file(filename.c_str());
 
         /* Print data points */
         foreach(freqmap::value_type v, freq) {
