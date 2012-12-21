@@ -9,6 +9,8 @@
 #include "Utils.h"
 #include "moves/MoveFactory.h"
 #include "Boltzmann.h"
+#include "observables/Observable.h"
+
 #include <boost/assign/std.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -17,11 +19,13 @@
 #include <sstream>
 #include <ctime>
 
+
 using namespace boost::assign;
 
 Simulation::Simulation() {
     /* Initialize random number generator */
     setSeed(std::time(0));
+    moveFactory = new MoveFactory(*this);
 }
 
 Simulation::Simulation(const Simulation& orig) {
@@ -29,6 +33,7 @@ Simulation::Simulation(const Simulation& orig) {
 
 Simulation::~Simulation() {
     clearTriangulation();
+    delete moveFactory;
 }
 
 void Simulation::clearTriangulation() {
@@ -297,7 +302,6 @@ std::vector<int> Simulation::createID(Triangle* t) {
 void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
-    MoveFactory m(*this);
 
     //BoltzmannTester boltzmannTester;
     // Choose a triangle that remains fixed
@@ -316,7 +320,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
         }
 
         for (unsigned int i = 0; i < sweepLength; i++) {
-            Move* move = m.createRandomMove(*this);
+            Move* move = moveFactory->createRandomMove(*this);
 
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check

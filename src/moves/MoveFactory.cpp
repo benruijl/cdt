@@ -29,12 +29,26 @@ MoveFactory::~MoveFactory() {
     }
 }
 
+void MoveFactory::addMove(MoveFactory::MOVES move) {
+    filter.push_back(move);
+    uint = boost::uniform_int<>(0, filter.size() - 1);
+   
+}
+
+/**
+ * Adds all moves to the filter
+ */
+void MoveFactory::addAllMoves() {
+    for (int i = 0; i < COUNT; i++) {
+        filter.push_back(static_cast<MOVES>(i));
+    }
+    uint = boost::uniform_int<>(0, filter.size() - 1);
+}
+
 Move* MoveFactory::createRandomMove(Simulation& simulation) {
-    MOVES move = static_cast<MOVES> (uint(simulation.getRNG()));
+    BOOST_ASSERT(filter.size() > 0);
     
-    // FIXME: for testing
-    move = simulation.getRandomNumber() < 0.5 ? COLLAPSE_SPACELIKE :
-            FLIP_CHANGE;
+    MOVES move = filter[uint(simulation.getRNG())];
     bool inverse = simulation.getRandomNumber() < 0.5;
 
     if (inverse) {

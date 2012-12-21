@@ -19,18 +19,13 @@
 #include <boost/array.hpp>
 
 class MoveFactory {
-private:
+public:
 
     enum MOVES {
         ALEXANDER_TIMELIKE, ALEXANDER_SPACELIKE, FLIP_CHANGE, FLIP,
         COLLAPSE_TIMELIKE, COLLAPSE_SPACELIKE, PINCH_SPACELIKE,
         PINCH_TIMELIKE, COUNT
     };
-
-    boost::array<Move*, COUNT> moves;
-    boost::array<Move*, COUNT> invMoves;
-    boost::uniform_int<> uint;
-public:
 
     MoveFactory(Simulation& simulation);
 
@@ -45,6 +40,21 @@ public:
 
     void setFixedTriangle(Triangle* t);
 
+    /**
+     * Adds a move to the filter.
+     */
+    void addMove(MOVES move);
+
+    /**
+     * Adds all moves to the filter
+     */
+    void addAllMoves();
+
+private:
+    boost::array<Move*, COUNT> moves;
+    boost::array<Move*, COUNT> invMoves;
+    boost::uniform_int<> uint;
+    std::vector<MOVES> filter;
 };
 
 #endif	/* MOVEFACTORY_H */

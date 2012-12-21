@@ -12,11 +12,17 @@
 #include "observables/SizeObservable.h"
 #include "observables/GridObservable.h"
 #include "observables/TimeSliceObservable.h"
+#include "moves/MoveFactory.h"
 
 using namespace std;
 
 int main(int argc, char** argv) {
     Simulation simulation;
+    
+    /* Select the moves used in the simulation */
+    simulation.getMoveFactory().addMove(MoveFactory::FLIP_CHANGE);
+    simulation.getMoveFactory().addMove(MoveFactory::COLLAPSE_SPACELIKE);
+    
     SizeObservable sizeObservable(1, 0); // measure every sweep
     GridObservable gridObservable(simulation, 100);
     TimeSliceObservable timeSliceObservable(1);

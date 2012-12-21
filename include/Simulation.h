@@ -11,17 +11,20 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/uniform_int.hpp>
-
 #include <vector>
-#include "Triangle.h"
+
 #include "Vertex.h"
-#include "observables/Observable.h"
+#include "Triangle.h"
+
+class Observable;
+class MoveFactory;
 
 typedef boost::mt19937 base_generator_type; // our RNG
 
 class Simulation {
 private:
     std::vector<Observable*> observables;
+    MoveFactory* moveFactory;
 public:
     Simulation();
     Simulation(const Simulation& orig);
@@ -161,6 +164,10 @@ public:
         // don't paste the seed, because it is not very useful yet.
         //std::cout << "Using seed: " << seed << std::endl;
         rng.seed(seed);
+    }
+
+    MoveFactory& getMoveFactory() {
+        return *moveFactory;
     }
 private:
     base_generator_type rng;

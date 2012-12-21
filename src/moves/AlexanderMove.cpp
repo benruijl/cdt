@@ -1,4 +1,5 @@
 #include "moves/AlexanderMove.h"
+#include "Triangle.h"
 
 AlexanderMove::AlexanderMove(bool timelike) : Move(!timelike * 2, timelike * 2) {
     isTimelike = timelike;
