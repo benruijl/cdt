@@ -19,9 +19,9 @@
  */
 class BoltzmannTester {
 private:
-    typedef boost::unordered_map<std::vector<int>, double> freqmap;
+    typedef boost::unordered_map<std::vector<int>, unsigned long long> freqmap;
     freqmap freq; // state frequency map
-    double total; // double because this will become very large, TODO: use gmp
+    unsigned long long total; // should be large enough
     std::string filename;
 public:
 
@@ -39,8 +39,12 @@ public:
     }
 
     void addStateId(std::vector<int> stateID) {
-        freq[stateID] += 1.0;
-        total += 1.0;
+        freq[stateID]++;
+        total++;
+        
+        if (total > -3) {
+            std::cerr << "WARNING: total states out of range";
+        }
     }
 
     void printFrequencies(double lambda, double alpha) {
