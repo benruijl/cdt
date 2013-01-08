@@ -45,23 +45,25 @@ public:
      * @param T Number of time slices. Has to be more than 1.
      */
     void generateInitialTriangulation(int N, int T);
-
+    
     /**
      * Perform Metropolis algorithm to improve a given triangulation. The triangulation
      * should be created with the generateInitialTriangulation method.
      * 
-     * @param lambda Action parameter. Controls system size.
+     * The lambda term in the action is tuned in this method, so that the average
+     * volume is `volume`.
+     * 
      * @param alpha Ratio between length of spacelike and timelike links. 
      * The following should hold: -4 &lt; &alpha; &lt; -1/4 in order for the Wick rotation
      * to be possible.
      * @param volume Desired number of triangles. This adds a volume fixing term
      * that allows for small fluctuations.
-     * @parma deltaVolume Fluctuation parameter for fixed volume range
+     * @param deltaVolume Fluctuation parameter for fixed volume range
      * @param numSweeps Number of sweeps
      * @param sweepLength How many iterations should a sweep be?
      * 
      */
-    void Metropolis(double lambda, double alpha, double volume, double
+    void Metropolis(double alpha, unsigned int volume, double
             deltaVolume, unsigned int numSweeps, unsigned int sweepLength);
 
     /**

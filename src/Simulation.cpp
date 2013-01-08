@@ -311,9 +311,11 @@ std::vector<int> Simulation::createID(Triangle* t) {
     return id;
 }
 
-void Simulation::Metropolis(double lambda, double alpha, double volume, double
+void Simulation::Metropolis(double alpha, unsigned int volume, double
         deltaVolume, unsigned int numSweeps, unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
+    int bias = 0; // count the bias of the system size, left = -1, right = + 1
+    double lambda = 5, lambdaLowerBound = 0, lambdaUpperBound = 10;
 
     /*BoltzmannTester boltzmannTester;
     Triangle* fixed = *vertices[0]->getTriangles().begin();
@@ -349,7 +351,7 @@ void Simulation::Metropolis(double lambda, double alpha, double volume, double
             /* add quadratic volume fixing term */
             double delta = move->getDeltaSST() + move->getDeltaTTS();
             acceptance *= exp(-deltaVolume * delta * (4.0 *
-                    (double) vertices.size() + delta - 2.0 * volume));
+                    (double) vertices.size() + delta - 2.0 * (double) volume));
 
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
@@ -360,8 +362,27 @@ void Simulation::Metropolis(double lambda, double alpha, double volume, double
             } else
                 moveRejectedBecauseDetBal++;
 
+            if (2 * vertices.size() < volume)
+                bias -= 1;
+            if (2 * vertices.size() > volume)
+                bias += 1;
+
             //boltzmannTester.addStateId(id);
         }
+
+        /* Update lambda. Lower lambda means more growth, so the signs are
+         * reversed. */
+        if (bias > 0) {
+            lambdaLowerBound = lambda;
+        }
+        if (bias < 0) {
+            lambdaUpperBound = lambda;
+        }
+        
+        lambda = 0.5 * (lambdaUpperBound + lambdaLowerBound);
+
+        std::cout << "Lambda: " <<  lambda << ", bias: " << bias << std::endl;
+        bias = 0;
     }
 
     /* Write some statistics*/
