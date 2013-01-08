@@ -54,12 +54,15 @@ public:
      * @param alpha Ratio between length of spacelike and timelike links. 
      * The following should hold: -4 &lt; &alpha; &lt; -1/4 in order for the Wick rotation
      * to be possible.
+     * @param volume Desired number of triangles. This adds a volume fixing term
+     * that allows for small fluctuations.
+     * @parma deltaVolume Fluctuation parameter for fixed volume range
      * @param numSweeps Number of sweeps
      * @param sweepLength How many iterations should a sweep be?
      * 
      */
-    void Metropolis(double lambda, double alpha, unsigned int numSweeps,
-            unsigned int sweepLength);
+    void Metropolis(double lambda, double alpha, double volume, double
+            deltaVolume, unsigned int numSweeps, unsigned int sweepLength);
 
     /**
      * Convenience function that 
@@ -172,7 +175,10 @@ public:
 private:
     base_generator_type rng;
     boost::uniform_real<> unireal;
-    std::vector<Vertex*> vertices; // a list of all the vertices in the simulation    
+    std::vector<Vertex*> vertices; // a list of all the vertices in the simulation
+
+    /* Some statistics of the simulation */
+    unsigned int TTSCount, SSTCount; // number of TTS and SST triangles
 };
 
 #endif	/* SIMULATION_H */

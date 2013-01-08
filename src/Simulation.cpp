@@ -50,6 +50,8 @@ void Simulation::clearTriangulation() {
         delete v;
     }
 
+    TTSCount = 0;
+    SSTCount = 0;
     vertices.clear();
 }
 
@@ -77,6 +79,12 @@ void Simulation::readFromFile(const char* filename) {
     while (file >> type >> vertA >> vertB >> vertC) {
         new Triangle(type == 'T' ? Triangle::TTS : Triangle::SST, vertex_array[vertA],
                 vertex_array[vertB], vertex_array[vertC]);
+
+        if (type == 'T') {
+            TTSCount++;
+        } else {
+            SSTCount++;
+        }
     }
 
     file.close();
@@ -148,6 +156,9 @@ void Simulation::generateInitialTriangulation(int N, int T) {
             triangles[t * 2 * N + 2 * s + 1] = v;
         }
     }
+
+    TTSCount = N * T * 2;
+    SSTCount = 0;
 }
 
 Vertex* Simulation::getRandomVertex(const std::vector<Vertex*>& vertices) {
@@ -300,18 +311,18 @@ std::vector<int> Simulation::createID(Triangle* t) {
     return id;
 }
 
-void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
-        unsigned int sweepLength) {
+void Simulation::Metropolis(double lambda, double alpha, double volume, double
+        deltaVolume, unsigned int numSweeps, unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
 
-    BoltzmannTester boltzmannTester;
+    /*BoltzmannTester boltzmannTester;
     Triangle* fixed = *vertices[0]->getTriangles().begin();
     moveFactory->setFixedTriangle(fixed);
-    std::vector<int> id = createID(fixed);
+    std::vector<int> id = createID(fixed);*/
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
-            boltzmannTester.printFrequencies(lambda, alpha);
+            //boltzmannTester.printFrequencies(lambda, alpha);
         }
 
         /* Measure observables in the current state */
@@ -325,7 +336,7 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
             // some random moves can be impossible and to simplify the 
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
-                boltzmannTester.addStateId(id);
+                //boltzmannTester.addStateId(id);
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -335,18 +346,21 @@ void Simulation::Metropolis(double lambda, double alpha, unsigned int numSweeps,
                     move->getInverseTransitionProbability(vertices) /
                     move->getTransitionProbability(vertices);
 
-            /*std::cout << move->getMoveProbability(lambda, alpha) << " " <<
-                    move->getInverseTransitionProbability(vertices) << " " <<
-                    move->getTransitionProbability(vertices) << " " <<
-                    acceptance;
-             */
+            /* add quadratic volume fixing term */
+            double delta = move->getDeltaSST() + move->getDeltaTTS();
+            acceptance *= exp(-deltaVolume * delta * (4.0 *
+                    (double) vertices.size() + delta - 2.0 * volume));
+
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
-                id = createID(fixed);
+
+                TTSCount += move->getDeltaTTS();
+                SSTCount += move->getDeltaSST();
+                //id = createID(fixed);
             } else
                 moveRejectedBecauseDetBal++;
 
-            boltzmannTester.addStateId(id);
+            //boltzmannTester.addStateId(id);
         }
     }
 

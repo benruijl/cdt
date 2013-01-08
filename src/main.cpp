@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
     Simulation simulation;
     
     /* Select the moves used in the simulation */
-    simulation.getMoveFactory().addMove(MoveFactory::FLIP_CHANGE);
-    simulation.getMoveFactory().addMove(MoveFactory::COLLAPSE_SPACELIKE);
+    //simulation.getMoveFactory().addMove(MoveFactory::FLIP_CHANGE);
+    simulation.getMoveFactory().addAllMoves();
     
     SizeObservable sizeObservable(1, 0); // measure every sweep
     GridObservable gridObservable(simulation, 100);
@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
     //simulation.addObservable(&timeSliceObservable);
 
     //simulation.readFromFile("grid.dat"); // read in a thermalized triangulation    
-    simulation.generateInitialTriangulation(4, 3);
-    simulation.Metropolis(4, -1, 100001, 1000000); // 18100 should run for 12 hours
+    simulation.generateInitialTriangulation(3, 3);
+    simulation.Metropolis(0.1, -1, 100, 0.1, 10, 1000000); // 18100 should run for 12 hours
     std::cout << "Simulation ended." << std::endl;
 
     return 0;

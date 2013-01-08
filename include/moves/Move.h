@@ -92,6 +92,14 @@ public:
     Triangle* getFixedTriangle() {
         return fixedTriangle;
     }
+
+    int getDeltaTTS() {
+        return Ntts;
+    }
+
+    int getDeltaSST() {
+        return Ntss;
+    }
 private:
     int Ntts, Ntss; // Number of TTS and TSS triangles this move changes
     Triangle* fixedTriangle;
