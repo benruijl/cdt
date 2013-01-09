@@ -20,6 +20,7 @@
         <itemPath>include/observables/Observable.h</itemPath>
         <itemPath>include/observables/SizeObservable.h</itemPath>
         <itemPath>include/observables/TimeSliceObservable.h</itemPath>
+        <itemPath>include/observables/VolumeProfileObservable.h</itemPath>
       </logicalFolder>
       <itemPath>include/Boltzmann.h</itemPath>
       <itemPath>include/Simulation.h</itemPath>
@@ -47,10 +48,10 @@
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
         <itemPath>src/observables/TimeSliceObservable.cpp</itemPath>
+        <itemPath>/misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp</itemPath>
       </logicalFolder>
       <itemPath>src/Simulation.cpp</itemPath>
       <itemPath>src/Triangle.cpp</itemPath>
-      <itemPath>src/Utils.cpp</itemPath>
       <itemPath>src/Vertex.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
     </logicalFolder>

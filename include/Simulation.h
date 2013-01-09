@@ -180,7 +180,7 @@ private:
     std::vector<Vertex*> vertices; // a list of all the vertices in the simulation
 
     /* Some statistics of the simulation */
-    unsigned int TTSCount, SSTCount; // number of TTS and SST triangles
+    int TTSCount, SSTCount; // number of TTS and SST triangles
 };
 
 #endif	/* SIMULATION_H */

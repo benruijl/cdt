@@ -1,7 +1,8 @@
 #include "moves/FlipMove.h"
 #include "Triangle.h"
 
-FlipMove::FlipMove(bool timelike, bool change) : Move(!timelike * -2 * change, timelike * 2 * change) {
+FlipMove::FlipMove(bool timelike, bool change) :
+Move(-2 * change * (timelike * 2 - 1), 2 * change * (timelike * 2 - 1)) {
     isTimelike = timelike;
     this->change = change;
 }

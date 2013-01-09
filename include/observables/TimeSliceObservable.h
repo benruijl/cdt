@@ -69,6 +69,20 @@ public:
     void printToScreen();
 
     void printToFile();
+
+    /**
+     * Gets the time label of a vertex.
+     * @param v Vertex
+     * @return Time label
+     */
+    double getTimeLabel(Vertex* v) {
+        vertexTimeLabel::iterator it = distance.find(v);
+        if (it == distance.end()) {
+            return -1;
+        }
+
+        return it->second.first;
+    }
 };
 
 

@@ -13,6 +13,7 @@
 #include "observables/GridObservable.h"
 #include "observables/TimeSliceObservable.h"
 #include "moves/MoveFactory.h"
+#include "observables/VolumeProfileObservable.h"
 
 using namespace std;
 
@@ -26,13 +27,16 @@ int main(int argc, char** argv) {
     SizeObservable sizeObservable(1, 0); // measure every sweep
     GridObservable gridObservable(simulation, 100);
     TimeSliceObservable timeSliceObservable(1);
+    VolumeProfileObservable volumeProfileObservable(1, &timeSliceObservable,
+            &simulation);
     simulation.addObservable(&sizeObservable);
     simulation.addObservable(&gridObservable);
-    //simulation.addObservable(&timeSliceObservable);
+    simulation.addObservable(&timeSliceObservable);
+    simulation.addObservable(&volumeProfileObservable);
 
     //simulation.readFromFile("grid.dat"); // read in a thermalized triangulation    
     simulation.generateInitialTriangulation(3, 3);
-    simulation.Metropolis(-1, 100, 0.1, 10, 1000000); // 18100 should run for 12 hours
+    simulation.Metropolis(-1, 100, 0.01, 100, 1000000); // 18100 should run for 12 hours
     std::cout << "Simulation ended." << std::endl;
 
     return 0;

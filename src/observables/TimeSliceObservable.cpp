@@ -201,6 +201,7 @@ void TimeSliceObservable::printToScreen() {
 }
 
 void TimeSliceObservable::printToFile() {
+    // TODO: overwrite every time or have persistent storage?
     if (maxTime > 0) {
         std::ofstream file(filename.c_str());
 

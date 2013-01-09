@@ -321,11 +321,18 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     Triangle* fixed = *vertices[0]->getTriangles().begin();
     moveFactory->setFixedTriangle(fixed);
     std::vector<int> id = createID(fixed);*/
+    
+    std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
             //boltzmannTester.printFrequencies(lambda, alpha);
+            
         }
+        
+        // for testing
+        ratio << TTSCount / (double) SSTCount << " " << TTSCount << " " << SSTCount << " "
+                << 2 * vertices.size() << std::endl;
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {

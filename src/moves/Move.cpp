@@ -1,8 +1,6 @@
 #include "moves/Move.h"
 
-Move::Move(int Ntts, int Ntss) : fixedTriangle(NULL) {
-    this->Ntss = Ntss;
-    this->Ntts = Ntts;
+Move::Move(int Ntts, int Ntss) : fixedTriangle(NULL), Ntss(Ntss), Ntts(Ntts) {
 }
 
 Move::~Move() {
