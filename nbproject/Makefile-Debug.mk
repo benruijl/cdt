@@ -44,8 +44,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/moves/InverseAlexanderMove.o \
 	${OBJECTDIR}/src/moves/PinchingMove.o \
 	${OBJECTDIR}/src/moves/InverseCollapseMove.o \
-	${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o \
 	${OBJECTDIR}/src/Simulation.o \
+	${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o \
 	${OBJECTDIR}/src/moves/MoveFactory.o \
 	${OBJECTDIR}/src/Triangle.o \
 	${OBJECTDIR}/src/moves/CollapseMove.o \
@@ -121,15 +121,15 @@ ${OBJECTDIR}/src/moves/InverseCollapseMove.o: src/moves/InverseCollapseMove.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseCollapseMove.o src/moves/InverseCollapseMove.cpp
 
-${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o: /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/765685637
-	${RM} $@.d
-	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp
-
 ${OBJECTDIR}/src/Simulation.o: src/Simulation.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Simulation.o src/Simulation.cpp
+
+${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o: /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/765685637
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp
 
 ${OBJECTDIR}/src/moves/MoveFactory.o: src/moves/MoveFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves

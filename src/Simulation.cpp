@@ -331,7 +331,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         }
         
         // for testing
-        ratio << TTSCount / (double) SSTCount << " " << TTSCount << " " << SSTCount << " "
+        ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
                 << 2 * vertices.size() << std::endl;
 
         /* Measure observables in the current state */
@@ -359,6 +359,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
             double delta = move->getDeltaSST() + move->getDeltaTTS();
             acceptance *= exp(-deltaVolume * delta * (4.0 *
                     (double) vertices.size() + delta - 2.0 * (double) volume));
+            
 
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);

@@ -127,6 +127,7 @@ std::vector<Vertex*> TimeSliceObservable::createInitialSlice(Vertex* start) {
 void TimeSliceObservable::process(const std::vector<Vertex*>& state) {
     maxTime = 0;
     distance.clear();
+    loopCheck.clear();
 
     std::vector<Vertex*> order = createInitialSlice(state[0]);
     std::cout << "T=0 size: " << timeslice.size() << std::endl;
