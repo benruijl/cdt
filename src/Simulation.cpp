@@ -34,6 +34,10 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
     clearTriangulation();
     delete moveFactory;
+    
+    foreach(Observable* obs, observables) {
+        delete obs;
+    }
 }
 
 void Simulation::clearTriangulation() {

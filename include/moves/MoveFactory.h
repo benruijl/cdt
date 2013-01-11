@@ -49,6 +49,13 @@ public:
      * Adds all moves to the filter
      */
     void addAllMoves();
+    
+    /**
+     * Parses a list of move names to moves and adds them to the system.
+     * If the list is empty, all possible moves are added.
+     * @param moves List of move names
+     */
+    void parseMoves(std::vector<std::string> moves);
 
 private:
     boost::array<Move*, COUNT> moves;

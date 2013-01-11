@@ -1,4 +1,6 @@
 #include "moves/MoveFactory.h" 
+#include <boost/assign.hpp>
+#include <boost/unordered/unordered_map.hpp>
 
 MoveFactory::MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
 
@@ -32,7 +34,7 @@ MoveFactory::~MoveFactory() {
 void MoveFactory::addMove(MoveFactory::MOVES move) {
     filter.push_back(move);
     uint = boost::uniform_int<>(0, filter.size() - 1);
-   
+
 }
 
 /**
@@ -40,14 +42,14 @@ void MoveFactory::addMove(MoveFactory::MOVES move) {
  */
 void MoveFactory::addAllMoves() {
     for (int i = 0; i < COUNT; i++) {
-        filter.push_back(static_cast<MOVES>(i));
+        filter.push_back(static_cast<MOVES> (i));
     }
     uint = boost::uniform_int<>(0, filter.size() - 1);
 }
 
 Move* MoveFactory::createRandomMove(Simulation& simulation) {
     BOOST_ASSERT(filter.size() > 0);
-    
+
     MOVES move = filter[uint(simulation.getRNG())];
     bool inverse = simulation.getRandomNumber() < 0.5;
 
@@ -62,6 +64,34 @@ void MoveFactory::setFixedTriangle(Triangle* t) {
     for (int i = 0; i < COUNT; i++) {
         moves[i]->setFixedTriangle(t);
         invMoves[i]->setFixedTriangle(t);
+    }
+}
+
+void MoveFactory::parseMoves(std::vector<std::string> moves) {
+    boost::unordered_map<std::string, MOVES> m =
+            boost::assign::map_list_of("alexander_tl", ALEXANDER_TIMELIKE)
+            ("alexander_sl", ALEXANDER_SPACELIKE)
+            ("collapse_tl", COLLAPSE_TIMELIKE)
+            ("collapse_sl", COLLAPSE_SPACELIKE)
+            ("flip", FLIP)
+            ("flip_change", FLIP_CHANGE)
+            ("pinching_tl", PINCH_TIMELIKE)
+            ("pinching_sl", PINCH_SPACELIKE);
+    
+    if (moves.size() == 0) {
+        addAllMoves();
+        return;
+    }
+
+    foreach(std::string& move, moves) {
+        boost::unordered_map<std::string, MOVES>::iterator it =
+                m.find(move);
+
+        if (it != m.end()) {
+            addMove(it->second);
+        } else {
+            std::cerr << "Unrecognized move: " << move << std::endl;
+        }
     }
 }
 

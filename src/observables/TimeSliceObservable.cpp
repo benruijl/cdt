@@ -86,9 +86,10 @@ std::vector<Vertex*> TimeSliceObservable::findShortestSlice(Vertex* start, Verte
 
     // path could not be found, this means that there is a subcycle.
     // the last searched node should be a part of this, or else it would
-    // have reached the starting node. So run a new search from this node
+    // have reached the starting node. However, if we go in the current direction,
+    // we have the risk of entering another loop, so we turn the order around.
     // TODO: verify if this is always correct
-    return findShortestSlice(cur.first, cur.second);
+    return findShortestSlice(cur.second, cur.first);
 }
 
 std::vector<Vertex*> TimeSliceObservable::createInitialSlice(Vertex* start) {

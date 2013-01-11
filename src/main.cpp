@@ -7,6 +7,8 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 #include "Simulation.h"
 #include "observables/SizeObservable.h"
@@ -17,25 +19,91 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
-    Simulation simulation;
-    
-    /* Select the moves used in the simulation */
-    simulation.getMoveFactory().addAllMoves();
-    
-    SizeObservable sizeObservable(1, 0); // measure every sweep
-    GridObservable gridObservable(simulation, 100);
-    TimeSliceObservable timeSliceObservable(10);
-    VolumeProfileObservable volumeProfileObservable(10, &timeSliceObservable,
-            &simulation);
-    simulation.addObservable(&sizeObservable);
-    simulation.addObservable(&gridObservable);
-    simulation.addObservable(&timeSliceObservable);
-    simulation.addObservable(&volumeProfileObservable);
+struct Config {
+    double alpha, deltaVolume;
+    unsigned int N, T, numSweeps, sweepLength,
+            volume, sizeFreq, gridFreq, timeFreq, volProfFreq;
+    std::string gridFile;
+    std::vector<std::string> moves;
+};
 
-    //simulation.readFromFile("grid.dat"); // read in a thermalized triangulation    
-    simulation.generateInitialTriangulation(30, 30);
-    simulation.Metropolis(-3.9, 1001, 0.01, 100, 1000000); // 18100 should run for 12 hours
+Config buildConfiguration(const char* filename) {
+    boost::property_tree::ptree pt;
+    boost::property_tree::ini_parser::read_ini(filename, pt);
+
+    Config config;
+    config.N = pt.get<unsigned int>("general.N");
+    config.T = pt.get<unsigned int>("general.T");
+    config.alpha = pt.get<double>("general.alpha");
+    config.volume = pt.get<unsigned int>("general.volume");
+    config.deltaVolume = pt.get<double>("general.delta");
+    config.numSweeps = pt.get<unsigned int>("general.numSweeps");
+    config.sweepLength = pt.get<unsigned int>("general.sweepLength");
+    config.gridFile = pt.get("general.gridFile", std::string(""));
+
+    std::string moves = pt.get("general.moves", std::string("")); // empty means all moves
+    boost::char_separator<char> sep(" ,");
+    boost::tokenizer< boost::char_separator<char> > tok(moves, sep);
+
+    foreach(const std::string& move, tok) {
+        config.moves.push_back(move);
+    }
+
+    /* Check for observables */
+    config.sizeFreq = pt.get("size.freq", 0);
+    config.gridFreq = pt.get("grid.freq", 0);
+    config.timeFreq = pt.get("time.freq", 0);
+    config.volProfFreq = pt.get("vol.freq", 0);
+
+    return config;
+}
+
+int main(int argc, char** argv) {
+    Config config;
+
+    if (argc < 2) {
+        std::cout << "Using default configuration file, config.ini" << std::endl;
+        config = buildConfiguration("config.ini");
+    } else {
+        config = buildConfiguration(argv[1]);
+    }
+
+    Simulation simulation;
+
+    /* Select the moves used in the simulation */
+    simulation.getMoveFactory().parseMoves(config.moves);
+
+    /* Create observables */
+    if (config.sizeFreq > 0) {
+        SizeObservable* sizeObservable = new SizeObservable(config.sizeFreq, 0);
+        simulation.addObservable(sizeObservable);
+    }
+    if (config.gridFreq > 0) {
+        GridObservable* gridObservable = new GridObservable(simulation, config.gridFreq);
+        simulation.addObservable(gridObservable);
+    }
+
+    if (config.timeFreq > 0) {
+        TimeSliceObservable* timeSliceObservable = new TimeSliceObservable(config.timeFreq);
+        simulation.addObservable(timeSliceObservable);
+
+        if (config.volProfFreq > 0) {
+            VolumeProfileObservable* volumeProfileObservable = new
+                    VolumeProfileObservable(config.volProfFreq, timeSliceObservable,
+                    &simulation);
+            simulation.addObservable(volumeProfileObservable);
+        }
+    }
+
+    if (config.gridFile.size() > 0) {
+        simulation.readFromFile(config.gridFile.c_str());
+    } else {
+        simulation.generateInitialTriangulation(config.N, config.T);
+    }
+
+    // 18100 sweeps should run for 12 hours
+    simulation.Metropolis(config.alpha, config.volume, config.deltaVolume, config.numSweeps,
+            config.sweepLength);
     std::cout << "Simulation ended." << std::endl;
 
     return 0;

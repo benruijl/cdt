@@ -30,6 +30,10 @@ public:
     Simulation(const Simulation& orig);
     virtual ~Simulation();
 
+    /**
+     * Adds an observable to the simulator. The simulator will free the memory.
+     * @param obs Pointer to an observable.
+     */
     void addObservable(Observable* obs) {
         observables.push_back(obs);
     }
