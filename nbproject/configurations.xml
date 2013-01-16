@@ -19,6 +19,7 @@
         <itemPath>include/observables/GridObservable.h</itemPath>
         <itemPath>include/observables/Observable.h</itemPath>
         <itemPath>include/observables/SizeObservable.h</itemPath>
+        <itemPath>/misc/users2/student/bruijl/cdt/include/observables/SpectralDimensionObservable.h</itemPath>
         <itemPath>include/observables/TimeSliceObservable.h</itemPath>
         <itemPath>include/observables/VolumeProfileObservable.h</itemPath>
       </logicalFolder>
@@ -47,6 +48,7 @@
         <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>/misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp</itemPath>
         <itemPath>src/observables/TimeSliceObservable.cpp</itemPath>
         <itemPath>/misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp</itemPath>
       </logicalFolder>

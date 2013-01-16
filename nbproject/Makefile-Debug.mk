@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/main.o \
 	${OBJECTDIR}/src/moves/FlipMove.o \
 	${OBJECTDIR}/src/moves/AlexanderMove.o \
+	${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o \
 	${OBJECTDIR}/src/moves/Move.o \
 	${OBJECTDIR}/src/moves/InversePinchingMove.o \
 	${OBJECTDIR}/src/moves/InverseAlexanderMove.o \
@@ -95,6 +96,11 @@ ${OBJECTDIR}/src/moves/AlexanderMove.o: src/moves/AlexanderMove.cpp
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/AlexanderMove.o src/moves/AlexanderMove.cpp
+
+${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o: /misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/765685637
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o /misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp
 
 ${OBJECTDIR}/src/moves/Move.o: src/moves/Move.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves

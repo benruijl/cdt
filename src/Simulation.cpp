@@ -326,7 +326,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     moveFactory->setFixedTriangle(fixed);
     std::vector<int> id = createID(fixed);*/
     
-    std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
+    //std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
@@ -335,8 +335,8 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         }
         
         // for testing
-        ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
-                << 2 * vertices.size() << std::endl;
+        //ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
+        //        << 2 * vertices.size() << std::endl;
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {

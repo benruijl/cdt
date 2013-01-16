@@ -16,6 +16,7 @@
 #include "observables/TimeSliceObservable.h"
 #include "moves/MoveFactory.h"
 #include "observables/VolumeProfileObservable.h"
+#include "observables/SpectralDimensionObservable.h"
 
 using namespace std;
 
@@ -94,6 +95,10 @@ int main(int argc, char** argv) {
             simulation.addObservable(volumeProfileObservable);
         }
     }
+    
+    // FIXME: for testing
+    SpectralDimensionObservable* spectralDimensionObservable = new SpectralDimensionObservable(1);
+    simulation.addObservable(spectralDimensionObservable);
 
     if (config.gridFile.size() > 0) {
         simulation.readFromFile(config.gridFile.c_str());
