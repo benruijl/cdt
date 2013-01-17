@@ -3,11 +3,11 @@
 #include "Utils.h"
 #include "Vertex.h"
 #include <boost/tuple/tuple.hpp>
+#include <boost/array.hpp>
 
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
-filename(createFilename("specdim")),
-file(filename.c_str()) {
+filename(createFilename("specdim")) {
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {
@@ -15,34 +15,48 @@ SpectralDimensionObservable::~SpectralDimensionObservable() {
 }
 
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
-    specDim.clear();
-
-    // TODO: make vector?
-    boost::unordered_map<Vertex*, double> nextProb, curProb;
+    boost::array<boost::unordered_map<Vertex*, double>, 2 > probBuffers;
+    unsigned int cur = 0;
 
     Vertex* start = state[0];
-    curProb[start] = 1;
-    boost::unordered_map<Vertex*, double>* curBuffer = &curProb;
+    probBuffers[cur][start] = 1;
 
-
-    unsigned int sigmaMax = 50; // TODO: make parameter
     for (unsigned int sigma = 0; sigma < sigmaMax; sigma++) {
-        specDim[sigma] = curProb[start];
+
+        prob[sigma] = probBuffers[cur][start];
 
         Vertex* key;
         double value;
 
-        foreach(boost::tie(key, value), *curBuffer) {
+        foreach(boost::tie(key, value), probBuffers[cur]) {
 
             foreach(Vertex* n, key->getNeighbouringVertices()) {
-                nextProb[n] += 1.0 / (double) key->getNeighbouringVertexCount() *
-                        value; // fixme: should not be nextprob but !curBuffer
+                // if this node could not be reached in half the number of maximum steps,
+                // it will never reach it back to the starting position
+                if (sigma > sigmaMax / 2 && probBuffers[cur].find(n) == probBuffers[cur].end()) {
+                    continue;
+                }
+
+                probBuffers[(cur + 1) % 2][n] += 1.0 / (double) key->getNeighbouringVertexCount() *
+                        value;
             }
         }
 
         // switch buffers
-        curBuffer->clear();
-        curBuffer = curBuffer == &curProb ? &nextProb : &curProb;
+        probBuffers[cur].clear();
+        cur = (cur + 1) % 2;
+    }
+    
+    /* Reset results? */
+    if (getMeasurementCount() % resetCount == 0) {
+        for (int sigma = 0; sigma < sigmaMax; sigma++) {
+            specDim[sigma] = 0;
+        }
+    }
+
+    /* Update spectral dimension */
+    for (int sigma = 0; sigma < sigmaMax - 1; sigma++) {
+        specDim[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1);
     }
 }
 
@@ -50,12 +64,10 @@ void SpectralDimensionObservable::printToScreen() {
 }
 
 void SpectralDimensionObservable::printToFile() {
-    file.seekp(0);
+    std::ofstream file(filename.c_str());
 
-    unsigned int key;
-    double value;
-
-    foreach(boost::tie(key, value), specDim) {
-        file << key << " " << value << "\n";
+    // TODO: make lower bound parameter
+    for (unsigned int sigma = 10; sigma < sigmaMax - 1; sigma++) {
+        file << sigma << " " << specDim[sigma] / (getMeasurementCount() % resetCount + 1) << "\n";
     }
 }

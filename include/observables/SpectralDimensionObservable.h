@@ -9,14 +9,18 @@
 #define	SPECTRALDIMENSIONOBSERVABLE_H
 
 #include <boost/unordered_map.hpp>
+#include <boost/array.hpp>
 #include "Observable.h"
 
 class SpectralDimensionObservable : public Observable {
 private:
+    static const unsigned int sigmaMax = 500; // TODO: make parameter
+    static const unsigned int resetCount = 10;
+    
     std::string filename;
-    std::ofstream file;
     double dimension;
-    boost::unordered_map<unsigned int, double> specDim;
+    boost::array<double, sigmaMax> prob;
+    boost::array<double, sigmaMax> specDim;
 
     void process(const std::vector<Vertex*>& state);
 public:

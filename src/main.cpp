@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
     }
     
     // FIXME: for testing
-    SpectralDimensionObservable* spectralDimensionObservable = new SpectralDimensionObservable(1);
+    SpectralDimensionObservable* spectralDimensionObservable = new SpectralDimensionObservable(2);
     simulation.addObservable(spectralDimensionObservable);
 
     if (config.gridFile.size() > 0) {
