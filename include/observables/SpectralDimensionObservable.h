@@ -8,19 +8,20 @@
 #ifndef SPECTRALDIMENSIONOBSERVABLE_H
 #define	SPECTRALDIMENSIONOBSERVABLE_H
 
-#include <boost/unordered_map.hpp>
 #include <boost/array.hpp>
+#include <boost/circular_buffer.hpp>
 #include "Observable.h"
 
 class SpectralDimensionObservable : public Observable {
 private:
     static const unsigned int sigmaMax = 500; // TODO: make parameter
-    static const unsigned int resetCount = 10;
+    static const unsigned int sampleSize = 100;
+    typedef boost::array<double, sigmaMax> Spec;
     
     std::string filename;
     double dimension;
-    boost::array<double, sigmaMax> prob;
-    boost::array<double, sigmaMax> specDim;
+    Spec prob;
+    boost::circular_buffer<Spec> specDim;
 
     void process(const std::vector<Vertex*>& state);
 public:

@@ -3,11 +3,12 @@
 #include "Utils.h"
 #include "Vertex.h"
 #include <boost/tuple/tuple.hpp>
-#include <boost/array.hpp>
+#include <boost/unordered_map.hpp>
 
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
-filename(createFilename("specdim")) {
+filename(createFilename("specdim")),
+specDim(sampleSize) {
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {
@@ -46,18 +47,14 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
         probBuffers[cur].clear();
         cur = (cur + 1) % 2;
     }
-    
-    /* Reset results? */
-    if (getMeasurementCount() % resetCount == 0) {
-        for (int sigma = 0; sigma < sigmaMax; sigma++) {
-            specDim[sigma] = 0;
-        }
-    }
 
     /* Update spectral dimension */
-    for (int sigma = 0; sigma < sigmaMax - 1; sigma++) {
-        specDim[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1);
+    boost::array<double, sigmaMax> spec = {0};
+    for (int sigma = 1; sigma < sigmaMax - 1; sigma++) {
+        spec[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1);
     }
+
+    specDim.push_back(spec);
 }
 
 void SpectralDimensionObservable::printToScreen() {
@@ -68,6 +65,13 @@ void SpectralDimensionObservable::printToFile() {
 
     // TODO: make lower bound parameter
     for (unsigned int sigma = 10; sigma < sigmaMax - 1; sigma++) {
-        file << sigma << " " << specDim[sigma] / (getMeasurementCount() % resetCount + 1) << "\n";
+        double avg = 0;
+
+        foreach(Spec& spec, specDim) {
+            avg += spec[sigma];
+        }
+        avg /= (double) specDim.size();
+
+        file << sigma << " " << avg << "\n";
     }
 }
