@@ -23,7 +23,7 @@ using namespace std;
 struct Config {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
-            volume, sizeFreq, gridFreq, timeFreq, volProfFreq;
+            volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq;
     std::string gridFile;
     std::vector<std::string> moves;
 };
@@ -55,6 +55,7 @@ Config buildConfiguration(const char* filename) {
     config.gridFreq = pt.get("grid.freq", 0);
     config.timeFreq = pt.get("time.freq", 0);
     config.volProfFreq = pt.get("vol.freq", 0);
+    config.specDimFreq = pt.get("spec.freq", 0);
 
     return config;
 }
@@ -95,10 +96,12 @@ int main(int argc, char** argv) {
             simulation.addObservable(volumeProfileObservable);
         }
     }
-    
-    // FIXME: for testing
-    SpectralDimensionObservable* spectralDimensionObservable = new SpectralDimensionObservable(1);
-    simulation.addObservable(spectralDimensionObservable);
+
+    if (config.specDimFreq > 0) {
+        SpectralDimensionObservable* spectralDimensionObservable = new
+                SpectralDimensionObservable(config.specDimFreq);
+        simulation.addObservable(spectralDimensionObservable);
+    }
 
     if (config.gridFile.size() > 0) {
         simulation.readFromFile(config.gridFile.c_str());
@@ -106,7 +109,6 @@ int main(int argc, char** argv) {
         simulation.generateInitialTriangulation(config.N, config.T);
     }
 
-    // 18100 sweeps should run for 12 hours
     simulation.Metropolis(config.alpha, config.volume, config.deltaVolume, config.numSweeps,
             config.sweepLength);
     std::cout << "Simulation ended." << std::endl;

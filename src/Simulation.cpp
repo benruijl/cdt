@@ -34,7 +34,7 @@ Simulation::Simulation(const Simulation& orig) {
 Simulation::~Simulation() {
     clearTriangulation();
     delete moveFactory;
-    
+
     foreach(Observable* obs, observables) {
         delete obs;
     }
@@ -318,25 +318,26 @@ std::vector<int> Simulation::createID(Triangle* t) {
 void Simulation::Metropolis(double alpha, unsigned int volume, double
         deltaVolume, unsigned int numSweeps, unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
-    int bias = 0; // count the bias of the system size, left = -1, right = + 1
-    double lambda = 5, lambdaLowerBound = 0, lambdaUpperBound = 10;
+    int bias = 0; // count the bias of the system size, left = -1, right = +1
+    double lambdaLowerBound = 0, lambdaUpperBound = 40,
+            lambda = 0.5 * (lambdaUpperBound - lambdaLowerBound);
 
     /*BoltzmannTester boltzmannTester;
     Triangle* fixed = *vertices[0]->getTriangles().begin();
     moveFactory->setFixedTriangle(fixed);
     std::vector<int> id = createID(fixed);*/
-    
-    //std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
+
+    std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
             //boltzmannTester.printFrequencies(lambda, alpha);
-            
+
         }
-        
+
         // for testing
-        //ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
-        //        << 2 * vertices.size() << std::endl;
+        ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
+                << 2 * vertices.size() << std::endl;
 
         /* Measure observables in the current state */
         foreach(Observable* o, observables) {
@@ -363,7 +364,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
             double delta = move->getDeltaSST() + move->getDeltaTTS();
             acceptance *= exp(-deltaVolume * delta * (4.0 *
                     (double) vertices.size() + delta - 2.0 * (double) volume));
-            
+
 
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
@@ -390,10 +391,10 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         if (bias < 0) {
             lambdaUpperBound = lambda;
         }
-        
+
         lambda = 0.5 * (lambdaUpperBound + lambdaLowerBound);
 
-        std::cout << "Lambda: " <<  lambda << ", bias: " << bias << std::endl;
+        std::cout << "Lambda: " << lambda << ", bias: " << bias << std::endl;
         bias = 0;
     }
 

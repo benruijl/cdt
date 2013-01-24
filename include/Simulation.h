@@ -58,7 +58,7 @@ public:
      * volume is `volume`.
      * 
      * @param alpha Ratio between length of spacelike and timelike links. 
-     * The following should hold: -4 &lt; &alpha; &lt; -1/4 in order for the Wick rotation
+     * The following should hold: 1/4 &lt; &alpha; &lt; 4 in order for the Wick rotation
      * to be possible.
      * @param volume Desired number of triangles. This adds a volume fixing term
      * that allows for small fluctuations.

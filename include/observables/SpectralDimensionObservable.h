@@ -14,14 +14,15 @@
 
 class SpectralDimensionObservable : public Observable {
 private:
-    static const unsigned int sigmaMax = 500; // TODO: make parameter
-    static const unsigned int sampleSize = 100;
+    static const unsigned int sigmaMax = 600; // TODO: make parameter
+    static const unsigned int sampleSize = 6000;
     typedef boost::array<double, sigmaMax> Spec;
     
     std::string filename;
     double dimension;
     Spec prob;
     boost::circular_buffer<Spec> specDim;
+    boost::circular_buffer<Spec> specDim1;
 
     void process(const std::vector<Vertex*>& state);
 public:
