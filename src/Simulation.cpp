@@ -318,9 +318,8 @@ std::vector<int> Simulation::createID(Triangle* t) {
 void Simulation::Metropolis(double alpha, unsigned int volume, double
         deltaVolume, unsigned int numSweeps, unsigned int sweepLength) {
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
-    int bias = 0; // count the bias of the system size, left = -1, right = +1
-    double lambdaLowerBound = 0, lambdaUpperBound = 40,
-            lambda = 0.5 * (lambdaUpperBound - lambdaLowerBound);
+    double bias = 0; // count the bias of the system size
+    double lambda = 5;
 
     /*BoltzmannTester boltzmannTester;
     Triangle* fixed = *vertices[0]->getTriangles().begin();
@@ -328,6 +327,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     std::vector<int> id = createID(fixed);*/
 
     std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
+    std::ofstream lambda_measure("lambda.dat");
 
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
         if (sweep % 10 == 0) { // for testing
@@ -375,26 +375,20 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
             } else
                 moveRejectedBecauseDetBal++;
 
-            if (2 * vertices.size() < volume)
-                bias -= 1;
-            if (2 * vertices.size() > volume)
-                bias += 1;
-
+            bias += 2.0 * (double) vertices.size() - (double) volume;
             //boltzmannTester.addStateId(id);
         }
 
         /* Update lambda. Lower lambda means more growth, so the signs are
          * reversed. */
-        if (bias > 0) {
-            lambdaLowerBound = lambda;
-        }
-        if (bias < 0) {
-            lambdaUpperBound = lambda;
-        }
+        double k = 10, z = 20; // TODO: make parameters
+        bias *= z / (double) sweepLength / (double) volume;
+        lambda += k * (bias * bias * bias + bias);
+        lambda = lambda < 0 ? 0 : lambda;
 
-        lambda = 0.5 * (lambdaUpperBound + lambdaLowerBound);
-
-        std::cout << "Lambda: " << lambda << ", bias: " << bias << std::endl;
+        std::cout << "Lambda: " << lambda << ", delta: " << k * (bias * bias * bias + bias)
+                << ", bias: " << bias * 100 << "%" << std::endl;
+        lambda_measure << lambda << std::endl;
         bias = 0;
     }
 
@@ -407,4 +401,3 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
             ((float) sweepLength * (float) numSweeps - (float) moveRejectedBecauseImpossible)
             << "%" << std::endl;
 };
-
