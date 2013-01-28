@@ -100,7 +100,6 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
-          <commandLine>-g</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

@@ -63,7 +63,13 @@ public:
      * @param link Link number
      * @return True if timelike, false if spacelike
      */
-    bool isTimelike(int link);
+    inline bool isTimelike(int link) {
+        if (type == TTS) {
+            return link != 2;
+        }
+
+        return link == 2;
+    }
 
     /**
      * Returns the number of timelike links that contain vertex v.

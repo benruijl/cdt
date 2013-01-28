@@ -17,26 +17,53 @@ SpectralDimensionObservable::~SpectralDimensionObservable() {
 
 }
 
+/**
+ * Because the spectral dimension measurement is slow, a list is built that maps
+ * connectivity.
+ * @param state
+ */
+SpectralDimensionObservable::NeighbourList SpectralDimensionObservable::buildConnectivity(const std::vector<Vertex*>& state) {
+    boost::unordered_map<Vertex*, unsigned int> index;
+    index.rehash(state.size());
+    NeighbourList neighbours(state.size());
+
+    for (unsigned int i = 0; i < state.size(); i++) {
+        index[state[i]] = i;
+    }
+
+    for (unsigned int i = 0; i < state.size(); i++) {
+
+        foreach(Vertex* n, state[i]->getNeighbouringVertices()) {
+            neighbours[i].push_back(index[n]);
+        }
+    }
+
+    return neighbours; // FIXME: don't copy?
+}
+
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
-    boost::array<boost::unordered_map<Vertex*, double>, 2 > probBuffers;
+    // TODO: change map to array?
+    boost::array<boost::unordered_map<unsigned int, double>, 2 > probBuffers;
     unsigned int cur = 0;
 
     // pre-allocate hash table
     probBuffers[0].rehash(state.size());
     probBuffers[1].rehash(state.size());
 
-    Vertex* start = state[0];
+    std::vector< std::vector<unsigned int> > neighbours = buildConnectivity(state);
+
+    unsigned int start = 0;
     probBuffers[cur][start] = 1;
 
     for (unsigned int sigma = 0; sigma < sigmaMax; sigma++) {
 
         prob[sigma] = probBuffers[cur][start];
 
-        Vertex* curVert;
+        unsigned int curVert;
         double curProb;
 
         foreach(boost::tie(curVert, curProb), probBuffers[cur]) {
-            foreach(Vertex* n, curVert->getNeighbouringVertices()) {
+            for (unsigned int n = 0; n < neighbours[curVert].size(); n++) {
                 // if this node could not be reached in half the number of maximum steps,
                 // it will never reach it back to the starting position
                 if (sigma > sigmaMax / 2 && probBuffers[cur].find(n) == probBuffers[cur].end()) {

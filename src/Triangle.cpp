@@ -89,59 +89,22 @@ bool Triangle::isOppositeLinkTimelike(Vertex* a) {
     return isTimelike(getOppositeLink(a));
 }
 
-/**
- * Checks if a link is timelike.
- * @param link Link number
- * @return True if timelike, false if spacelike
- */
-bool Triangle::isTimelike(int link) {
-    if (type == TTS) {
-        return link != 2;
-    }
-
-    return link == 2;
-}
-
-/**
- * Returns the number of timelike links that contain vertex v.
- * @param v Vertex
- * @return 
- */
 int Triangle::getAdjacentTimelikeCount(Vertex* v) {
     int i = indexFromVertex(v);
     return isTimelike(i) + isTimelike((i + 2) % 3);
 }
 
-/**
- * Checks if a link is timelike.
- * @param a First vertex of link 
- * @param b Second vertex of link
- * @return True if timelike, false if spacelike
- */
 bool Triangle::isTimelike(Vertex* a, Vertex* b) {
     int link = getLink(a, b);
     return isTimelike(link);
 }
 
-/**
- * Check that if the links adjacent to the link spanned by vertex a and b are 
- * of the same nature (timelike or spacelike).
- * @param a First vertex
- * @param b Second vertex
- * @return True if adjacent links have the same type
- */
 bool Triangle::checkAdjacentSides(Vertex* a, Vertex* b) {
     int link = getLink(a, b);
 
     return isTimelike((link + 1) % 3) == isTimelike((link + 2) % 3);
 }
 
-/**
- * Check that if the links adjacent to vertex v are 
- * of the same nature (timelike or spacelike).
- * @param v Vertex
- * @return True if adjacent links have the same type
- */
 bool Triangle::checkAdjacentSides(Vertex* v) {
     int i = indexFromVertex(v);
     return isTimelike(i) == isTimelike((i + 2) % 3);
@@ -198,12 +161,6 @@ int Triangle::indexFromVertex(Vertex* v) {
     BOOST_ASSERT(false);
 }
 
-/**
- * Gets the neighbour that has u and v as vertices as well.
- * @param u
- * @param v
- * @return 
- */
 Triangle* Triangle::getNeighbour(const Vertex* u, const Vertex* v) {
     Triangle* q, *r;
     Vertex::getAdjacentTriangles(u, v, &q, &r);
@@ -211,21 +168,12 @@ Triangle* Triangle::getNeighbour(const Vertex* u, const Vertex* v) {
     return q;
 }
 
-/**
- * Unregisters this triangles at the 3 vertices
- * @return Unregistered triangle ready for deletion
- */
 void Triangle::removeVertices() {
     for (int i = 0; i < 3; i++) {
         vertices[i]->getTriangles().erase(this);
     }
 }
 
-/**
- * Gets the next vertex of the triangle. This process is deterministic.
- * @param v Current vertex
- * @return Next vertex
- */
 Vertex* Triangle::getNextVertex(Vertex* v) {
     int i = indexFromVertex(v);
     return vertices[(i + 1) % 3];

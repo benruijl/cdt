@@ -17,7 +17,8 @@ private:
     static const unsigned int sigmaMax = 1000; // TODO: make parameter
     static const unsigned int sampleSize = 6000;
     typedef boost::array<double, sigmaMax> Spec;
-    
+    typedef std::vector< std::vector<unsigned int> > NeighbourList;
+
     std::string filename;
     double dimension;
     Spec prob;
@@ -25,6 +26,13 @@ private:
     boost::circular_buffer<Spec> specDim1;
 
     void process(const std::vector<Vertex*>& state);
+
+    /**
+     * Because the spectral dimension measurement is slow, a list is built that maps
+     * connectivity.
+     * @param state
+     */
+    NeighbourList buildConnectivity(const std::vector<Vertex*>& state);
 public:
 
     SpectralDimensionObservable(unsigned int writeFrequency);
