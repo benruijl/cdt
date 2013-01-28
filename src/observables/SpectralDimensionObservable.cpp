@@ -2,6 +2,7 @@
 #include "observables/Observable.h"
 #include "Utils.h"
 #include "Vertex.h"
+#include "Triangle.h"
 #include <boost/tuple/tuple.hpp>
 #include <boost/unordered_map.hpp>
 
@@ -20,6 +21,10 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     boost::array<boost::unordered_map<Vertex*, double>, 2 > probBuffers;
     unsigned int cur = 0;
 
+    // pre-allocate hash table
+    probBuffers[0].rehash(state.size());
+    probBuffers[1].rehash(state.size());
+
     Vertex* start = state[0];
     probBuffers[cur][start] = 1;
 
@@ -27,25 +32,25 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
 
         prob[sigma] = probBuffers[cur][start];
 
-        Vertex* key;
-        double value;
+        Vertex* curVert;
+        double curProb;
 
-        foreach(boost::tie(key, value), probBuffers[cur]) {
-
-            foreach(Vertex* n, key->getNeighbouringVertices()) {
+        foreach(boost::tie(curVert, curProb), probBuffers[cur]) {
+            foreach(Vertex* n, curVert->getNeighbouringVertices()) {
                 // if this node could not be reached in half the number of maximum steps,
                 // it will never reach it back to the starting position
                 if (sigma > sigmaMax / 2 && probBuffers[cur].find(n) == probBuffers[cur].end()) {
                     continue;
                 }
 
-                probBuffers[(cur + 1) % 2][n] += 1.0 / (double) key->getNeighbouringVertexCount() *
-                        value;
+                probBuffers[(cur + 1) % 2][n] += 1.0 / 3.0 * curProb;
             }
         }
 
         // switch buffers
         probBuffers[cur].clear();
+        probBuffers[cur].rehash(state.size());
+
         cur = (cur + 1) % 2;
     }
 
@@ -67,7 +72,7 @@ void SpectralDimensionObservable::printToScreen() {
 void SpectralDimensionObservable::printToFile() {
     std::stringstream ss;
     std::string filename_fix = filename;
-    
+
     if (getMeasurementCount() % 200 == 0) {
         ss << filename << "_" << getMeasurementCount();
         filename_fix = ss.str();

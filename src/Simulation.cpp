@@ -340,6 +340,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
                 << 2 * vertices.size() << std::endl;
 
         /* Measure observables in the current state */
+        // TODO: measure only when volume is `volume`
         foreach(Observable* o, observables) {
             o->measure(vertices);
         }
@@ -387,7 +388,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         lambda = lambda < 0 ? 0 : lambda;
 
         std::cout << "Lambda: " << lambda << ", delta: " << k * (bias * bias * bias + bias)
-                << ", bias: " << bias * 100 << "%" << std::endl;
+                << ", bias: " << bias / z * 100 << "%" << std::endl;
         lambda_measure << lambda << std::endl;
         bias = 0;
     }

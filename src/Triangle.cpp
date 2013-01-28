@@ -211,10 +211,6 @@ Triangle* Triangle::getNeighbour(const Vertex* u, const Vertex* v) {
     return q;
 }
 
-Triangle* Triangle::getNeighbour(int link) {
-    return getNeighbour(vertices[link], vertices[(link + 1) % 3]);
-}
-
 /**
  * Unregisters this triangles at the 3 vertices
  * @return Unregistered triangle ready for deletion
@@ -223,10 +219,6 @@ void Triangle::removeVertices() {
     for (int i = 0; i < 3; i++) {
         vertices[i]->getTriangles().erase(this);
     }
-}
-
-Vertex* Triangle::getVertex(int index) {
-    return vertices[index];
 }
 
 /**

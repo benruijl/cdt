@@ -121,7 +121,9 @@ public:
      * @param link Link
      * @return Neighbour at link 'Link'
      */
-    Triangle* getNeighbour(int link);
+    inline Triangle* getNeighbour(int link) {
+        return getNeighbour(vertices[link], vertices[(link + 1) % 3]);
+    }
 
     /**
      * Unregisters this triangles at the 3 vertices
@@ -132,7 +134,9 @@ public:
     /**
      * Gets the vertex at a given index.
      */
-    Vertex* getVertex(int index);
+    inline Vertex* getVertex(int index) {
+        return vertices[index];
+    }
 
     /**
      * Gets the next vertex of the triangle. This process is deterministic.
