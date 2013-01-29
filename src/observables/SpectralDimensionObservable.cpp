@@ -38,45 +38,42 @@ SpectralDimensionObservable::NeighbourList SpectralDimensionObservable::buildCon
         }
     }
 
-    return neighbours; // FIXME: don't copy?
+    return neighbours;
 }
 
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
-    // TODO: change map to array?
-    boost::array<boost::unordered_map<unsigned int, double>, 2 > probBuffers;
-    unsigned int cur = 0;
-
-    // pre-allocate hash table
-    probBuffers[0].rehash(state.size());
-    probBuffers[1].rehash(state.size());
+    boost::array<std::vector<double>, 2 > probBuffers;
+    probBuffers[0] = std::vector<double>(state.size());
+    probBuffers[1] = std::vector<double>(state.size());
 
     std::vector< std::vector<unsigned int> > neighbours = buildConnectivity(state);
 
-    unsigned int start = 0;
+    unsigned int cur = 0; // current buffer
+    unsigned int start = 0; // TODO: average over multiple starting points?
     probBuffers[cur][start] = 1;
 
     for (unsigned int sigma = 0; sigma < sigmaMax; sigma++) {
-
         prob[sigma] = probBuffers[cur][start];
 
-        unsigned int curVert;
-        double curProb;
+        for (int i = 0; i < state.size(); i++) {
+            if (probBuffers[cur][i] > epsilon) {
+                for (unsigned int n = 0; n < neighbours[i].size(); n++) {
+                    // if this node could not be reached in half the number of maximum steps,
+                    // it will never reach it back to the starting position
+                    if (sigma > sigmaMax / 2 && probBuffers[cur][neighbours[i][n]] < epsilon) {
+                        continue;
+                    }
 
-        foreach(boost::tie(curVert, curProb), probBuffers[cur]) {
-            for (unsigned int n = 0; n < neighbours[curVert].size(); n++) {
-                // if this node could not be reached in half the number of maximum steps,
-                // it will never reach it back to the starting position
-                if (sigma > sigmaMax / 2 && probBuffers[cur].find(n) == probBuffers[cur].end()) {
-                    continue;
+                    probBuffers[(cur + 1) % 2][neighbours[i][n]] +=
+                            probBuffers[cur][i] / static_cast<double> (neighbours[i].size());
                 }
-
-                probBuffers[(cur + 1) % 2][n] += 1.0 / 3.0 * curProb;
             }
         }
 
         // switch buffers
-        probBuffers[cur].clear();
-        probBuffers[cur].rehash(state.size());
+        for (int i = 0; i < state.size(); i++) {
+            probBuffers[cur][i] = 0.0;
+        }
 
         cur = (cur + 1) % 2;
     }
@@ -86,7 +83,8 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     boost::array<double, sigmaMax> spec1 = {0};
     for (int sigma = 2; sigma < sigmaMax - 1; sigma++) {
         spec[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1);
-        spec1[sigma] += -2.0 * (log(prob[sigma + 1]) - log(prob[sigma])) / (log((double) sigma + 1.0) - log((double) sigma));
+        spec1[sigma] += -2.0 * (log(prob[sigma + 1]) - log(prob[sigma])) /
+                (log((double) sigma + 1.0) - log((double) sigma));
     }
 
     specDim.push_back(spec);

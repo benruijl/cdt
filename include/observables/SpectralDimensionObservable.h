@@ -14,6 +14,7 @@
 
 class SpectralDimensionObservable : public Observable {
 private:
+    static const double epsilon = 1e-9;
     static const unsigned int sigmaMax = 1000; // TODO: make parameter
     static const unsigned int sampleSize = 6000;
     typedef boost::array<double, sigmaMax> Spec;
