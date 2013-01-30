@@ -39,14 +39,14 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/main.o \
 	${OBJECTDIR}/src/moves/FlipMove.o \
 	${OBJECTDIR}/src/moves/AlexanderMove.o \
-	${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o \
 	${OBJECTDIR}/src/moves/Move.o \
 	${OBJECTDIR}/src/moves/InversePinchingMove.o \
 	${OBJECTDIR}/src/moves/InverseAlexanderMove.o \
 	${OBJECTDIR}/src/moves/PinchingMove.o \
+	${OBJECTDIR}/src/observables/SpectralDimensionObservable.o \
 	${OBJECTDIR}/src/moves/InverseCollapseMove.o \
 	${OBJECTDIR}/src/Simulation.o \
-	${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o \
+	${OBJECTDIR}/src/observables/VolumeProfileObservable.o \
 	${OBJECTDIR}/src/moves/MoveFactory.o \
 	${OBJECTDIR}/src/Triangle.o \
 	${OBJECTDIR}/src/moves/CollapseMove.o \
@@ -97,11 +97,6 @@ ${OBJECTDIR}/src/moves/AlexanderMove.o: src/moves/AlexanderMove.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/AlexanderMove.o src/moves/AlexanderMove.cpp
 
-${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o: /misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/765685637
-	${RM} $@.d
-	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/765685637/SpectralDimensionObservable.o /misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp
-
 ${OBJECTDIR}/src/moves/Move.o: src/moves/Move.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
@@ -122,6 +117,11 @@ ${OBJECTDIR}/src/moves/PinchingMove.o: src/moves/PinchingMove.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/PinchingMove.o src/moves/PinchingMove.cpp
 
+${OBJECTDIR}/src/observables/SpectralDimensionObservable.o: src/observables/SpectralDimensionObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/SpectralDimensionObservable.o src/observables/SpectralDimensionObservable.cpp
+
 ${OBJECTDIR}/src/moves/InverseCollapseMove.o: src/moves/InverseCollapseMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
@@ -132,10 +132,10 @@ ${OBJECTDIR}/src/Simulation.o: src/Simulation.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Simulation.o src/Simulation.cpp
 
-${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o: /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/765685637
+${OBJECTDIR}/src/observables/VolumeProfileObservable.o: src/observables/VolumeProfileObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/765685637/VolumeProfileObservable.o /misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp
+	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/VolumeProfileObservable.o src/observables/VolumeProfileObservable.cpp
 
 ${OBJECTDIR}/src/moves/MoveFactory.o: src/moves/MoveFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves

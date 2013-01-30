@@ -16,7 +16,7 @@ class SpectralDimensionObservable : public Observable {
 private:
     static const double epsilon = 1e-9;
     static const unsigned int sigmaMax = 1000; // TODO: make parameter
-    static const unsigned int sampleSize = 6000;
+    static const unsigned int sampleSize = 5000;
     typedef boost::array<double, sigmaMax> Spec;
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
 
@@ -33,7 +33,9 @@ private:
      * connectivity.
      * @param state
      */
-    NeighbourList buildConnectivity(const std::vector<Vertex*>& state);
+    NeighbourList buildDualLatticeConnectivity(const std::vector<Vertex*>& state);
+    
+    NeighbourList buildLatticeConnectivity(const std::vector<Vertex*>& state);
 public:
 
     SpectralDimensionObservable(unsigned int writeFrequency);
