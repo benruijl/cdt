@@ -19,7 +19,7 @@
         <itemPath>include/observables/GridObservable.h</itemPath>
         <itemPath>include/observables/Observable.h</itemPath>
         <itemPath>include/observables/SizeObservable.h</itemPath>
-        <itemPath>/misc/users2/student/bruijl/cdt/include/observables/SpectralDimensionObservable.h</itemPath>
+        <itemPath>include/observables/SpectralDimensionObservable.h</itemPath>
         <itemPath>include/observables/TimeSliceObservable.h</itemPath>
         <itemPath>include/observables/VolumeProfileObservable.h</itemPath>
       </logicalFolder>
@@ -32,7 +32,7 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
-      <itemPath>/misc/users2/student/bruijl/cdt/config.ini</itemPath>
+      <itemPath>config.ini</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -49,9 +49,9 @@
         <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
-        <itemPath>/misc/users2/student/bruijl/cdt/src/observables/SpectralDimensionObservable.cpp</itemPath>
+        <itemPath>src/observables/SpectralDimensionObservable.cpp</itemPath>
         <itemPath>src/observables/TimeSliceObservable.cpp</itemPath>
-        <itemPath>/misc/users2/student/bruijl/cdt/src/observables/VolumeProfileObservable.cpp</itemPath>
+        <itemPath>src/observables/VolumeProfileObservable.cpp</itemPath>
       </logicalFolder>
       <itemPath>src/Simulation.cpp</itemPath>
       <itemPath>src/Triangle.cpp</itemPath>
