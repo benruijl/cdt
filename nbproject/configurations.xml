@@ -24,6 +24,7 @@
         <itemPath>include/observables/VolumeProfileObservable.h</itemPath>
       </logicalFolder>
       <itemPath>include/Boltzmann.h</itemPath>
+      <itemPath>include/Config.h</itemPath>
       <itemPath>include/Simulation.h</itemPath>
       <itemPath>include/Triangle.h</itemPath>
       <itemPath>include/Utils.h</itemPath>

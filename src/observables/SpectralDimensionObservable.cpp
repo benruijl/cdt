@@ -11,9 +11,10 @@ SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequ
 Observable(writeFrequency, 0, true),
 filename(createFilename("specdim")),
 specDim(sampleSize),
-specDim1(sampleSize) {
-    diffConst = Config::getInstance().getPropertyTree().get("spec.diff", 1.0);
-    std::cout << diffConst << std::endl;
+specDim1(sampleSize),
+sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
+diffConst(READ_CONF("spec.diff", 1.0)),
+prob(sigmaMax) {
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {
@@ -90,10 +91,14 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
                         continue;
                     }
 
-                    probBuffers[(cur + 1) % 2][neighbours[i][n]] +=
+                    probBuffers[(cur + 1) % 2][neighbours[i][n]] += diffConst *
                             probBuffers[cur][i] / static_cast<double> (neighbours[i].size());
                 }
             }
+
+            // there is a probability that the diffusion particles remain where
+            // they are. This prevents wild oscillations at low sigma.
+            probBuffers[(cur + 1) % 2][i] += (1.0 - diffConst) * probBuffers[cur][i];
         }
 
         // switch buffers
@@ -105,10 +110,10 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     }
 
     /* Update spectral dimension */
-    boost::array<double, sigmaMax> spec = {0};
-    boost::array<double, sigmaMax> spec1 = {0};
+    Spec spec(sigmaMax);
+    Spec spec1(sigmaMax);
     for (int sigma = 2; sigma < sigmaMax - 1; sigma++) {
-        spec[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1);
+        spec[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1.0);
         spec1[sigma] += -2.0 * log(prob[sigma + 1] / prob[sigma]) /
                 boost::math::log1p(1.0 / (double) sigma);
     }

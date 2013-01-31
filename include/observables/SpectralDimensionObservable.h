@@ -15,11 +15,11 @@
 class SpectralDimensionObservable : public Observable {
 private:
     static const double epsilon = 1e-9;
-    static const unsigned int sigmaMax = 1000; // TODO: make parameter
+    unsigned int sigmaMax;
     static const unsigned int sampleSize = 7000;
     double diffConst; // diffusion constant
     
-    typedef boost::array<double, sigmaMax> Spec;
+    typedef std::vector<double> Spec;
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
 
     std::string filename;

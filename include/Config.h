@@ -11,6 +11,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
+#define READ_CONF(name, def) Config::getInstance().getPropertyTree().get(name, def)
+
 /**
  * Singleton configuration file. All modules are allowed to request specific
  * data from this class.
