@@ -13,7 +13,8 @@ filename(createFilename("specdim")),
 specDim(sampleSize),
 specDim1(sampleSize),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
-diffConst(READ_CONF("spec.diff", 1.0)),
+diffusionConst(READ_CONF("spec.diff", 1.0)),
+sampleSize(READ_CONF("spec.sampleSize", 7000)),
 prob(sigmaMax) {
 }
 
@@ -71,7 +72,7 @@ buildLatticeConnectivity(const std::vector<Vertex*>& state) {
 
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     boost::array<std::vector<double>, 2 > probBuffers;
-    std::vector< std::vector<unsigned int> > neighbours = buildDualLatticeConnectivity(state);
+    std::vector< std::vector<unsigned int> > neighbours = buildLatticeConnectivity(state);
     probBuffers[0] = std::vector<double>(neighbours.size());
     probBuffers[1] = std::vector<double>(neighbours.size());
 
@@ -91,14 +92,14 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
                         continue;
                     }
 
-                    probBuffers[(cur + 1) % 2][neighbours[i][n]] += diffConst *
+                    probBuffers[(cur + 1) % 2][neighbours[i][n]] += diffusionConst *
                             probBuffers[cur][i] / static_cast<double> (neighbours[i].size());
                 }
             }
 
             // there is a probability that the diffusion particles remain where
             // they are. This prevents wild oscillations at low sigma.
-            probBuffers[(cur + 1) % 2][i] += (1.0 - diffConst) * probBuffers[cur][i];
+            probBuffers[(cur + 1) % 2][i] += (1.0 - diffusionConst) * probBuffers[cur][i];
         }
 
         // switch buffers

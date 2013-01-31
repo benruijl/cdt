@@ -8,6 +8,7 @@
 #ifndef CONFIG_H
 #define	CONFIG_H
 
+#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 

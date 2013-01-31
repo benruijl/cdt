@@ -170,7 +170,6 @@ public:
     }
 
     void setSeed(unsigned int seed) {
-        // don't paste the seed, because it is not very useful yet.
         //std::cout << "Using seed: " << seed << std::endl;
         rng.seed(seed);
     }
@@ -185,6 +184,7 @@ private:
 
     /* Some statistics of the simulation */
     int TTSCount, SSTCount; // number of TTS and SST triangles
+    double k, z; // constants for lambda fine-tuning
 };
 
 #endif	/* SIMULATION_H */

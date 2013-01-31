@@ -16,8 +16,8 @@ class SpectralDimensionObservable : public Observable {
 private:
     static const double epsilon = 1e-9;
     unsigned int sigmaMax;
-    static const unsigned int sampleSize = 7000;
-    double diffConst; // diffusion constant
+    unsigned int sampleSize;
+    double diffusionConst; // diffusion constant
     
     typedef std::vector<double> Spec;
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
