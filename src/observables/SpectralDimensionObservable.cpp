@@ -5,12 +5,15 @@
 #include "Triangle.h"
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/unordered_map.hpp>
+#include "Config.h"
 
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
 filename(createFilename("specdim")),
 specDim(sampleSize),
-specDim1(sampleSize){
+specDim1(sampleSize) {
+    diffConst = Config::getInstance().getPropertyTree().get("spec.diff", 1.0);
+    std::cout << diffConst << std::endl;
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {

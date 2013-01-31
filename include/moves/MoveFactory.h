@@ -56,6 +56,11 @@ public:
      * @param moves List of move names
      */
     void parseMoves(std::vector<std::string> moves);
+    
+    /**
+     * Loads moves from the configuration structure.
+     */
+    void loadMoves();
 
 private:
     boost::array<Move*, COUNT> moves;

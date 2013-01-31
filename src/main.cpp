@@ -10,6 +10,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
+#include "Config.h"
 #include "Simulation.h"
 #include "observables/SizeObservable.h"
 #include "observables/GridObservable.h"
@@ -20,19 +21,20 @@
 
 using namespace std;
 
-struct Config {
+struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq;
     std::string gridFile;
-    std::vector<std::string> moves;
 };
 
-Config buildConfiguration(const char* filename) {
-    boost::property_tree::ptree pt;
-    boost::property_tree::ini_parser::read_ini(filename, pt);
+/**
+ * Build a basic configuation structure.
+ */
+ConfigStruct buildConfiguration() {
+    const boost::property_tree::ptree& pt = Config::getInstance().getPropertyTree();
 
-    Config config;
+    ConfigStruct config;
     config.N = pt.get<unsigned int>("general.N");
     config.T = pt.get<unsigned int>("general.T");
     config.alpha = pt.get<double>("general.alpha");
@@ -41,14 +43,6 @@ Config buildConfiguration(const char* filename) {
     config.numSweeps = pt.get<unsigned int>("general.numSweeps");
     config.sweepLength = pt.get<unsigned int>("general.sweepLength");
     config.gridFile = pt.get("general.gridFile", std::string(""));
-
-    std::string moves = pt.get("general.moves", std::string("")); // empty means all moves
-    boost::char_separator<char> sep(" ,");
-    boost::tokenizer< boost::char_separator<char> > tok(moves, sep);
-
-    foreach(const std::string& move, tok) {
-        config.moves.push_back(move);
-    }
 
     /* Check for observables */
     config.sizeFreq = pt.get("size.freq", 0);
@@ -61,19 +55,15 @@ Config buildConfiguration(const char* filename) {
 }
 
 int main(int argc, char** argv) {
-    Config config;
-
-    if (argc < 2) {
-        std::cout << "Using default configuration file, config.ini" << std::endl;
-        config = buildConfiguration("config.ini");
-    } else {
-        config = buildConfiguration(argv[1]);
+    const char* configFile = "config.ini";
+    if (argc > 2) {
+        configFile = argv[1];
     }
 
-    Simulation simulation;
+    Config::getInstance().parseConfiguration(configFile);
+    ConfigStruct config = buildConfiguration();
 
-    /* Select the moves used in the simulation */
-    simulation.getMoveFactory().parseMoves(config.moves);
+    Simulation simulation;
 
     /* Create observables */
     if (config.sizeFreq > 0) {

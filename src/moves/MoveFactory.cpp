@@ -1,6 +1,8 @@
-#include "moves/MoveFactory.h" 
+#include "moves/MoveFactory.h"
+#include "Config.h" 
 #include <boost/assign.hpp>
 #include <boost/unordered/unordered_map.hpp>
+#include <boost/tokenizer.hpp>
 
 MoveFactory::MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
 
@@ -21,7 +23,8 @@ MoveFactory::MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
     invMoves[FLIP_CHANGE] = new FlipMove(false, true);
     invMoves[PINCH_SPACELIKE] = new InversePinchingMove(false);
     invMoves[PINCH_TIMELIKE] = new InversePinchingMove(true);
-
+    
+    loadMoves();
 }
 
 MoveFactory::~MoveFactory() {
@@ -77,7 +80,7 @@ void MoveFactory::parseMoves(std::vector<std::string> moves) {
             ("flip_change", FLIP_CHANGE)
             ("pinching_tl", PINCH_TIMELIKE)
             ("pinching_sl", PINCH_SPACELIKE);
-    
+
     if (moves.size() == 0) {
         addAllMoves();
         return;
@@ -93,5 +96,19 @@ void MoveFactory::parseMoves(std::vector<std::string> moves) {
             std::cerr << "Unrecognized move: " << move << std::endl;
         }
     }
+}
+
+void MoveFactory::loadMoves() {
+    std::string moves = Config::getInstance().getPropertyTree().
+            get("general.moves", std::string("")); // empty means all moves
+    boost::char_separator<char> sep(" ,");
+    boost::tokenizer< boost::char_separator<char> > tok(moves, sep);
+
+    std::vector<std::string> m;
+    foreach(const std::string& move, tok) {
+        m.push_back(move);
+    }
+    
+    parseMoves(m);
 }
 
