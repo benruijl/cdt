@@ -24,8 +24,7 @@ using namespace boost::assign;
 
 Simulation::Simulation() :
 k(READ_CONF("mc.k", 10)),
-z(READ_CONF("mc.z", 20))
-{
+z(READ_CONF("mc.z", 20)) {
     /* Initialize random number generator */
     setSeed(std::time(0));
     moveFactory = new MoveFactory(*this);
@@ -323,6 +322,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     unsigned long long moveRejectedBecauseImpossible = 0, moveRejectedBecauseDetBal = 0;
     double bias = 0; // count the bias of the system size
     double lambda = 5;
+    bool measured = false;
 
     /*BoltzmannTester boltzmannTester;
     Triangle* fixed = *vertices[0]->getTriangles().begin();
@@ -342,13 +342,18 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         //ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
         //        << 2 * vertices.size() << std::endl;
 
-        /* Measure observables in the current state */
-        // TODO: measure only when volume is `volume`
-        foreach(Observable* o, observables) {
-            o->measure(vertices);
-        }
+        measured = false;
+        for (unsigned int i = 0; i < sweepLength; i++) {            
+            /* Measure observables when the volume is right */
+            if (vertices.size() * 2 == volume && !measured && i > 0.4 * sweepLength && i < 0.6 * sweepLength ) { // lastMeasure > 0.9 * (double)sweepLength) {
 
-        for (unsigned int i = 0; i < sweepLength; i++) {
+                foreach(Observable* o, observables) {
+                    o->measure(vertices);
+                }
+                
+                measured = true;
+            }
+            
             Move* move = moveFactory->createRandomMove(*this);
 
             // some random moves can be impossible and to simplify the 
@@ -389,7 +394,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         lambda += k * (bias * bias * bias + bias);
         lambda = lambda < 0 ? 0 : lambda;
 
-        std::cout << "Lambda: " << lambda << ", delta: " << k * (bias * bias * bias + bias)
+        std::cout << "Real run " << sweep << ", lambda: " << lambda << ", delta: " << k * (bias * bias * bias + bias)
                 << ", bias: " << bias / z * 100 << "%" << std::endl;
         //lambda_measure << lambda << std::endl;
         bias = 0;
