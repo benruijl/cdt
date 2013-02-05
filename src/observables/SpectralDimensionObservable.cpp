@@ -15,6 +15,7 @@ specDim1(sampleSize),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
 diffusionConst(READ_CONF("spec.diff", 1.0)),
 sampleSize(READ_CONF("spec.sampleSize", 7000)),
+dualLattice(READ_CONF("spec.dualLattice", false)),
 prob(sigmaMax) {
 }
 
@@ -72,7 +73,14 @@ buildLatticeConnectivity(const std::vector<Vertex*>& state) {
 
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     boost::array<std::vector<double>, 2 > probBuffers;
-    std::vector< std::vector<unsigned int> > neighbours = buildLatticeConnectivity(state);
+    std::vector< std::vector<unsigned int> > neighbours;
+
+    if (dualLattice) {
+        neighbours = buildDualLatticeConnectivity(state);
+    } else {
+        neighbours = buildLatticeConnectivity(state);
+    }
+
     probBuffers[0] = std::vector<double>(neighbours.size());
     probBuffers[1] = std::vector<double>(neighbours.size());
 

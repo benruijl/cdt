@@ -18,6 +18,7 @@ private:
     unsigned int sigmaMax;
     unsigned int sampleSize;
     double diffusionConst; // diffusion constant
+    bool dualLattice;
     
     typedef std::vector<double> Spec;
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
