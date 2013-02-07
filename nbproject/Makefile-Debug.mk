@@ -45,6 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/moves/PinchingMove.o \
 	${OBJECTDIR}/src/observables/SpectralDimensionObservable.o \
 	${OBJECTDIR}/src/moves/InverseCollapseMove.o \
+	${OBJECTDIR}/src/observables/ShapeObservable.o \
 	${OBJECTDIR}/src/Simulation.o \
 	${OBJECTDIR}/src/observables/VolumeProfileObservable.o \
 	${OBJECTDIR}/src/moves/MoveFactory.o \
@@ -126,6 +127,11 @@ ${OBJECTDIR}/src/moves/InverseCollapseMove.o: src/moves/InverseCollapseMove.cpp
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseCollapseMove.o src/moves/InverseCollapseMove.cpp
+
+${OBJECTDIR}/src/observables/ShapeObservable.o: src/observables/ShapeObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/ShapeObservable.o src/observables/ShapeObservable.cpp
 
 ${OBJECTDIR}/src/Simulation.o: src/Simulation.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

@@ -18,18 +18,20 @@
 #include "moves/MoveFactory.h"
 #include "observables/VolumeProfileObservable.h"
 #include "observables/SpectralDimensionObservable.h"
+#include "observables/ShapeObservable.h"
 
 using namespace std;
 
 struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
-            volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq;
+            volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
+            shapeFreq;
     std::string gridFile;
 };
 
 /**
- * Build a basic configuation structure.
+ * Build a basic configuration structure.
  */
 ConfigStruct buildConfiguration() {
     const boost::property_tree::ptree& pt = Config::getInstance().getPropertyTree();
@@ -50,6 +52,7 @@ ConfigStruct buildConfiguration() {
     config.timeFreq = pt.get("time.freq", 0);
     config.volProfFreq = pt.get("vol.freq", 0);
     config.specDimFreq = pt.get("spec.freq", 0);
+    config.shapeFreq = pt.get("shape.freq", 0);
 
     return config;
 }
@@ -91,6 +94,12 @@ int main(int argc, char** argv) {
         SpectralDimensionObservable* spectralDimensionObservable = new
                 SpectralDimensionObservable(config.specDimFreq);
         simulation.addObservable(spectralDimensionObservable);
+    }
+
+    if (config.shapeFreq > 0) {
+        ShapeObservable* shapeObservable = new
+                ShapeObservable(config.shapeFreq);
+        simulation.addObservable(shapeObservable);
     }
 
     if (config.gridFile.size() > 0) {
