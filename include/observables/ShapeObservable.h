@@ -27,6 +27,8 @@ private:
      */
     bool checkNonContractibility(const VertSet& edge, Vertex* start, Vertex* sec);
     
+    void findNonContractibleLoop(const std::vector<Vertex*>& state);
+    
     void process(const std::vector<Vertex*>& state);
 public:
 

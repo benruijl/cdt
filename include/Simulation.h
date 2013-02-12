@@ -185,6 +185,7 @@ private:
     /* Some statistics of the simulation */
     int TTSCount, SSTCount; // number of TTS and SST triangles
     double k, z; // constants for lambda fine-tuning
+    bool measureAtVolume;
 };
 
 #endif	/* SIMULATION_H */

@@ -24,7 +24,8 @@ using namespace boost::assign;
 
 Simulation::Simulation() :
 k(READ_CONF("mc.k", 10)),
-z(READ_CONF("mc.z", 20)) {
+z(READ_CONF("mc.z", 20)),
+measureAtVolume(READ_CONF("general.measureAtVolume", true)) {
     /* Initialize random number generator */
     setSeed(std::time(0));
     moveFactory = new MoveFactory(*this);
@@ -343,17 +344,19 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         //        << 2 * vertices.size() << std::endl;
 
         measured = false;
-        for (unsigned int i = 0; i < sweepLength; i++) {            
+        for (unsigned int i = 0; i < sweepLength; i++) {
             /* Measure observables when the volume is right */
-            if (vertices.size() * 2 == volume && !measured && i > 0.4 * sweepLength && i < 0.6 * sweepLength ) { // lastMeasure > 0.9 * (double)sweepLength) {
+            if ((!measureAtVolume && i == 0) ||
+                    (vertices.size() * 2 == volume && !measured
+                    && i > 0.4 * sweepLength && i < 0.6 * sweepLength)) {
 
                 foreach(Observable* o, observables) {
                     o->measure(vertices);
                 }
-                
+
                 measured = true;
             }
-            
+
             Move* move = moveFactory->createRandomMove(*this);
 
             // some random moves can be impossible and to simplify the 
