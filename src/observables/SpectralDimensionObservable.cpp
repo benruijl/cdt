@@ -23,54 +23,6 @@ SpectralDimensionObservable::~SpectralDimensionObservable() {
 
 }
 
-SpectralDimensionObservable::NeighbourList
-SpectralDimensionObservable::buildDualLatticeConnectivity(const std::vector<Vertex*>& state) {
-    boost::unordered_map<Triangle*, unsigned int> index;
-    index.rehash(state.size() * 2);
-    NeighbourList neighbours(state.size() * 2);
-
-    int id = 0;
-    for (unsigned int i = 0; i < state.size(); i++) {
-
-        foreach(Triangle* t, state[i]->getTriangles()) {
-            if (index.find(t) == index.end()) {
-                index[t] = id;
-                id++;
-            }
-        }
-    }
-
-    std::pair<Triangle*, unsigned int> p;
-
-    foreach(p, index) {
-        for (int i = 0; i < 3; i++) {
-            neighbours[p.second].push_back(index[p.first->getNeighbour(i)]);
-        }
-    }
-
-    return neighbours;
-}
-
-SpectralDimensionObservable::NeighbourList SpectralDimensionObservable::
-buildLatticeConnectivity(const std::vector<Vertex*>& state) {
-    boost::unordered_map<Vertex*, unsigned int> index;
-    index.rehash(state.size());
-    NeighbourList neighbours(state.size());
-
-    for (unsigned int i = 0; i < state.size(); i++) {
-        index[state[i]] = i;
-    }
-
-    for (unsigned int i = 0; i < state.size(); i++) {
-
-        foreach(Vertex* n, state[i]->getNeighbouringVertices()) {
-            neighbours[i].push_back(index[n]);
-        }
-    }
-
-    return neighbours;
-}
-
 void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     boost::array<std::vector<double>, 2 > probBuffers;
     std::vector< std::vector<unsigned int> > neighbours;

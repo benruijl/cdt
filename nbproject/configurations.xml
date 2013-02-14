@@ -58,6 +58,7 @@
       </logicalFolder>
       <itemPath>src/Simulation.cpp</itemPath>
       <itemPath>src/Triangle.cpp</itemPath>
+      <itemPath>src/Utils.cpp</itemPath>
       <itemPath>src/Vertex.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
     </logicalFolder>

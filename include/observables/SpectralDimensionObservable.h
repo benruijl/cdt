@@ -30,15 +30,6 @@ private:
     boost::circular_buffer<Spec> specDim1;
 
     void process(const std::vector<Vertex*>& state);
-
-    /**
-     * Because the spectral dimension measurement is slow, a list is built that maps
-     * connectivity.
-     * @param state
-     */
-    NeighbourList buildDualLatticeConnectivity(const std::vector<Vertex*>& state);
-    
-    NeighbourList buildLatticeConnectivity(const std::vector<Vertex*>& state);
 public:
 
     SpectralDimensionObservable(unsigned int writeFrequency);

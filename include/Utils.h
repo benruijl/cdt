@@ -8,10 +8,17 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
+#include <vector>
 #include <boost/static_assert.hpp>
 #include <boost/unordered_set.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/foreach.hpp>
 #define foreach BOOST_FOREACH
+
+class Vertex;
+class Triangle;
+
+typedef std::vector< std::vector<unsigned int> > NeighbourList;
 
 /**
  * Adds the content of set b to set a.
@@ -83,6 +90,21 @@ unsigned int countOverlap(const boost::unordered_set<T>& a, const boost::unorder
 
     return count;
 }
+
+/**
+ * Build a connectivity list of all the vertices. Useful to improve performance
+ * of algorithms. The neighbours of the vertices are not ordered and vertex i in
+ * state is also called i in the connectivity list.
+ * @param state List of all vertices
+ * @return 
+ */
+NeighbourList buildLatticeConnectivity(const std::vector<Vertex*>& state);
+
+NeighbourList buildDualLatticeConnectivity(const std::vector<Vertex*>& state);
+
+boost::unordered_map<Triangle*, unsigned int> createTriangleIds(const std::vector<Vertex*>& state);
+
+NeighbourList buildDualLatticeConnectivity(boost::unordered_map<Triangle*, unsigned int>& index);
 
 #endif	/* UTILS_H */
 

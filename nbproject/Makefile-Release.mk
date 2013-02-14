@@ -47,6 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/moves/InverseCollapseMove.o \
 	${OBJECTDIR}/src/Simulation.o \
 	${OBJECTDIR}/src/observables/ShapeObservable.o \
+	${OBJECTDIR}/src/Utils.o \
 	${OBJECTDIR}/src/observables/VolumeProfileObservable.o \
 	${OBJECTDIR}/src/moves/MoveFactory.o \
 	${OBJECTDIR}/src/Triangle.o \
@@ -137,6 +138,11 @@ ${OBJECTDIR}/src/observables/ShapeObservable.o: src/observables/ShapeObservable.
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/ShapeObservable.o src/observables/ShapeObservable.cpp
+
+${OBJECTDIR}/src/Utils.o: src/Utils.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Iinclude -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Utils.o src/Utils.cpp
 
 ${OBJECTDIR}/src/observables/VolumeProfileObservable.o: src/observables/VolumeProfileObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables

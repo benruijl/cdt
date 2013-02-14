@@ -5,6 +5,7 @@
 #include "observables/ShapeObservable.h"
 #include "Vertex.h"
 #include "Triangle.h"
+#include <utility>
 
 ShapeObservable::ShapeObservable(unsigned long writeFrequency) :
 Observable(writeFrequency, 0, true) {
@@ -13,13 +14,15 @@ Observable(writeFrequency, 0, true) {
 ShapeObservable::~ShapeObservable() {
 }
 
-bool ShapeObservable::checkNonContractibility(const VertSet& edge, Vertex* start, Vertex* sec) {
-    Triangle* s, *t;
-    Vertex::getAdjacentTriangles(start, sec, &s, &t);
+bool ShapeObservable::checkNonContractibility(
+        const boost::unordered_set<std::pair<unsigned int, unsigned int> >& edge) {
+    unsigned int t, s;
+    t = (*edge.begin()).first;
+    s = (*edge.begin()).second;
 
-    std::queue<Triangle*> queueA, queueB;
-    TriSet visitedA, visitedB;
-    Triangle* curA, *curB;
+    std::queue<unsigned int> queueA, queueB;
+    boost::unordered_set<unsigned int> visitedA, visitedB;
+    unsigned int curA, curB;
 
     queueA.push(s);
     visitedA.insert(s);
@@ -34,12 +37,11 @@ bool ShapeObservable::checkNonContractibility(const VertSet& edge, Vertex* start
         queueB.pop();
 
         for (int i = 0; i < 3; i++) {
-            Triangle* nA = curA->getNeighbour(i);
-            Triangle* nB = curB->getNeighbour(i);
+            unsigned int nA = dualNeighbours[curA][i];
+            unsigned int nB = dualNeighbours[curB][i];
 
             if (visitedA.find(nA) == visitedA.end() &&
-                    (edge.find(curA->getVertex(i)) == edge.end() ||
-                    edge.find(curA->getVertex((i + 1) % 3)) == edge.end())) {
+                    edge.find(std::make_pair(curA, nA)) == edge.end()) {
                 queueA.push(nA);
                 visitedA.insert(nA);
 
@@ -49,8 +51,7 @@ bool ShapeObservable::checkNonContractibility(const VertSet& edge, Vertex* start
             }
 
             if (visitedB.find(nB) == visitedB.end() &&
-                    (edge.find(curB->getVertex(i)) == edge.end() ||
-                    edge.find(curB->getVertex((i + 1) % 3)) == edge.end())) {
+                    edge.find(std::make_pair(curB, nB)) == edge.end()) {
                 queueB.push(nB);
                 visitedB.insert(nB);
 
@@ -64,49 +65,58 @@ bool ShapeObservable::checkNonContractibility(const VertSet& edge, Vertex* start
     return false;
 }
 
-void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state) {
-    /* Find a minimal non-contractible loop */
-    Vertex* start = state[0], *cur; // TODO: start at multiple points
-    boost::unordered_map<Vertex*, Vertex*> prev;
-    std::queue<Vertex*> queue;
+void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
+        unsigned int start) {
+    unsigned int cur;
+    std::vector<unsigned int> prev(neighbours.size());
+    std::queue<unsigned int> queue;
     queue.push(start);
-    prev[start] = NULL;
+
+    for (int i = 0; i < prev.size(); i++) {
+        prev[i] = prev.size(); // prev.size() => no prev
+    }
 
     while (!queue.empty()) {
         cur = queue.front();
         queue.pop();
 
-        foreach(Vertex* n, cur->getNeighbouringVertices()) {
-            if (prev.find(n) == prev.end()) {
+        for (unsigned int k = 0; k < neighbours[cur].size(); k++) {
+            unsigned int n = neighbours[cur][k];
+            if (prev[n] == prev.size()) {
                 queue.push(n);
                 prev[n] = cur;
-            } else {
+            } else { // loop found
+                // loops in the same triangle are contractible
+                if (prev[n] == prev[cur]) {
+                    continue;
+                }
+
                 // TODO: eliminate obvious contractible loops
-                Vertex* s = cur, *t = n;
-                VertSet sEdge, tEdge;
-                std::deque<Vertex*> edge;
+                unsigned int s = cur, t = n;
+                boost::unordered_set<unsigned int> visited;
+                std::deque<unsigned int> edge;
 
                 while (true) {
-                    if (s != NULL) {
-                        sEdge.insert(s);
+                    if (s != prev.size()) {
+                        visited.insert(s);
                         edge.insert(edge.begin(), s);
                         s = prev[s];
                     }
 
-                    if (t != NULL) {
-                        tEdge.insert(t);
+                    if (t != prev.size()) {
+                        visited.insert(t);
                         edge.push_back(t);
                         t = prev[t];
                     }
 
                     if (s == t) {
-                        sEdge.insert(s);
+                        visited.insert(s);
                         edge.insert(edge.begin(), s);
                         break;
                     }
 
 
-                    if (sEdge.find(t) != sEdge.end()) {
+                    if (visited.find(t) != visited.end()) {
                         // remove leading part from s branch
                         for (int i = 1; i < edge.size(); i++) {
                             if (edge[i] == t) {
@@ -117,7 +127,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state)
                         break;
                     }
 
-                    if (tEdge.find(s) != tEdge.end()) {
+                    if (visited.find(s) != visited.end()) {
                         // remove trailing part from t branch
                         for (int i = edge.size() - 2; i >= 0; i--) {
                             if (edge[i] == s) {
@@ -135,19 +145,25 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state)
 
 
                 // std::cout << "edge size: " << edge.size() << std::endl;
+                /*  for (int i = 0; i < edge.size(); i++) {
+                      VertSet a = state[edge[i]]->getNeighbouringVertices();
+                      BOOST_ASSERT(a.find(state[edge[(i + 1) % edge.size()]]) != a.end());
+                  }*/
+
+                boost::unordered_set<std::pair<unsigned int, unsigned int> >
+                        edgeVertices;
+                Triangle* q, *r;
                 for (int i = 0; i < edge.size(); i++) {
-                    VertSet a = edge[i]->getNeighbouringVertices();
-                    BOOST_ASSERT(a.find(edge[(i + 1) % edge.size()]) != a.end());
+                    Vertex::getAdjacentTriangles(state[edge[i]],
+                            state[edge[(i + 1) % edge.size()]], &q, &r);
+
+                    edgeVertices.insert(std::make_pair(triangleIds[q], triangleIds[r]));
+                    edgeVertices.insert(std::make_pair(triangleIds[r], triangleIds[q]));
                 }
 
-                sEdge.clear();
-                for (int i = 0; i < edge.size(); i++) {
-                    sEdge.insert(edge[i]);
-                }
-
-                if (checkNonContractibility(sEdge, cur, n)) {
+                if (checkNonContractibility(edgeVertices)) {
                     std::cout << "Found non-contractible loop of length " <<
-                            sEdge.size() << std::endl;
+                            edgeVertices.size() / 2 << std::endl;
                     return;
                 }
             }
@@ -158,7 +174,12 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state)
 }
 
 void ShapeObservable::process(const std::vector<Vertex*>& state) {
-    findNonContractibleLoop(state);
+    neighbours = buildLatticeConnectivity(state);
+    triangleIds = createTriangleIds(state);
+    dualNeighbours = buildDualLatticeConnectivity(triangleIds);
+
+    // TODO: start at multiple points
+    findNonContractibleLoop(state, 0);
 }
 
 void ShapeObservable::printToScreen() {
