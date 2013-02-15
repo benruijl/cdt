@@ -16,10 +16,12 @@
  */
 class ShapeObservable : public Observable {
 private:
+    std::string filename;
     std::ofstream file;
     NeighbourList neighbours; 
     NeighbourList dualNeighbours;
     boost::unordered_map<Triangle*, unsigned int> triangleIds;
+    unsigned int size;
 
     /**
      * Checks if a cycle is contractible by doing two simultaneous breadth-first
@@ -37,8 +39,6 @@ private:
      */
     void findNonContractibleLoop(const std::vector<Vertex*>& state,
         unsigned int start);
-    
-    void findShortestPathInCylinder(const boost::unordered_set<unsigned int>& edge);
     
     void process(const std::vector<Vertex*>& state);
 public:

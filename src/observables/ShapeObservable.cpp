@@ -8,7 +8,9 @@
 #include <utility>
 
 ShapeObservable::ShapeObservable(unsigned long writeFrequency) :
-Observable(writeFrequency, 0, true) {
+Observable(writeFrequency, 0, true),
+filename(createFilename("shape")),
+file(filename.c_str()) {
 }
 
 ShapeObservable::~ShapeObservable() {
@@ -56,6 +58,7 @@ bool ShapeObservable::checkNonContractibility(
                 visitedB.insert(nB);
 
                 if (visitedA.find(nB) != visitedA.end()) {
+
                     return true;
                 }
             }
@@ -162,8 +165,10 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
                 }
 
                 if (checkNonContractibility(edgeVertices)) {
-                    std::cout << "Found non-contractible loop of length " <<
-                            edgeVertices.size() / 2 << std::endl;
+                    size = edgeVertices.size() / 2;
+                    //  std::cout << "Found non-contractible loop of length " <<
+                    //          edgeVertices.size() / 2 << std::endl;
+
                     return;
                 }
             }
@@ -171,6 +176,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
     }
 
     std::cout << "No non-contractible loops found..." << std::endl;
+    BOOST_ASSERT(false);
 }
 
 void ShapeObservable::process(const std::vector<Vertex*>& state) {
@@ -178,12 +184,17 @@ void ShapeObservable::process(const std::vector<Vertex*>& state) {
     triangleIds = createTriangleIds(state);
     dualNeighbours = buildDualLatticeConnectivity(triangleIds);
 
-    // TODO: start at multiple points
-    findNonContractibleLoop(state, 0);
+    for (int i = 0; i < state.size(); i += 60) {
+        findNonContractibleLoop(state, i);
+        file << size << std::endl; // FIXME
+    }
 }
 
 void ShapeObservable::printToScreen() {
+    std::cout << "Found non-contractible loop of length " <<
+            size << std::endl;
 }
 
 void ShapeObservable::printToFile() {
+    file << size << "\n";
 }
