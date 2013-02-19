@@ -17,6 +17,7 @@
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
         <itemPath>include/observables/GridObservable.h</itemPath>
+        <itemPath>include/observables/HausdorffObservable.h</itemPath>
         <itemPath>include/observables/Observable.h</itemPath>
         <itemPath>include/observables/ShapeObservable.h</itemPath>
         <itemPath>include/observables/SizeObservable.h</itemPath>
@@ -51,6 +52,7 @@
         <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>src/observables/HausdorffObservable.cpp</itemPath>
         <itemPath>src/observables/ShapeObservable.cpp</itemPath>
         <itemPath>src/observables/SpectralDimensionObservable.cpp</itemPath>
         <itemPath>src/observables/TimeSliceObservable.cpp</itemPath>

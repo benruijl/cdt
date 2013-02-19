@@ -23,13 +23,14 @@ bool ShapeObservable::checkNonContractibility(
     s = (*edge.begin()).second;
 
     std::queue<unsigned int> queueA, queueB;
-    boost::unordered_set<unsigned int> visitedA, visitedB;
+    std::vector<char> visitedA(dualNeighbours.size()), 
+            visitedB(dualNeighbours.size());
     unsigned int curA, curB;
 
     queueA.push(s);
-    visitedA.insert(s);
+    visitedA[s] = true;
     queueB.push(t);
-    visitedB.insert(t);
+    visitedB[t] = true;
 
     while (!queueA.empty() && !queueB.empty()) {
         curA = queueA.front();
@@ -42,23 +43,22 @@ bool ShapeObservable::checkNonContractibility(
             unsigned int nA = dualNeighbours[curA][i];
             unsigned int nB = dualNeighbours[curB][i];
 
-            if (visitedA.find(nA) == visitedA.end() &&
+            if (!visitedA[nA] &&
                     edge.find(std::make_pair(curA, nA)) == edge.end()) {
                 queueA.push(nA);
-                visitedA.insert(nA);
+                visitedA[nA] = true;
 
-                if (visitedB.find(nA) != visitedB.end()) {
+                if (visitedB[nA]) {
                     return true;
                 }
             }
 
-            if (visitedB.find(nB) == visitedB.end() &&
+            if (!visitedB[nB] &&
                     edge.find(std::make_pair(curB, nB)) == edge.end()) {
                 queueB.push(nB);
-                visitedB.insert(nB);
+                 visitedB[nB] = true;
 
-                if (visitedA.find(nB) != visitedA.end()) {
-
+                if (visitedA[nB]) {
                     return true;
                 }
             }
@@ -184,10 +184,11 @@ void ShapeObservable::process(const std::vector<Vertex*>& state) {
     triangleIds = createTriangleIds(state);
     dualNeighbours = buildDualLatticeConnectivity(triangleIds);
 
-    for (int i = 0; i < state.size(); i += 60) {
-        findNonContractibleLoop(state, i);
+   // for (int i = 0; i < state.size(); i += state.size() / 10) {
+        findNonContractibleLoop(state, 0);
+   //     std::cout << "done " << i << std::endl;
         file << size << std::endl; // FIXME
-    }
+   // }
 }
 
 void ShapeObservable::printToScreen() {

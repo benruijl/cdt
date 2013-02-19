@@ -19,6 +19,7 @@
 #include "observables/VolumeProfileObservable.h"
 #include "observables/SpectralDimensionObservable.h"
 #include "observables/ShapeObservable.h"
+#include "observables/HausdorffObservable.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
-            shapeFreq;
+            shapeFreq, haussFreq;
     std::string gridFile;
 };
 
@@ -53,6 +54,7 @@ ConfigStruct buildConfiguration() {
     config.volProfFreq = pt.get("vol.freq", 0);
     config.specDimFreq = pt.get("spec.freq", 0);
     config.shapeFreq = pt.get("shape.freq", 0);
+    config.haussFreq = pt.get("hauss.freq", 0);
 
     return config;
 }
@@ -100,6 +102,12 @@ int main(int argc, char** argv) {
         ShapeObservable* shapeObservable = new
                 ShapeObservable(config.shapeFreq);
         simulation.addObservable(shapeObservable);
+    }
+
+    if (config.haussFreq > 0) {
+        HausdorffObservable* hausdorffObservable = new
+                HausdorffObservable(config.haussFreq);
+        simulation.addObservable(hausdorffObservable);
     }
 
     if (config.gridFile.size() > 0) {
