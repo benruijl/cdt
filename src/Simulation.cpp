@@ -333,7 +333,10 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     //std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
     //std::ofstream lambda_measure("lambda.dat");
 
+    volume = 500;
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
+        volume += (10000 - 500) / numSweeps; // FIXME: for Hausdorff dim
+        
         if (sweep % 10 == 0) { // for testing
             //boltzmannTester.printFrequencies(lambda, alpha);
 

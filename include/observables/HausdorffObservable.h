@@ -15,6 +15,7 @@ private:
     std::string filename;
     std::ofstream file;
     std::vector<unsigned int> area;
+    std::vector< std::pair<unsigned int, double> > extent;
 
     void process(const std::vector<Vertex*>& state);
 public:

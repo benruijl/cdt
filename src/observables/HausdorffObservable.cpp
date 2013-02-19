@@ -1,4 +1,5 @@
 #include <queue>
+#include <utility>
 
 #include "observables/HausdorffObservable.h"
 #include "Utils.h"
@@ -14,7 +15,7 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     queue.push(cur);
     visited[cur] = true;
 
-    area.resize(state.size());
+    area.resize(neighbours.size());
 
     while (!queue.empty()) {
         cur = queue.front();
@@ -32,11 +33,22 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
         area[steps] = content;
         steps++;
     }
+
+    double ext = 0;
+
+    for (int i = 0; i < steps; i++) {
+        ext += i * area[i];
+    }
+
+    ext /= (double) neighbours.size();
+
+    extent.push_back(std::make_pair(neighbours.size(), ext));
 }
 
 HausdorffObservable::HausdorffObservable(unsigned long writeFrequency) :
 Observable(writeFrequency, 0, true),
-filename(createFilename("haus")) {
+filename(createFilename("haus")),
+file(filename.c_str()) {
 
 }
 
@@ -49,10 +61,5 @@ void HausdorffObservable::printToScreen() {
 }
 
 void HausdorffObservable::printToFile() {
-    file.open(filename.c_str());
-
-    for (int i = 0; i < area.size(); i++) {
-        file << i << " " << area[i] << std::endl;
-    }
-
+    file << extent.back().first << " " << extent.back().second << std::endl;
 }
