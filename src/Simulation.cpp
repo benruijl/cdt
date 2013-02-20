@@ -334,8 +334,11 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     //std::ofstream lambda_measure("lambda.dat");
 
     volume = 500;
+    unsigned int volumeStart = 200, volumeEnd = 10000, steps=20;
     for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
-        volume += (10000 - 500) / numSweeps; // FIXME: for Hausdorff dim
+        if (sweep % steps == 0) { // FIXME: for testing
+                volume += (volumeEnd - volumeStart) / (numSweeps / steps);
+        }
         
         if (sweep % 10 == 0) { // for testing
             //boltzmannTester.printFrequencies(lambda, alpha);

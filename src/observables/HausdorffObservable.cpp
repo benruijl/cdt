@@ -8,8 +8,7 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     NeighbourList neighbours = buildDualLatticeConnectivity(state);
 
     // TODO: calculate average over all starting positions
-    int cur = 0, steps = 0;
-    unsigned int content = 1;
+    int cur = 0, steps = 0, shellcount = 0, newshell = 1;
     std::vector<char> visited(neighbours.size());
     std::queue<unsigned int> queue;
     queue.push(cur);
@@ -18,20 +17,26 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     area.resize(neighbours.size());
 
     while (!queue.empty()) {
+        /* Are we going to a new shell? */
+        if (shellcount == 0) {
+            shellcount = newshell;
+            area[steps] = shellcount;
+            newshell = 0;
+            steps++;
+        }
+
         cur = queue.front();
         queue.pop();
 
-        content = 0;
         for (int i = 0; i < neighbours[cur].size(); i++) {
             if (!visited[neighbours[cur][i]]) {
-                content++;
+                newshell++;
                 queue.push(neighbours[cur][i]);
                 visited[neighbours[cur][i]] = true;
             }
         }
 
-        area[steps] = content;
-        steps++;
+        shellcount--;
     }
 
     double ext = 0;
