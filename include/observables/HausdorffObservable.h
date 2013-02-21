@@ -9,14 +9,16 @@
 #define	HAUSDORFFOBSERVABLE_H
 
 #include "Observable.h"
+#include "Utils.h"
 
 class HausdorffObservable : public Observable {
 private:
     std::string filename;
     std::ofstream file;
     std::vector<unsigned int> area;
-    std::vector< std::pair<unsigned int, double> > extent;
+    std::pair<unsigned int, double> extent;
 
+    double getExtent(NeighbourList& neighbours, unsigned int start);
     void process(const std::vector<Vertex*>& state);
 public:
 

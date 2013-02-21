@@ -4,11 +4,8 @@
 #include "observables/HausdorffObservable.h"
 #include "Utils.h"
 
-void HausdorffObservable::process(const std::vector<Vertex*>& state) {
-    NeighbourList neighbours = buildDualLatticeConnectivity(state);
-
-    // TODO: calculate average over all starting positions
-    int cur = 0, steps = 0, shellcount = 0, newshell = 1;
+double HausdorffObservable::getExtent(NeighbourList& neighbours, unsigned int start) {
+    int cur = start, steps = 0, shellcount = 0, newshell = 1;
     std::vector<char> visited(neighbours.size());
     std::queue<unsigned int> queue;
     queue.push(cur);
@@ -47,7 +44,19 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
 
     ext /= (double) neighbours.size();
 
-    extent.push_back(std::make_pair(neighbours.size(), ext));
+    return ext;
+}
+
+void HausdorffObservable::process(const std::vector<Vertex*>& state) {
+    NeighbourList neighbours = buildDualLatticeConnectivity(state);
+
+    double ext = 0;
+    for (int i = 0; i < neighbours.size(); i++) {
+        ext += getExtent(neighbours, i);
+    }
+    
+    ext /= (double) neighbours.size();
+    extent = std::make_pair(neighbours.size(), ext);
 }
 
 HausdorffObservable::HausdorffObservable(unsigned long writeFrequency) :
@@ -66,5 +75,5 @@ void HausdorffObservable::printToScreen() {
 }
 
 void HausdorffObservable::printToFile() {
-    file << extent.back().first << " " << extent.back().second << std::endl;
+    file << extent.first << " " << extent.second << std::endl;
 }
