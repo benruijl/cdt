@@ -15,8 +15,7 @@ specDim1(sampleSize),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
 diffusionConst(READ_CONF("spec.diff", 1.0)),
 sampleSize(READ_CONF("spec.sampleSize", 7000)),
-dualLattice(READ_CONF("spec.dualLattice", false)),
-prob(sigmaMax) {
+dualLattice(READ_CONF("spec.dualLattice", false)) {
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {
@@ -39,6 +38,7 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     unsigned int cur = 0; // current buffer
     unsigned int start = 0; // TODO: average over multiple starting points?
     probBuffers[cur][start] = 1;
+    Spec prob(sigmaMax);
 
     for (unsigned int sigma = 0; sigma < sigmaMax; sigma++) {
         prob[sigma] = probBuffers[cur][start];
@@ -89,7 +89,7 @@ void SpectralDimensionObservable::printToScreen() {
 void SpectralDimensionObservable::printToFile() {
     std::ofstream file(filename.c_str());
 
-    // TODO: make lower bound parameter
+    // TODO: make lower bound a parameter
     for (unsigned int sigma = 10; sigma < sigmaMax - 1; sigma++) {
         double avg = 0, avg1 = 0;
 

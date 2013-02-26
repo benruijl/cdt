@@ -24,8 +24,6 @@ private:
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
 
     std::string filename;
-    double dimension;
-    Spec prob;
     boost::circular_buffer<Spec> specDim;
     boost::circular_buffer<Spec> specDim1;
 

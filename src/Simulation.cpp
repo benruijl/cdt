@@ -25,7 +25,12 @@ using namespace boost::assign;
 Simulation::Simulation() :
 k(READ_CONF("mc.k", 10)),
 z(READ_CONF("mc.z", 20)),
-measureAtVolume(READ_CONF("general.measureAtVolume", true)) {
+measureAtVolume(READ_CONF("general.measureAtVolume", true)),
+drift(READ_CONF("volume.drift", false)),
+volumeStart(READ_CONF("volume.start", 500)),
+volumeEnd(READ_CONF("volume.end", 10000)),
+skip(READ_CONF("volume.skip", 100)),
+drop(READ_CONF("general.drop", 0)) {
     /* Initialize random number generator */
     setSeed(std::time(0));
     moveFactory = new MoveFactory(*this);
@@ -333,17 +338,19 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
     //std::ofstream ratio("tri_ratio.dat"); // TODO: make observable
     //std::ofstream lambda_measure("lambda.dat");
 
-    volume = 500;
-    unsigned int volumeStart = 200, volumeEnd = 10000, steps=20;
-    for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
-        if (sweep % steps == 0) { // FIXME: for testing
-                volume += (volumeEnd - volumeStart) / (numSweeps / steps);
-        }
-        
-        if (sweep % 10 == 0) { // for testing
-            //boltzmannTester.printFrequencies(lambda, alpha);
+    if (drift) {
+        volume = volumeStart;
+    }
 
+    for (unsigned long sweep = 0; sweep < numSweeps; sweep++) {
+        if (drift && sweep % skip == 0) {
+            volume += (volumeEnd - volumeStart) / (numSweeps / skip);
         }
+
+        /*
+        if (sweep % 10 == 0) { // for testing
+            boltzmannTester.printFrequencies(lambda, alpha);
+        }*/
 
         // for testing
         //ratio << TTSCount / (double) (SSTCount + TTSCount) << " " << TTSCount << " " << SSTCount << " "
@@ -352,9 +359,10 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
         measured = false;
         for (unsigned int i = 0; i < sweepLength; i++) {
             /* Measure observables when the volume is right */
-            if ((!measureAtVolume && i == 0) ||
-                    (vertices.size() * 2 == volume && !measured
-                    && i > 0.4 * sweepLength && i < 0.6 * sweepLength)) {
+            if (((!measureAtVolume && i == 0) ||
+                    (measureAtVolume && vertices.size() * 2 == volume && !measured
+                    && i > 0.4 * sweepLength && i < 0.6 * sweepLength)) &&
+                    ((drift && (sweep % skip) > drop) || (!drift && sweep > drop))) {
 
                 foreach(Observable* o, observables) {
                     o->measure(vertices);

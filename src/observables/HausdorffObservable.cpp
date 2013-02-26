@@ -11,7 +11,7 @@ double HausdorffObservable::getExtent(NeighbourList& neighbours, unsigned int st
     queue.push(cur);
     visited[cur] = true;
 
-    area.resize(neighbours.size());
+    std::vector<unsigned int> area(neighbours.size());
 
     while (!queue.empty()) {
         /* Are we going to a new shell? */
