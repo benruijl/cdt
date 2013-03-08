@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="84">
+<configurationDescriptor version="88">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -91,6 +91,137 @@
           </incDir>
         </ccTool>
       </compileType>
+      <item path="config.ini" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Boltzmann.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Simulation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Triangle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Vertex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/AlexanderMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/CollapseMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/FlipMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/InverseAlexanderMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InverseCollapseMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InversePinchingMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/Move.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/GridObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/HausdorffObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/Observable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/ShapeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SizeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SpectralDimensionObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/TimeSliceObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/VolumeProfileObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/Simulation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Triangle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Utils.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Vertex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/AlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/CollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/FlipMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseAlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseCollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InversePinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/Move.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/HausdorffObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/ShapeObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/SpectralDimensionObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/TimeSliceObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/VolumeProfileObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -114,6 +245,137 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="config.ini" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Boltzmann.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Simulation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Triangle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Vertex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/AlexanderMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/CollapseMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/FlipMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/InverseAlexanderMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InverseCollapseMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InversePinchingMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/Move.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/GridObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/HausdorffObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/Observable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/ShapeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SizeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SpectralDimensionObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/TimeSliceObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/VolumeProfileObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/Simulation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Triangle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Utils.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Vertex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/AlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/CollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/FlipMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseAlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseCollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InversePinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/Move.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/HausdorffObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/ShapeObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/SpectralDimensionObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/TimeSliceObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/VolumeProfileObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
     </conf>
     <conf name="DebugRelease" type="1">
       <toolsSet>
@@ -127,6 +389,137 @@
           <warningLevel>2</warningLevel>
         </ccTool>
       </compileType>
+      <item path="config.ini" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Boltzmann.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Simulation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Triangle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/Vertex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/AlexanderMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/CollapseMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/FlipMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/InverseAlexanderMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InverseCollapseMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/InversePinchingMove.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/moves/Move.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/GridObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/HausdorffObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/Observable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/ShapeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SizeObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/SpectralDimensionObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/TimeSliceObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/observables/VolumeProfileObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/Simulation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Triangle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Utils.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Vertex.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/AlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/CollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/FlipMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseAlexanderMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InverseCollapseMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/InversePinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/Move.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/HausdorffObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/ShapeObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/SpectralDimensionObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/TimeSliceObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/observables/VolumeProfileObservable.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

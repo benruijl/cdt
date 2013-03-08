@@ -11,10 +11,15 @@
 #include "Observable.h"
 #include "Utils.h"
 
+class Simulation;
+
 class HausdorffObservable : public Observable {
 private:
     std::string filename;
     std::ofstream file;
+    unsigned int numSamples;
+    Simulation* simulation;
+    std::vector<double> dist;
     std::pair<unsigned int, double> extent;
 
     /**
@@ -24,17 +29,19 @@ private:
      * @param start Index in `neighbours` that gives the starting position.
      * @return Average linear extent
      */
-    double getExtent(NeighbourList& neighbours, unsigned int start);
+    double getExtent(std::vector<unsigned int>& area, unsigned int norm);
     
+    std::vector<unsigned int> getDistribution(NeighbourList& neighbours, unsigned int start);
+
     /**
-     * Averages the linear extent over every starting vertex and stores it in
-     * `extent`.
+     * Averages the linear extent over `numSamples` randomly selected 
+     * starting vertices and stores it in `extent`. 
      * @param state
      */
     void process(const std::vector<Vertex*>& state);
 public:
 
-    HausdorffObservable(unsigned long writeFrequency);
+    HausdorffObservable(Simulation* simulation, unsigned long writeFrequency);
 
     virtual ~HausdorffObservable();
 

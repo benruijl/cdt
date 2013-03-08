@@ -3,8 +3,9 @@
 
 #include "observables/HausdorffObservable.h"
 #include "Utils.h"
+#include "Simulation.h"
 
-double HausdorffObservable::getExtent(NeighbourList& neighbours, unsigned int start) {
+std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& neighbours, unsigned int start) {
     int cur = start, steps = 0, shellcount = 0, newshell = 1;
     std::vector<char> visited(neighbours.size());
     std::queue<unsigned int> queue;
@@ -36,34 +37,54 @@ double HausdorffObservable::getExtent(NeighbourList& neighbours, unsigned int st
         shellcount--;
     }
 
+    area.resize(steps);
+
+    return area;
+}
+
+double HausdorffObservable::getExtent(std::vector<unsigned int>& area, unsigned int norm) {
     double ext = 0;
 
-    for (int i = 0; i < steps; i++) {
+    for (unsigned int i = 0; i < area.size(); i++) {
         ext += i * area[i];
     }
 
-    ext /= (double) neighbours.size();
+    // TODO: divide by area size (= number of steps) or volume?
+    ext /= (double) norm;
 
     return ext;
 }
 
 void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     NeighbourList neighbours = buildDualLatticeConnectivity(state);
+    boost::uniform_int<> uint(0, neighbours.size() - 1);
 
-    double ext = 0;
-    for (int i = 0; i < neighbours.size(); i++) {
-        ext += getExtent(neighbours, i);
+    dist.clear();
+    dist.resize(sqrt(neighbours.size())*1.5); // FIXME, what should this be?
+    
+    for (int i = 0; i < numSamples; i++) {
+        std::vector<unsigned int> area = getDistribution(neighbours, uint(simulation->getRNG()));
+
+        BOOST_ASSERT(area.size() < sqrt(neighbours.size())*1.5);
+        
+        /* Average area*/
+        for (int k = 0; k < area.size(); k++) {
+            dist[k] += area[k];
+        }
     }
     
-    ext /= (double) neighbours.size();
-    extent = std::make_pair(neighbours.size(), ext);
+    for (int i = 0; i < dist.size(); i++) {
+        dist[i] /= (double) numSamples;
+    }
 }
 
-HausdorffObservable::HausdorffObservable(unsigned long writeFrequency) :
+HausdorffObservable::HausdorffObservable(Simulation* simulation,
+        unsigned long writeFrequency) :
 Observable(writeFrequency, 0, true),
 filename(createFilename("haus")),
-file(filename.c_str()) {
-
+file(filename.c_str()),
+numSamples(READ_CONF("samples", 100)),
+simulation(simulation) {
 }
 
 HausdorffObservable::~HausdorffObservable() {
@@ -75,5 +96,9 @@ void HausdorffObservable::printToScreen() {
 }
 
 void HausdorffObservable::printToFile() {
-    file << extent.first << " " << extent.second << std::endl;
+    for (int i = 0; i < dist.size(); i++) {
+        file << dist[i] << " ";
+    }
+
+    file << std::endl;
 }

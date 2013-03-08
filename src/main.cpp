@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
     if (config.haussFreq > 0) {
         HausdorffObservable* hausdorffObservable = new
-                HausdorffObservable(config.haussFreq);
+                HausdorffObservable(&simulation, config.haussFreq);
         simulation.addObservable(hausdorffObservable);
     }
 
