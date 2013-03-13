@@ -49,7 +49,7 @@ public:
      * @param T Number of time slices. Has to be more than 1.
      */
     void generateInitialTriangulation(int N, int T);
-    
+
     /**
      * Perform Metropolis algorithm to improve a given triangulation. The triangulation
      * should be created with the generateInitialTriangulation method.
@@ -87,6 +87,11 @@ public:
      */
     double getRandomNumber() {
         return unireal(rng);
+    }
+
+    int getRandomInt(int min, int max) {
+        boost::uniform_int<> uint(min, max);
+        return uint(rng);
     }
 
     void checkLinkOverlap();
@@ -188,7 +193,7 @@ private:
     bool measureAtVolume, drift;
     /* If drifting is enabled, these parameters are used to specify the evolution
      * of the volume. */
-    unsigned int volumeStart, volumeEnd, skip, drop; 
+    unsigned int volumeStart, volumeEnd, skip, drop;
 };
 
 #endif	/* SIMULATION_H */

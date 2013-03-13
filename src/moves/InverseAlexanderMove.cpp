@@ -99,7 +99,8 @@ bool InverseAlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
 }
 
 Move* InverseAlexanderMove::generateRandomMove(Simulation& simulation) {
-    u = simulation.getRandomVertex(simulation.getVertices());
+    uIndex = simulation.getRandomInt(0, simulation.getVertices().size() - 1);
+    u = simulation.getVertices()[uIndex];
     return this;
 }
 
@@ -148,7 +149,9 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
     lXY = fourth->isTimelike(x, y);
 
     /* Perform cleanup */
-    vertices.erase(std::remove(vertices.begin(), vertices.end(), u), vertices.end());
+    vertices[uIndex] = vertices.back();
+    vertices.resize(vertices.size() - 1);
+    
     first->removeVertices();
     second->removeVertices();
     third->removeVertices();

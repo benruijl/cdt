@@ -112,7 +112,17 @@ public:
 
     bool isNeighbour(Triangle* t);
 
-    int indexFromVertex(Vertex* v);
+    inline int indexFromVertex(Vertex* v) {
+        if (vertices[0] == v) {
+            return 0;
+        } else if (vertices[1] == v) {
+            return 1;
+        } else if (vertices[2] == v) {
+            return 2;
+        }
+
+        BOOST_ASSERT(false);
+    }
 
     /**
      * Gets the neighbour that has u and v as vertices as well.

@@ -30,7 +30,8 @@ bool CollapseMove::isMovePossible(std::vector<Vertex*>& vertices) {
 }
 
 Move* CollapseMove::generateRandomMove(Simulation& simulation) {
-    u = simulation.getRandomVertex(simulation.getVertices());
+    uIndex = simulation.getRandomInt(0, simulation.getVertices().size() - 1);
+    u = simulation.getVertices()[uIndex];
     v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
 
     return this;
@@ -63,7 +64,8 @@ void CollapseMove::execute(std::vector<Vertex*>& vertices) {
     }
 
     // remove vertex
-    vertices.erase(std::remove(vertices.begin(), vertices.end(), u), vertices.end());
+    vertices[uIndex] = vertices.back();
+    vertices.resize(vertices.size() - 1);
 
     delete u;
     delete first;

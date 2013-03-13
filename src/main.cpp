@@ -61,7 +61,7 @@ ConfigStruct buildConfiguration() {
 
 int main(int argc, char** argv) {
     const char* configFile = "config.ini";
-    if (argc > 2) {
+    if (argc >= 2) {
         configFile = argv[1];
     }
 

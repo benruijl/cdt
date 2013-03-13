@@ -27,7 +27,7 @@ typedef std::vector< std::vector<unsigned int> > NeighbourList;
  * @return 
  */
 template <typename T>
-        boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
 
     foreach(T e, b) {
         a.insert(e);
@@ -43,7 +43,7 @@ template <typename T>
  * @return 
  */
 template <typename T>
-        boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
 
     foreach(T e, b) {
         a.erase(e);

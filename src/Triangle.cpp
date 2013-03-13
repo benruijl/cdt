@@ -1,4 +1,4 @@
-/* 
+        /* 
  * File:   Triangle.cpp
  * Author: ben
  * 
@@ -147,18 +147,6 @@ bool Triangle::isNeighbour(Triangle* t) {
     }
 
     return count == 2;
-}
-
-int Triangle::indexFromVertex(Vertex* v) {
-    if (vertices[0] == v) {
-        return 0;
-    } else if (vertices[1] == v) {
-        return 1;
-    } else if (vertices[2] == v) {
-        return 2;
-    }
-
-    BOOST_ASSERT(false);
 }
 
 Triangle* Triangle::getNeighbour(const Vertex* u, const Vertex* v) {
