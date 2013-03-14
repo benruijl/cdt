@@ -26,13 +26,14 @@ bool CollapseMove::isMovePossible(std::vector<Vertex*>& vertices) {
     // topology constraint: because of periodic boundary conditions it could
     // be that the collapse move fails and results in overlapping links
     // note that the vertices should have 2 neighbours in common
-    return countOverlap(u->getNeighbouringVertices(), v->getNeighbouringVertices()) == 2;
+    return countOverlap(neighboursU, v->getNeighbouringVertices()) == 2;
 }
 
 Move* CollapseMove::generateRandomMove(Simulation& simulation) {
     uIndex = simulation.getRandomInt(0, simulation.getVertices().size() - 1);
     u = simulation.getVertices()[uIndex];
-    v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
+    neighboursU = u->getNeighbouringVertices();
+    v = simulation.getRandomElementFromSet(neighboursU);
 
     return this;
 }

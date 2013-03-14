@@ -24,6 +24,7 @@ Vertex* Vertex::getNeighbouringVertex() {
 
 VertSet Vertex::getNeighbouringVertices() {
     VertSet neighbours;
+    neighbours.rehash(triangles.size() + 1);
 
     foreach(Triangle* t, triangles) {
         for (int i = 0; i < 3; i++) {

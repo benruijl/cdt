@@ -43,12 +43,13 @@ bool PinchingMove::isMovePossible(std::vector<Vertex*>& vertices) {
 
     // prevent link overlap
     VertSet verts = v->getNeighbouringVertices();
-    return (verts & u->getNeighbouringVertices()).size() == 2;
+    return (verts & neighboursU).size() == 2;
 }
 
 Move* PinchingMove::generateRandomMove(Simulation& simulation) {
     u = simulation.getRandomVertex(simulation.getVertices());
-    v = simulation.getRandomElementFromSet(u->getNeighbouringVertices());
+    neighboursU = u->getNeighbouringVertices();
+    v = simulation.getRandomElementFromSet(neighboursU);
     return this;
 }
 

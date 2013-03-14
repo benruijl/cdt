@@ -13,6 +13,7 @@
 class PinchingMove : public Move {
 private:
     Vertex *u, *v;
+    VertSet neighboursU;
     bool isTimelike;
 public:
 

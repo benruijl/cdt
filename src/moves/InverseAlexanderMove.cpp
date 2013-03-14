@@ -33,7 +33,7 @@ double InverseAlexanderMove::getTransitionProbability(std::vector<Vertex*>& vert
 
 bool InverseAlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
     // vertex needs to have 4 links: two spacelike and two timelike
-    if (u->getTriangles().size() != 4) {
+    if (u->getNeighbouringVertexCount() != 4) {
         return false;
     }
 
@@ -101,6 +101,7 @@ bool InverseAlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
 Move* InverseAlexanderMove::generateRandomMove(Simulation& simulation) {
     uIndex = simulation.getRandomInt(0, simulation.getVertices().size() - 1);
     u = simulation.getVertices()[uIndex];
+    neighboursU = u->getNeighbouringVertices();
     return this;
 }
 
@@ -108,7 +109,7 @@ double InverseAlexanderMove::getInverseTransitionProbability(std::vector<Vertex*
     Triangle *first, *second;
     double prob = 0;
 
-    foreach(Vertex* v, u->getNeighbouringVertices()) {
+    foreach(Vertex* v, neighboursU) {
         Vertex::getAdjacentTriangles(u, v, &first, &second);
 
         if (first->isTimelike(u, v) == isTimelike) {
@@ -127,9 +128,7 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
     bool lUV, lVW, lVY, lWX, lXY;
 
     /* Determine the surroundings in a deterministic way */
-    VertSet n = u->getNeighbouringVertices();
-
-    v = *n.begin();
+    v = *neighboursU.begin();
     Vertex::getAdjacentTriangles(u, v, &first, &second);
     w = first->getThirdVertex(u, v);
     y = second->getThirdVertex(u, v);

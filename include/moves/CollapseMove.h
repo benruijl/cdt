@@ -13,6 +13,7 @@
 class CollapseMove : public Move {
 private:
     unsigned int uIndex; // index of vertex u in state array
+    VertSet neighboursU;
     Vertex* u, *v;
     bool isTimelike;
 
