@@ -18,9 +18,7 @@ bool InverseAlexanderMove::doTopologyCheck() {
         x = y;
     }
 
-    VertSet verts = v->getNeighbouringVertices();
-
-    return verts.find(x) == verts.end();
+    return !v->isNeighbour(x);
 }
 
 InverseAlexanderMove::InverseAlexanderMove(bool timelike) : Move(!timelike * -2, timelike * -2) {

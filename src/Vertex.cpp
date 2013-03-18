@@ -36,9 +36,22 @@ VertSet Vertex::getNeighbouringVertices() {
     return neighbours;
 }
 
+bool Vertex::isNeighbour(Vertex* v) {
+
+    foreach(Triangle* t, triangles) {
+        for (int i = 0; i < 3; i++) {
+            if (t->getVertex(i) == v) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Vertex::getAdjacentTriangles(const Vertex* a, const Vertex* b,
         Triangle** first, Triangle** second) {
-    
+
     std::vector<Triangle*> v(a->triangles.size() + b->triangles.size());
     std::vector<Triangle*>::iterator it = std::set_intersection(a->triangles.begin(),
             a->triangles.end(), b->triangles.begin(), b->triangles.end(), v.begin());
@@ -75,7 +88,7 @@ VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {
     return vertices;
 }
 
-VertSet Vertex::getOtherSectorVertices(Vertex* u) {
+VertSet Vertex::getOtherSectorVertices(Vertex * u) {
     Triangle* t, *r;
     Vertex::getAdjacentTriangles(this, u, &t, &r);
 

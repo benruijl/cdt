@@ -237,7 +237,6 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
-          <commandLine>-pg</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

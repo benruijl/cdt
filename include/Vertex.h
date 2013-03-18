@@ -53,6 +53,8 @@ public:
         return triangles.size();
     }
     
+    bool isNeighbour(Vertex* v);
+    
     /**
      * Gets a single neighbouring vertex.
      * @return 

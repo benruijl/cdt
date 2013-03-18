@@ -24,8 +24,7 @@ bool FlipMove::isMovePossible(std::vector<Vertex*>& vertices) {
     }
 
     // prevent link overlap, could happen in a very rare cases
-    VertSet verts = c->getNeighbouringVertices();
-    if (verts.find(d) != verts.end()) {
+    if (c->isNeighbour(d)) {
         return false;
     }
 
