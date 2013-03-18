@@ -38,17 +38,21 @@ VertSet Vertex::getNeighbouringVertices() {
 
 void Vertex::getAdjacentTriangles(const Vertex* a, const Vertex* b,
         Triangle** first, Triangle** second) {
-    TriSet t = a->triangles & b->triangles; // intersection
+    
+    std::vector<Triangle*> v(a->triangles.size() + b->triangles.size());
+    std::vector<Triangle*>::iterator it = std::set_intersection(a->triangles.begin(),
+            a->triangles.end(), b->triangles.begin(), b->triangles.end(), v.begin());
+    v.resize(it - v.begin());
 
     // Is the symplectic manifold condition broken?
-    if (t.size() != 2) {
+    if (v.size() != 2) {
         std::cout << "Symplectic manifold broken at " << a << " " << b << std::endl;
     }
 
-    BOOST_ASSERT(t.size() == 2); // each link should have 2 triangles
-    
-    *first = *t.begin();
-    *second = *(++t.begin());
+    BOOST_ASSERT(v.size() == 2); // each link should have 2 triangles
+
+    *first = *v.begin();
+    *second = *(v.begin() + 1);
 }
 
 VertSet Vertex::getSectorVertices(Triangle* start, Vertex* u, bool tl) {

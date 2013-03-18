@@ -11,6 +11,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/uniform_int.hpp>
+#include <boost/interprocess/containers/flat_set.hpp>
 #include <vector>
 
 #include "Vertex.h"
@@ -143,6 +144,19 @@ public:
     T getRandomElementFromSet(const boost::unordered_set<T>& set) {
         typename boost::unordered_set<T>::iterator it = set.begin();
 
+        if (set.size() == 0) {
+            return NULL; // TODO: add assert?
+        }
+
+        boost::uniform_int<> uint(0, set.size() - 1); // TODO: check if slow?
+        std::advance(it, uint(rng));
+        return *it;
+    }
+
+    template <typename T>
+    T getRandomElementFromSet(boost::container::flat_set<T>& set) {
+        typename boost::container::flat_set<T>::iterator it = set.begin();
+        
         if (set.size() == 0) {
             return NULL; // TODO: add assert?
         }

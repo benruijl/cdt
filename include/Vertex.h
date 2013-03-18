@@ -14,7 +14,7 @@ class Triangle;
 class Vertex;
 
 typedef boost::unordered_set<Vertex*> VertSet;
-typedef boost::unordered_set<Triangle*> TriSet;
+typedef boost::container::flat_set<Triangle*> TriSet;
 
 class Vertex {
 public:
@@ -22,6 +22,10 @@ public:
     Vertex(const Vertex& orig);
     virtual ~Vertex();
 
+    /**
+     * Register that a triangle is using this vertex.
+     * @param t Triangle to register
+     */
     void registerTriangle(Triangle* t) {
         triangles.insert(t);
     }
@@ -106,7 +110,7 @@ public:
     void printConnectivity();
 
 private:
-    TriSet triangles; // set of all triangles 
+    TriSet triangles; // ordered vector of all triangles 
 };
 
 #endif	/* VERTEX_H */

@@ -8,11 +8,14 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
+#include <iostream>
+#include <algorithm> 
 #include <vector>
 #include <boost/static_assert.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/foreach.hpp>
+#include <boost/interprocess/containers/flat_set.hpp>
 #define foreach BOOST_FOREACH
 
 class Vertex;
@@ -28,8 +31,13 @@ typedef std::vector< std::vector<unsigned int> > NeighbourList;
  */
 template <typename T>
 boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
+    a.insert(b.begin(), b.end());
+    return a;
+}
 
-    foreach(T e, b) {
+template <typename T>
+boost::container::flat_set<T>& operator +=(boost::container::flat_set<T>& a, const boost::container::flat_set<T>& b) {
+    foreach(const T& e, b) { // FIXME: insert with iterators not working
         a.insert(e);
     }
 
@@ -45,10 +53,24 @@ boost::unordered_set<T>& operator +=(boost::unordered_set<T>& a, const boost::un
 template <typename T>
 boost::unordered_set<T>& operator -=(boost::unordered_set<T>& a, const boost::unordered_set<T>& b) {
 
-    foreach(T e, b) {
+    foreach(const T& e, b) {
         a.erase(e);
     }
+    return a;
+}
 
+/**
+ * Removes the content of set b from set a.
+ * @param a
+ * @param b
+ * @return 
+ */
+template <typename T>
+boost::container::flat_set<T>& operator -=(boost::container::flat_set<T>& a, const boost::container::flat_set<T>& b) {
+
+    foreach(const T& e, b) {
+        a.erase(e);
+    }
     return a;
 }
 

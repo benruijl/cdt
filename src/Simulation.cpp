@@ -217,9 +217,12 @@ void Simulation::drawPartialTriangulation(const char* filename, Vertex* v, const
     dotFile.close();
 }
 
+// FIXME
 void Simulation::checkLinkOverlap() {
-    for (unsigned int i = 0; i < vertices.size() - 1; i++) {
+  /*  for (unsigned int i = 0; i < vertices.size() - 1; i++) {
         for (unsigned int j = i + 1; j < vertices.size(); j++) {
+            TriSet t;
+            
             TriSet t = vertices[i]->getTriangles() & vertices[j]->getTriangles();
 
             if (t.size() != 2 && t.size() != 0) {
@@ -227,7 +230,7 @@ void Simulation::checkLinkOverlap() {
                 BOOST_ASSERT(false);
             }
         }
-    }
+    }*/
 }
 
 void Simulation::printTriangleConnectivity(Triangle* t) {
