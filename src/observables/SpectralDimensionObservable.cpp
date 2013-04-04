@@ -10,7 +10,7 @@
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
 filename(createFilename("specdim")),
-file(filename()),
+file(filename.c_str()),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
 diffusionConst(READ_CONF("spec.diff", 1.0)),
 dualLattice(READ_CONF("spec.dualLattice", false)),

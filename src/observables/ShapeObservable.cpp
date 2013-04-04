@@ -192,8 +192,8 @@ void ShapeObservable::process(const std::vector<Vertex*>& state) {
 }
 
 void ShapeObservable::printToScreen() {
-    std::cout << "Found non-contractible loop of length " <<
-            size << std::endl;
+    //std::cout << "Found non-contractible loop of length " <<
+    //        size << std::endl;
 }
 
 void ShapeObservable::printToFile() {
