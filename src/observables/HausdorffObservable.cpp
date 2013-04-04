@@ -6,7 +6,7 @@
 #include "Simulation.h"
 
 std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& neighbours, unsigned int start) {
-    int cur = start, steps = 0, shellcount = 0, newshell = 1;
+    unsigned int cur = start, steps = 0, shellcount = 0, newshell = 1;
     std::vector<char> visited(neighbours.size());
     std::queue<unsigned int> queue;
     queue.push(cur);
@@ -40,19 +40,6 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
     area.resize(steps);
 
     return area;
-}
-
-double HausdorffObservable::getExtent(std::vector<unsigned int>& area, unsigned int norm) {
-    double ext = 0;
-
-    for (unsigned int i = 0; i < area.size(); i++) {
-        ext += i * area[i];
-    }
-
-    // TODO: divide by area size (= number of steps) or volume?
-    ext /= (double) norm;
-
-    return ext;
 }
 
 void HausdorffObservable::process(const std::vector<Vertex*>& state) {

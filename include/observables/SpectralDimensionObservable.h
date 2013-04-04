@@ -9,7 +9,6 @@
 #define	SPECTRALDIMENSIONOBSERVABLE_H
 
 #include <boost/array.hpp>
-#include <boost/circular_buffer.hpp>
 #include "Observable.h"
 
 class SpectralDimensionObservable : public Observable {
@@ -24,8 +23,9 @@ private:
     typedef std::vector< std::vector<unsigned int> > NeighbourList;
 
     std::string filename;
-    boost::circular_buffer<Spec> specDim;
-    boost::circular_buffer<Spec> specDim1;
+    std::ofstream file;
+    Spec specDim;
+    Spec specDim1;
 
     void process(const std::vector<Vertex*>& state);
 public:

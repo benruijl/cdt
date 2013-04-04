@@ -184,11 +184,11 @@ void ShapeObservable::process(const std::vector<Vertex*>& state) {
     triangleIds = createTriangleIds(state);
     dualNeighbours = buildDualLatticeConnectivity(triangleIds);
 
-   // for (int i = 0; i < state.size(); i += state.size() / 10) {
-        findNonContractibleLoop(state, 0);
-   //     std::cout << "done " << i << std::endl;
-        file << size << std::endl; // FIXME
-   // }
+    for (int i = 0; i < state.size(); i += state.size() / 10) {
+        findNonContractibleLoop(state, i);
+        file << size << " "; // FIXME, move to printToFile
+    }
+    file << std::endl;
 }
 
 void ShapeObservable::printToScreen() {
@@ -197,5 +197,5 @@ void ShapeObservable::printToScreen() {
 }
 
 void ShapeObservable::printToFile() {
-    file << size << "\n";
+    //file << size << "\n";
 }

@@ -10,12 +10,12 @@
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
 filename(createFilename("specdim")),
-specDim(sampleSize),
-specDim1(sampleSize),
+file(filename()),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
 diffusionConst(READ_CONF("spec.diff", 1.0)),
-sampleSize(READ_CONF("spec.sampleSize", 7000)),
-dualLattice(READ_CONF("spec.dualLattice", false)) {
+dualLattice(READ_CONF("spec.dualLattice", false)),
+specDim(sigmaMax),
+specDim1(sigmaMax) {
 }
 
 SpectralDimensionObservable::~SpectralDimensionObservable() {
@@ -71,54 +71,24 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     }
 
     /* Update spectral dimension */
-    Spec spec(sigmaMax);
-    Spec spec1(sigmaMax);
     for (int sigma = 2; sigma < sigmaMax - 1; sigma++) {
-        spec[sigma] += -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1.0);
-        spec1[sigma] += -2.0 * log(prob[sigma + 1] / prob[sigma]) /
+        specDim[sigma] = -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1.0);
+        specDim1[sigma] = -2.0 * log(prob[sigma + 1] / prob[sigma]) /
                 boost::math::log1p(1.0 / (double) sigma);
     }
-
-    specDim.push_back(spec);
-    specDim1.push_back(spec1);
 }
 
 void SpectralDimensionObservable::printToScreen() {
 }
 
 void SpectralDimensionObservable::printToFile() {
-    std::ofstream file(filename.c_str());
-
-    // TODO: make lower bound a parameter
-    for (unsigned int sigma = 10; sigma < sigmaMax - 1; sigma++) {
-        double avg = 0, avg1 = 0;
-
-        foreach(Spec& spec, specDim) {
-            avg += spec[sigma];
-        }
-
-        foreach(Spec& spec1, specDim1) {
-            avg1 += spec1[sigma];
-        }
-
-        avg /= (double) specDim.size();
-        avg1 /= (double) specDim1.size();
-
-        /* Calculate standard error */
-        double std = 0, std1 = 0;
-
-        foreach(Spec& spec, specDim) {
-            std += (spec[sigma] - avg) * (spec[sigma] - avg);
-        }
-
-        foreach(Spec& spec1, specDim1) {
-            std1 += (spec1[sigma] - avg1) * (spec1[sigma] - avg1);
-        }
-
-        std = sqrt(std / ((double) (specDim.size() - 1) * (double) specDim.size()));
-        std1 = sqrt(std1 / ((double) (specDim1.size() - 1) * (double) specDim1.size()));
-
-        file << sigma << " " << avg << " " << std << " " << sigma
-                << " " << avg1 << " " << std1 << "\n";
+    for (unsigned int sigma = 0; sigma < sigmaMax - 1; sigma++) {
+        file << specDim[sigma] << " ";
     }
+    file << std::endl;
+
+    for (unsigned int sigma = 0; sigma < sigmaMax - 1; sigma++) {
+        file << specDim1[sigma] << " ";
+    }
+    file << std::endl;
 }

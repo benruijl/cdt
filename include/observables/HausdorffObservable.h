@@ -23,18 +23,16 @@ private:
     std::pair<unsigned int, double> extent;
 
     /**
-     * Calculates the average linear extent sum (r * area(r)) where area(r)
-     * is the number of nodes inside a disc or radius r starting at `start`.
+     * Calculates the distribution of number of new nodes in the annulus at 
+     * distance r from a starting node.
      * @param neighbours Neighbour information
-     * @param start Index in `neighbours` that gives the starting position.
-     * @return Average linear extent
+     * @param start Starting node
+     * @return Distribution n(r)
      */
-    double getExtent(std::vector<unsigned int>& area, unsigned int norm);
-    
     std::vector<unsigned int> getDistribution(NeighbourList& neighbours, unsigned int start);
 
     /**
-     * Averages the linear extent over `numSamples` randomly selected 
+     * Averages the distribution over `numSamples` randomly selected 
      * starting vertices and stores it in `extent`. 
      * @param state
      */
