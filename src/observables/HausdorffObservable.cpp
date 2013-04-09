@@ -44,22 +44,23 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
 
 void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     NeighbourList neighbours = buildDualLatticeConnectivity(state);
-    boost::uniform_int<> uint(0, neighbours.size() - 1);
+    std::vector<unsigned int> areas[numSamples];
+
+#pragma omp parallel for
+    for (unsigned int i = 0; i < numSamples; i++) {
+        areas[i] = getDistribution(neighbours,
+                (double) i * neighbours.size() / numSamples);
+    }
 
     dist.clear();
     dist.resize(sqrt(neighbours.size())*1.5); // FIXME, what should this be?
-    
-    for (int i = 0; i < numSamples; i++) {
-        std::vector<unsigned int> area = getDistribution(neighbours, uint(simulation->getRNG()));
 
-        BOOST_ASSERT(area.size() < sqrt(neighbours.size())*1.5);
-        
-        /* Average area*/
-        for (int k = 0; k < area.size(); k++) {
-            dist[k] += area[k];
+    for (int j = 0; j < numSamples; j++) {
+        for (int i = 0; i < areas[j].size(); i++) {
+            dist[i] += areas[j][i];
         }
     }
-    
+
     for (int i = 0; i < dist.size(); i++) {
         dist[i] /= (double) numSamples;
     }
@@ -70,7 +71,7 @@ HausdorffObservable::HausdorffObservable(Simulation* simulation,
 Observable(writeFrequency, 0, true),
 filename(createFilename("haus")),
 file(filename.c_str()),
-numSamples(READ_CONF("samples", 100)),
+numSamples(READ_CONF("samples", 1000)),
 simulation(simulation) {
 }
 

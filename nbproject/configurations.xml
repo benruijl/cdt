@@ -89,6 +89,7 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
+          <commandLine>-fopenmp</commandLine>
         </ccTool>
       </compileType>
       <item path="config.ini" ex="false" tool="3" flavor2="0">
@@ -237,6 +238,7 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
+          <commandLine>-fopenmp</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
