@@ -45,11 +45,11 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
 void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     NeighbourList neighbours = buildDualLatticeConnectivity(state);
     std::vector<unsigned int> areas[numSamples];
+    unsigned int step = neighbours.size() / numSamples;
 
 #pragma omp parallel for
     for (unsigned int i = 0; i < numSamples; i++) {
-        areas[i] = getDistribution(neighbours,
-                (double) i * neighbours.size() / numSamples);
+        areas[i] = getDistribution(neighbours, i * step);
     }
 
     dist.clear();
@@ -71,8 +71,9 @@ HausdorffObservable::HausdorffObservable(Simulation* simulation,
 Observable(writeFrequency, 0, true),
 filename(createFilename("haus")),
 file(filename.c_str()),
-numSamples(READ_CONF("samples", 1000)),
+numSamples(READ_CONF("haus.samples", 1000)),
 simulation(simulation) {
+    std::cout << numSamples << std::endl;
 }
 
 HausdorffObservable::~HausdorffObservable() {

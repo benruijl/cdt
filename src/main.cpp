@@ -54,7 +54,7 @@ ConfigStruct buildConfiguration() {
     config.volProfFreq = pt.get("vol.freq", 0);
     config.specDimFreq = pt.get("spec.freq", 0);
     config.shapeFreq = pt.get("shape.freq", 0);
-    config.haussFreq = pt.get("hauss.freq", 0);
+    config.haussFreq = pt.get("haus.freq", 0);
 
     return config;
 }
