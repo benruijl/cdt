@@ -73,7 +73,6 @@ filename(createFilename("haus")),
 file(filename.c_str()),
 numSamples(READ_CONF("haus.samples", 1000)),
 simulation(simulation) {
-    std::cout << numSamples << std::endl;
 }
 
 HausdorffObservable::~HausdorffObservable() {

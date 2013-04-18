@@ -20,6 +20,7 @@
 #include "observables/SpectralDimensionObservable.h"
 #include "observables/ShapeObservable.h"
 #include "observables/HausdorffObservable.h"
+#include "observables/ConnectivityObservable.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
-            shapeFreq, haussFreq;
+            shapeFreq, hausFreq, connFreq;
     std::string gridFile;
 };
 
@@ -54,7 +55,8 @@ ConfigStruct buildConfiguration() {
     config.volProfFreq = pt.get("vol.freq", 0);
     config.specDimFreq = pt.get("spec.freq", 0);
     config.shapeFreq = pt.get("shape.freq", 0);
-    config.haussFreq = pt.get("haus.freq", 0);
+    config.hausFreq = pt.get("haus.freq", 0);
+    config.connFreq = pt.get("conn.freq", 0);
 
     return config;
 }
@@ -104,10 +106,16 @@ int main(int argc, char** argv) {
         simulation.addObservable(shapeObservable);
     }
 
-    if (config.haussFreq > 0) {
+    if (config.hausFreq > 0) {
         HausdorffObservable* hausdorffObservable = new
-                HausdorffObservable(&simulation, config.haussFreq);
+                HausdorffObservable(&simulation, config.hausFreq);
         simulation.addObservable(hausdorffObservable);
+    }
+
+    if (config.connFreq > 0) {
+        ConnectivityObservable* connectivityObservable = new
+                ConnectivityObservable(config.hausFreq);
+        simulation.addObservable(connectivityObservable);
     }
 
     if (config.gridFile.size() > 0) {

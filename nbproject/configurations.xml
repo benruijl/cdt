@@ -16,6 +16,7 @@
         <itemPath>include/moves/PinchingMove.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>include/observables/ConnectivityObservable.h</itemPath>
         <itemPath>include/observables/GridObservable.h</itemPath>
         <itemPath>include/observables/HausdorffObservable.h</itemPath>
         <itemPath>include/observables/Observable.h</itemPath>
@@ -132,6 +133,11 @@
       <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/ConnectivityObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="include/observables/GridObservable.h"
             ex="false"
@@ -288,6 +294,11 @@
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/observables/ConnectivityObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/observables/GridObservable.h"
             ex="false"
             tool="3"
@@ -431,6 +442,11 @@
       <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/ConnectivityObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="include/observables/GridObservable.h"
             ex="false"
