@@ -86,10 +86,10 @@ void PinchingMove::execute(std::vector<Vertex*>& vertices) {
     Vertex* z = fourth->getThirdVertex(v, x);
 
     /* Clean-up */
-    first->removeVertices();
-    second->removeVertices();
-    third->removeVertices();
-    fourth->removeVertices();
+    first->removeFromVertices();
+    second->removeFromVertices();
+    third->removeFromVertices();
+    fourth->removeFromVertices();
     vertices.erase(std::remove(vertices.begin(), vertices.end(), v), vertices.end());
 
     /* Relabel */

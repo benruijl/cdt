@@ -12,7 +12,7 @@ bool InverseAlexanderMove::doTopologyCheck() {
     Vertex::getAdjacentTriangles(u, x, &t, &r);
     fourth = t == third ? r : t;
     Vertex* y = fourth->getThirdVertex(u, x);
-
+    
     if (first->isTimelike(u, v) != isTimelike) {
         v = w;
         x = y;
@@ -149,10 +149,10 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
     vertices[uIndex] = vertices.back();
     vertices.resize(vertices.size() - 1);
     
-    first->removeVertices();
-    second->removeVertices();
-    third->removeVertices();
-    fourth->removeVertices();
+    first->removeFromVertices();
+    second->removeFromVertices();
+    third->removeFromVertices();
+    fourth->removeFromVertices();
     delete first;
     delete second;
     delete third;

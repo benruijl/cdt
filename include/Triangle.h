@@ -145,7 +145,7 @@ public:
      * Unregisters this triangles at the 3 vertices
      * @return Unregistered triangle ready for deletion
      */
-    void removeVertices();
+    void removeFromVertices();
 
     /**
      * Gets the vertex at a given index.

@@ -63,8 +63,8 @@ void AlexanderMove::execute(std::vector<Vertex*>& vertices) {
     new Triangle(e, v, d, lAB, lBD, newLink);
 
     vertices.push_back(e);
-    first->removeVertices();
-    second->removeVertices();
+    first->removeFromVertices();
+    second->removeFromVertices();
     delete first;
     delete second;
 

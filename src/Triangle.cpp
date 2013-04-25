@@ -156,7 +156,7 @@ Triangle* Triangle::getNeighbour(const Vertex* u, const Vertex* v) {
     return q;
 }
 
-void Triangle::removeVertices() {
+void Triangle::removeFromVertices() {
     for (int i = 0; i < 3; i++) {
         vertices[i]->getTriangles().erase(this);
     }

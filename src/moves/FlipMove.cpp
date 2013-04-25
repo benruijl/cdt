@@ -66,8 +66,8 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
     new Triangle(u, c, d, lAC, lNew, lAD);
     new Triangle(c, v, d, lCB, lBD, lNew);
 
-    first->removeVertices();
-    second->removeVertices();
+    first->removeFromVertices();
+    second->removeFromVertices();
     delete first;
     delete second;
 

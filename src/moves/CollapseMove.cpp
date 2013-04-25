@@ -55,8 +55,8 @@ void CollapseMove::execute(std::vector<Vertex*>& vertices) {
     Vertex* c = first->getThirdVertex(u, v);
     Vertex* d = second->getThirdVertex(u, v);
 
-    first->removeVertices();
-    second->removeVertices();
+    first->removeFromVertices();
+    second->removeFromVertices();
 
     v->getTriangles() += u->getTriangles();
 

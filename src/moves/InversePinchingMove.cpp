@@ -80,8 +80,8 @@ void InversePinchingMove::execute(std::vector<Vertex*>& vertices) {
     Vertex* w = t->getThirdVertex(v, u);
     z = s->getThirdVertex(v, edge);
 
-    t->removeVertices();
-    s->removeVertices();
+    t->removeFromVertices();
+    s->removeFromVertices();
     delete t;
     delete s;
 
