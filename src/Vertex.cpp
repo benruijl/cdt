@@ -147,6 +147,20 @@ TriSet Vertex::getSectorTriangles(Triangle* start, bool left, bool tl) {
     return tri;
 }
 
+bool Vertex::isInOtherSector(Triangle* start, Vertex* v, Vertex* w) {
+    unsigned int sectorCount = 0;
+    Triangle* curT = start;
+    Vertex* cur = v;
+
+    while (cur != w && sectorCount < 3) {
+        curT = curT->getNeighbour(this, cur);
+        cur = curT->getThirdVertex(this, cur);
+        if (curT->getLightConeCount(this) == 1) sectorCount++;
+    }
+
+    return sectorCount == 2;
+}
+
 bool Vertex::checkCausality() {
 
     int lightConeCount = 0;

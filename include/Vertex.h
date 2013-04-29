@@ -109,6 +109,16 @@ public:
      */
     TriSet getSectorTriangles(Triangle* start, bool left, bool tl);
     
+    /**
+     * Checks if vertices v and w are in the other sector of the same type. The
+     * sectors are spanned around this vertex.
+     * @param start Triangle to start the search from
+     * @param v Neighbour of this vertex
+     * @param w Neighbour of this vertex
+     * @return True if v and w are in opposite sectors, else false
+     */
+    bool isInOtherSector(Triangle* start, Vertex* v, Vertex* w);
+    
     void printConnectivity();
 
 private:

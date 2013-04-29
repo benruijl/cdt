@@ -59,6 +59,7 @@ double PinchingMove::getInverseTransitionProbability(std::vector<Vertex*>& verti
 
     // count the number of triangles that belong in the other
     // sector after this move is done
+    // TODO: just count, do not store vertices in set
     int countLeft = u->getSectorVertices(l, true, !isTimelike).size() - 1;
     int countRight = u->getSectorVertices(r, false, !isTimelike).size() - 1;
 

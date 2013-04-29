@@ -60,8 +60,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-fopenmp -Wall
-CXXFLAGS=-fopenmp -Wall
+CCFLAGS=-fopenmp -Wall -g
+CXXFLAGS=-fopenmp -Wall -g
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -83,97 +83,97 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cdt: ${OBJECTFILES}
 ${OBJECTDIR}/src/Simulation.o: src/Simulation.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Simulation.o src/Simulation.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Simulation.o src/Simulation.cpp
 
 ${OBJECTDIR}/src/Triangle.o: src/Triangle.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Triangle.o src/Triangle.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Triangle.o src/Triangle.cpp
 
 ${OBJECTDIR}/src/Utils.o: src/Utils.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Utils.o src/Utils.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Utils.o src/Utils.cpp
 
 ${OBJECTDIR}/src/Vertex.o: src/Vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Vertex.o src/Vertex.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Vertex.o src/Vertex.cpp
 
 ${OBJECTDIR}/src/main.o: src/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.cpp
 
 ${OBJECTDIR}/src/moves/AlexanderMove.o: src/moves/AlexanderMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/AlexanderMove.o src/moves/AlexanderMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/AlexanderMove.o src/moves/AlexanderMove.cpp
 
 ${OBJECTDIR}/src/moves/CollapseMove.o: src/moves/CollapseMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/CollapseMove.o src/moves/CollapseMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/CollapseMove.o src/moves/CollapseMove.cpp
 
 ${OBJECTDIR}/src/moves/FlipMove.o: src/moves/FlipMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/FlipMove.o src/moves/FlipMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/FlipMove.o src/moves/FlipMove.cpp
 
 ${OBJECTDIR}/src/moves/InverseAlexanderMove.o: src/moves/InverseAlexanderMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseAlexanderMove.o src/moves/InverseAlexanderMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseAlexanderMove.o src/moves/InverseAlexanderMove.cpp
 
 ${OBJECTDIR}/src/moves/InverseCollapseMove.o: src/moves/InverseCollapseMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseCollapseMove.o src/moves/InverseCollapseMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InverseCollapseMove.o src/moves/InverseCollapseMove.cpp
 
 ${OBJECTDIR}/src/moves/InversePinchingMove.o: src/moves/InversePinchingMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InversePinchingMove.o src/moves/InversePinchingMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/InversePinchingMove.o src/moves/InversePinchingMove.cpp
 
 ${OBJECTDIR}/src/moves/Move.o: src/moves/Move.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/Move.o src/moves/Move.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/Move.o src/moves/Move.cpp
 
 ${OBJECTDIR}/src/moves/MoveFactory.o: src/moves/MoveFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/MoveFactory.o src/moves/MoveFactory.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/MoveFactory.o src/moves/MoveFactory.cpp
 
 ${OBJECTDIR}/src/moves/PinchingMove.o: src/moves/PinchingMove.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/PinchingMove.o src/moves/PinchingMove.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/PinchingMove.o src/moves/PinchingMove.cpp
 
 ${OBJECTDIR}/src/observables/HausdorffObservable.o: src/observables/HausdorffObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/HausdorffObservable.o src/observables/HausdorffObservable.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/HausdorffObservable.o src/observables/HausdorffObservable.cpp
 
 ${OBJECTDIR}/src/observables/ShapeObservable.o: src/observables/ShapeObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/ShapeObservable.o src/observables/ShapeObservable.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/ShapeObservable.o src/observables/ShapeObservable.cpp
 
 ${OBJECTDIR}/src/observables/SpectralDimensionObservable.o: src/observables/SpectralDimensionObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/SpectralDimensionObservable.o src/observables/SpectralDimensionObservable.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/SpectralDimensionObservable.o src/observables/SpectralDimensionObservable.cpp
 
 ${OBJECTDIR}/src/observables/TimeSliceObservable.o: src/observables/TimeSliceObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/TimeSliceObservable.o src/observables/TimeSliceObservable.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/TimeSliceObservable.o src/observables/TimeSliceObservable.cpp
 
 ${OBJECTDIR}/src/observables/VolumeProfileObservable.o: src/observables/VolumeProfileObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/VolumeProfileObservable.o src/observables/VolumeProfileObservable.cpp
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/VolumeProfileObservable.o src/observables/VolumeProfileObservable.cpp
 
 # Subprojects
 .build-subprojects:

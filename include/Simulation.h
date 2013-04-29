@@ -90,6 +90,12 @@ public:
         return unireal(rng);
     }
 
+    /**
+     * Generates a uniform random int between min and max, inclusive.
+     * @param min
+     * @param max
+     * @return 
+     */
     int getRandomInt(int min, int max) {
         boost::uniform_int<> uint(min, max);
         return uint(rng);

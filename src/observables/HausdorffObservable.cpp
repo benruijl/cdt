@@ -5,7 +5,8 @@
 #include "Utils.h"
 #include "Simulation.h"
 
-std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& neighbours, unsigned int start) {
+std::vector<unsigned int> HausdorffObservable::getDistribution(const NeighbourList& neighbours,
+        unsigned int start) {
     unsigned int cur = start, steps = 0, shellcount = 0, newshell = 1;
     std::vector<char> visited(neighbours.size());
     std::queue<unsigned int> queue;
@@ -18,6 +19,7 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
         /* Are we going to a new shell? */
         if (shellcount == 0) {
             shellcount = newshell;
+            BOOST_ASSERT(steps < neighbours.size());
             area[steps] = shellcount;
             newshell = 0;
             steps++;
@@ -25,8 +27,10 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
 
         cur = queue.front();
         queue.pop();
+        BOOST_ASSERT(cur < neighbours.size());
 
         for (unsigned int i = 0; i < neighbours[cur].size(); i++) {
+            BOOST_ASSERT(neighbours[cur][i] < neighbours.size());
             if (!visited[neighbours[cur][i]]) {
                 newshell++;
                 queue.push(neighbours[cur][i]);
@@ -44,8 +48,9 @@ std::vector<unsigned int> HausdorffObservable::getDistribution(NeighbourList& ne
 
 void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     NeighbourList neighbours = buildDualLatticeConnectivity(state);
-    std::vector<unsigned int> areas[numSamples];
+    std::vector< std::vector<unsigned int> > areas(numSamples);
     unsigned int step = neighbours.size() / numSamples;
+    if (step == 0) step = 1;
 
 #pragma omp parallel for
     for (unsigned int i = 0; i < numSamples; i++) {
@@ -53,9 +58,10 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     }
 
     dist.clear();
-    dist.resize(sqrt(neighbours.size())*1.5); // FIXME, what should this be?
+    dist.resize(neighbours.size()); // FIXME, this is too big
 
     for (unsigned int j = 0; j < numSamples; j++) {
+        BOOST_ASSERT(areas[j].size() < dist.size());
         for (unsigned int i = 0; i < areas[j].size(); i++) {
             dist[i] += areas[j][i];
         }

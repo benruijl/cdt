@@ -29,7 +29,7 @@ private:
      * @param start Starting node
      * @return Distribution n(r)
      */
-    std::vector<unsigned int> getDistribution(NeighbourList& neighbours, unsigned int start);
+    std::vector<unsigned int> getDistribution(const NeighbourList& neighbours, unsigned int start);
 
     /**
      * Averages the distribution over `numSamples` randomly selected 

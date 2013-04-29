@@ -31,17 +31,10 @@ bool InverseCollapseMove::isMovePossible(std::vector<Vertex*>& vertices) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(u, v, &first, &second);
     bool lUV = first->isTimelike(u, v);
-    Vertex::getAdjacentTriangles(u, w, &first, &second);
-    bool lUW = first->isTimelike(u, w);
 
-    if (lUV != lUW || lUV == isTimelike) {
-        return false;
-    }
-
-    // the vertices should belong to different sectors
-    VertSet sector = u->getSectorVertices(first, true, !isTimelike);
-
-    return (sector.find(v) == sector.end()) != (sector.find(w) == sector.end());
+    // if the number of sector transitions is two, the link type of u an w 
+    // is the same and they are in a different sector
+    return lUV != isTimelike && u->isInOtherSector(first, v, w);
 }
 
 Move* InverseCollapseMove::generateRandomMove(Simulation& simulation) {
