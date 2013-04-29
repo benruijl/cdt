@@ -27,6 +27,8 @@ public:
         PINCH_TIMELIKE, COUNT
     };
 
+    typedef boost::array<boost::array<unsigned long, 4>, COUNT * 2> MoveStatistics;
+
     MoveFactory(Simulation& simulation);
 
     virtual ~MoveFactory();
@@ -49,24 +51,48 @@ public:
      * Adds all moves to the filter
      */
     void addAllMoves();
-    
+
     /**
      * Parses a list of move names to moves and adds them to the system.
      * If the list is empty, all possible moves are added.
      * @param moves List of move names
      */
     void parseMoves(std::vector<std::string> moves);
-    
+
+    /**
+     * Flag the last move as accepted. Useful for move statistics.
+     */
+    void setMoveAccepted();
+
+    /**
+     * Flag the last move as impossible. Useful for move statistics.
+     */
+    void setMoveImpossible();
+
+    /**
+     * Flag the last move as rejected due to detailed balance. Useful for move statistics.
+     */
+    void setMoveRejected();
+
     /**
      * Loads moves from the configuration structure.
      */
     void loadMoves();
+
+    MoveStatistics& getMoveStatistics() {
+        return moveStatistics;
+    }
 
 private:
     boost::array<Move*, COUNT> moves;
     boost::array<Move*, COUNT> invMoves;
     boost::uniform_int<> uint;
     std::vector<MOVES> filter;
+
+    // store some statistics on moves
+    MOVES curMove;
+    bool curMoveInverse;
+    MoveStatistics moveStatistics;
 };
 
 #endif	/* MOVEFACTORY_H */

@@ -42,7 +42,7 @@ public:
         freq[stateID]++;
         total++;
         
-        if (total > -3) {
+        if (total > (unsigned long long)-3) {
             std::cerr << "WARNING: total states out of range";
         }
     }

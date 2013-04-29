@@ -16,6 +16,7 @@
         <itemPath>include/moves/PinchingMove.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>include/observables/AcceptanceRateObservable.h</itemPath>
         <itemPath>include/observables/ConnectivityObservable.h</itemPath>
         <itemPath>include/observables/GridObservable.h</itemPath>
         <itemPath>include/observables/HausdorffObservable.h</itemPath>
@@ -134,6 +135,11 @@
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="include/observables/AcceptanceRateObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"
             tool="3"
@@ -244,7 +250,7 @@
           <incDir>
             <pElem>include</pElem>
           </incDir>
-          <commandLine>-fopenmp</commandLine>
+          <commandLine>-fopenmp -Wall</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -293,6 +299,11 @@
       <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/AcceptanceRateObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"
@@ -442,6 +453,11 @@
       <item path="include/moves/MoveFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="include/moves/PinchingMove.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="include/observables/AcceptanceRateObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"

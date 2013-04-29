@@ -380,6 +380,7 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
             // probability checks, we can do this explicit check
             if (!move->isMovePossible(vertices)) {
                 //boltzmannTester.addStateId(id);
+                moveFactory->setMoveImpossible();
                 moveRejectedBecauseImpossible++;
                 continue;
             }
@@ -397,12 +398,15 @@ void Simulation::Metropolis(double alpha, unsigned int volume, double
 
             if (acceptance > 1 || getRandomNumber() < acceptance) {
                 move->execute(vertices);
+                moveFactory->setMoveAccepted();
 
                 TTSCount += move->getDeltaTTS();
                 SSTCount += move->getDeltaSST();
                 //id = createID(fixed);
-            } else
+            } else {
                 moveRejectedBecauseDetBal++;
+                moveFactory->setMoveRejected();
+            }
 
             bias += 2.0 * (double) vertices.size() - (double) volume;
             //boltzmannTester.addStateId(id);

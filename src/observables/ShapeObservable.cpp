@@ -75,7 +75,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
     std::queue<unsigned int> queue;
     queue.push(start);
 
-    for (int i = 0; i < prev.size(); i++) {
+    for (unsigned int i = 0; i < prev.size(); i++) {
         prev[i] = prev.size(); // prev.size() => no prev
     }
 
@@ -121,7 +121,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
 
                     if (visited.find(t) != visited.end()) {
                         // remove leading part from s branch
-                        for (int i = 1; i < edge.size(); i++) {
+                        for (unsigned int i = 1; i < edge.size(); i++) {
                             if (edge[i] == t) {
                                 edge.erase(edge.begin(), edge.begin() + i - 1);
                                 break;
@@ -132,7 +132,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
 
                     if (visited.find(s) != visited.end()) {
                         // remove trailing part from t branch
-                        for (int i = edge.size() - 2; i >= 0; i--) {
+                        for (unsigned int i = edge.size() - 2; i >= 0; i--) {
                             if (edge[i] == s) {
                                 edge.erase(edge.begin() + i + 1, edge.end());
                                 break;
@@ -156,7 +156,7 @@ void ShapeObservable::findNonContractibleLoop(const std::vector<Vertex*>& state,
                 boost::unordered_set<std::pair<unsigned int, unsigned int> >
                         edgeVertices;
                 Triangle* q, *r;
-                for (int i = 0; i < edge.size(); i++) {
+                for (unsigned int i = 0; i < edge.size(); i++) {
                     Vertex::getAdjacentTriangles(state[edge[i]],
                             state[edge[(i + 1) % edge.size()]], &q, &r);
 
@@ -184,7 +184,7 @@ void ShapeObservable::process(const std::vector<Vertex*>& state) {
     triangleIds = createTriangleIds(state);
     dualNeighbours = buildDualLatticeConnectivity(triangleIds);
 
-    for (int i = 0; i < state.size(); i += state.size() / 10) {
+    for (unsigned int i = 0; i < state.size(); i += state.size() / 10) {
         findNonContractibleLoop(state, i);
         file << size << " "; // FIXME, move to printToFile
     }

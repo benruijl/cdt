@@ -25,9 +25,9 @@ class Simulation;
  */
 class VolumeProfileObservable : public Observable {
 private:
-    std::string filename;
     Simulation* simulation;
     TimeSliceObservable* tso;
+    std::string filename;
     std::vector<std::pair<double, unsigned int> > volumeProfile;
     
     void process(const std::vector<Vertex*>& state);

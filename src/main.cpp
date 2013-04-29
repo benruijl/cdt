@@ -21,6 +21,7 @@
 #include "observables/ShapeObservable.h"
 #include "observables/HausdorffObservable.h"
 #include "observables/ConnectivityObservable.h"
+#include "observables/AcceptanceRateObservable.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
-            shapeFreq, hausFreq, connFreq;
+            shapeFreq, hausFreq, connFreq, accFreq;
     std::string gridFile;
 };
 
@@ -57,6 +58,7 @@ ConfigStruct buildConfiguration() {
     config.shapeFreq = pt.get("shape.freq", 0);
     config.hausFreq = pt.get("haus.freq", 0);
     config.connFreq = pt.get("conn.freq", 0);
+    config.accFreq = pt.get("acc.freq", 0);
 
     return config;
 }
@@ -114,8 +116,14 @@ int main(int argc, char** argv) {
 
     if (config.connFreq > 0) {
         ConnectivityObservable* connectivityObservable = new
-                ConnectivityObservable(config.hausFreq);
+                ConnectivityObservable(config.connFreq);
         simulation.addObservable(connectivityObservable);
+    }
+
+    if (config.accFreq > 0) {
+        AcceptanceRateObservable* acceptanceRateObservable = new
+                AcceptanceRateObservable(config.accFreq, &simulation.getMoveFactory());
+        simulation.addObservable(acceptanceRateObservable);
     }
 
     if (config.gridFile.size() > 0) {
@@ -130,4 +138,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-

@@ -111,7 +111,7 @@ std::vector<Vertex*> TimeSliceObservable::createInitialSlice(Vertex* start) {
                 continue; // no path found
             }
 
-            if (bestTime < 0 || newSlice.size() < bestTime) {
+            if (bestTime < 0 || newSlice.size() < (unsigned int)bestTime) {
                 slice = newSlice;
                 bestTime = newSlice.size();
             }

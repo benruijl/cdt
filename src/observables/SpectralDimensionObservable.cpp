@@ -9,11 +9,11 @@
 
 SpectralDimensionObservable::SpectralDimensionObservable(unsigned int writeFrequency) :
 Observable(writeFrequency, 0, true),
-filename(createFilename("specdim")),
-file(filename.c_str()),
 sigmaMax(READ_CONF("spec.sigmaMax", 1000)),
 diffusionConst(READ_CONF("spec.diff", 1.0)),
 dualLattice(READ_CONF("spec.dualLattice", false)),
+filename(createFilename("specdim")),
+file(filename.c_str()),
 specDim(sigmaMax),
 specDim1(sigmaMax) {
 }
@@ -43,7 +43,7 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     for (unsigned int sigma = 0; sigma < sigmaMax; sigma++) {
         prob[sigma] = probBuffers[cur][start];
 
-        for (int i = 0; i < neighbours.size(); i++) {
+        for (unsigned int i = 0; i < neighbours.size(); i++) {
             if (probBuffers[cur][i] > epsilon) {
                 for (unsigned int n = 0; n < neighbours[i].size(); n++) {
                     // if this node could not be reached in half the number of maximum steps,
@@ -63,7 +63,7 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
         }
 
         // switch buffers
-        for (int i = 0; i < neighbours.size(); i++) {
+        for (unsigned int i = 0; i < neighbours.size(); i++) {
             probBuffers[cur][i] = 0.0;
         }
 
@@ -71,7 +71,7 @@ void SpectralDimensionObservable::process(const std::vector<Vertex*>& state) {
     }
 
     /* Update spectral dimension */
-    for (int sigma = 2; sigma < sigmaMax - 1; sigma++) {
+    for (unsigned int sigma = 2; sigma < sigmaMax - 1; sigma++) {
         specDim[sigma] = -2.0 * (double) sigma * (prob[sigma + 1] / prob[sigma] - 1.0);
         specDim1[sigma] = -2.0 * log(prob[sigma + 1] / prob[sigma]) /
                 boost::math::log1p(1.0 / (double) sigma);

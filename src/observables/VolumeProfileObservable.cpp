@@ -5,9 +5,9 @@
 
 VolumeProfileObservable::VolumeProfileObservable(unsigned int writeFrequency, TimeSliceObservable* tso,
         Simulation* simulation) :
-tso(tso),
-simulation(simulation),
 Observable(writeFrequency, 0, true),
+simulation(simulation),
+tso(tso),
 filename(createFilename("volume")) {
 
 }
@@ -34,7 +34,7 @@ void VolumeProfileObservable::process(const std::vector<Vertex*>& state) {
         Vertex* cur = first;
         do {
             if (visited.find(cur) != visited.end()) {
-                int j;
+                unsigned int j;
                 for (j = 0; j < path.size(); j++) {
                     if (path[j] == cur) {
                         break;
@@ -80,7 +80,7 @@ void VolumeProfileObservable::printToFile() {
     if (volumeProfile.size() > 0) {
         std::ofstream file(filename.c_str());
 
-        for (int i = 0; i < volumeProfile.size(); i++) {
+        for (unsigned int i = 0; i < volumeProfile.size(); i++) {
             file << volumeProfile[i].first << " " << volumeProfile[i].second << "\n";
         }
     }

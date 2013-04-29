@@ -24,6 +24,12 @@ MoveFactory::MoveFactory(Simulation& simulation) : uint(0, COUNT - 1) {
     invMoves[PINCH_SPACELIKE] = new InversePinchingMove(false);
     invMoves[PINCH_TIMELIKE] = new InversePinchingMove(true);
     
+    for (int i = 0; i < COUNT * 2; i++) {
+        for (int j = 0; j < 4; j++) {
+                moveStatistics[i][j] = 0;
+        }
+    }
+
     loadMoves();
 }
 
@@ -53,13 +59,14 @@ void MoveFactory::addAllMoves() {
 Move* MoveFactory::createRandomMove(Simulation& simulation) {
     BOOST_ASSERT(filter.size() > 0);
 
-    MOVES move = filter[uint(simulation.getRNG())];
-    bool inverse = simulation.getRandomNumber() < 0.5;
+    curMove = filter[uint(simulation.getRNG())];
+    curMoveInverse = simulation.getRandomNumber() < 0.5;
+    moveStatistics[curMove + COUNT * curMoveInverse][0]++;
 
-    if (inverse) {
-        return invMoves[move]->generateRandomMove(simulation);
+    if (curMoveInverse) {
+        return invMoves[curMove]->generateRandomMove(simulation);
     } else {
-        return moves[move]->generateRandomMove(simulation);
+        return moves[curMove]->generateRandomMove(simulation);
     }
 }
 
@@ -105,10 +112,23 @@ void MoveFactory::loadMoves() {
     boost::tokenizer< boost::char_separator<char> > tok(moves, sep);
 
     std::vector<std::string> m;
+
     foreach(const std::string& move, tok) {
         m.push_back(move);
     }
-    
+
     parseMoves(m);
+}
+
+void MoveFactory::setMoveAccepted() {
+    moveStatistics[curMove + COUNT * curMoveInverse][1]++;
+}
+
+void MoveFactory::setMoveImpossible() {
+    moveStatistics[curMove + COUNT * curMoveInverse][2]++;
+}
+
+void MoveFactory::setMoveRejected() {
+    moveStatistics[curMove + COUNT * curMoveInverse][3]++;
 }
 
