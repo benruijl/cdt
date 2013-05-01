@@ -58,10 +58,12 @@ void HausdorffObservable::process(const std::vector<Vertex*>& state) {
     }
 
     dist.clear();
-    dist.resize(neighbours.size()); // FIXME, this is too big
 
     for (unsigned int j = 0; j < numSamples; j++) {
-        BOOST_ASSERT(areas[j].size() < dist.size());
+        if (dist.size() < areas[j].size()) {
+            dist.resize(areas[j].size());
+        }
+        
         for (unsigned int i = 0; i < areas[j].size(); i++) {
             dist[i] += areas[j][i];
         }
