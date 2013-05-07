@@ -202,6 +202,13 @@ public:
     MoveFactory& getMoveFactory() {
         return *moveFactory;
     }
+    
+    /**
+     * Returns the ratio of SST / TTS triangles
+     */
+    double getTriangleRatio() {
+        return SSTCount / TTSCount;
+    }
 private:
     base_generator_type rng;
     boost::uniform_real<> unireal;

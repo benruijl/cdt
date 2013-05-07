@@ -28,7 +28,8 @@ bool FlipMove::isMovePossible(std::vector<Vertex*>& vertices) {
         return false;
     }
 
-    return first->isTimelike(u, v) == isTimelike && first->isTimelike(u, c) != second->isTimelike(u, d)
+    return first->isTimelike(u, v) == isTimelike && 
+            first->isTimelike(u, c) != second->isTimelike(u, d)
             && first->isTimelike(v, c) != second->isTimelike(v, d);
 }
 

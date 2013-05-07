@@ -22,6 +22,7 @@
 #include "observables/HausdorffObservable.h"
 #include "observables/ConnectivityObservable.h"
 #include "observables/AcceptanceRateObservable.h"
+#include "observables/TriangleRatioObservable.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
-            shapeFreq, hausFreq, connFreq, accFreq;
+            shapeFreq, hausFreq, connFreq, accFreq, ratioFreq;
     std::string gridFile;
 };
 
@@ -59,6 +60,7 @@ ConfigStruct buildConfiguration() {
     config.hausFreq = pt.get("haus.freq", 0);
     config.connFreq = pt.get("conn.freq", 0);
     config.accFreq = pt.get("acc.freq", 0);
+    config.ratioFreq = pt.get("ratio.freq", 0);
 
     return config;
 }
@@ -124,6 +126,12 @@ int main(int argc, char** argv) {
         AcceptanceRateObservable* acceptanceRateObservable = new
                 AcceptanceRateObservable(config.accFreq, &simulation.getMoveFactory());
         simulation.addObservable(acceptanceRateObservable);
+    }
+    
+    if (config.ratioFreq > 0) {
+        TriangleRatioObservable* triangleRatioObservable = new
+                TriangleRatioObservable(config.accFreq, &simulation);
+        simulation.addObservable(triangleRatioObservable);
     }
 
     if (config.gridFile.size() > 0) {
