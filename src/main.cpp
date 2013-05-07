@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
     
     if (config.ratioFreq > 0) {
         TriangleRatioObservable* triangleRatioObservable = new
-                TriangleRatioObservable(config.accFreq, &simulation);
+                TriangleRatioObservable(config.ratioFreq, &simulation);
         simulation.addObservable(triangleRatioObservable);
     }
 
