@@ -207,7 +207,7 @@ public:
      * Returns the ratio of SST / TTS triangles
      */
     double getTriangleRatio() {
-        return SSTCount / TTSCount;
+        return SSTCount / (double)TTSCount;
     }
 private:
     base_generator_type rng;
