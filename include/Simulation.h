@@ -162,7 +162,7 @@ public:
     template <typename T>
     T getRandomElementFromSet(boost::container::flat_set<T>& set) {
         typename boost::container::flat_set<T>::iterator it = set.begin();
-        
+
         if (set.size() == 0) {
             return NULL; // TODO: add assert?
         }
@@ -202,12 +202,15 @@ public:
     MoveFactory& getMoveFactory() {
         return *moveFactory;
     }
-    
+
     /**
      * Returns the ratio of SST / TTS triangles
      */
     double getTriangleRatio() {
-        return SSTCount / (double)TTSCount;
+        if (TTSCount == 0) 
+            return -1.0;
+        
+        return SSTCount / (double) TTSCount;
     }
 private:
     base_generator_type rng;
