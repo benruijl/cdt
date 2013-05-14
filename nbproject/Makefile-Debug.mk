@@ -53,6 +53,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/observables/ShapeObservable.o \
 	${OBJECTDIR}/src/observables/SpectralDimensionObservable.o \
 	${OBJECTDIR}/src/observables/TimeSliceObservable.o \
+	${OBJECTDIR}/src/observables/TimeSliceObservableCDT.o \
 	${OBJECTDIR}/src/observables/VolumeProfileObservable.o
 
 
@@ -169,6 +170,11 @@ ${OBJECTDIR}/src/observables/TimeSliceObservable.o: src/observables/TimeSliceObs
 	${MKDIR} -p ${OBJECTDIR}/src/observables
 	${RM} $@.d
 	$(COMPILE.cc) -g -O -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/TimeSliceObservable.o src/observables/TimeSliceObservable.cpp
+
+${OBJECTDIR}/src/observables/TimeSliceObservableCDT.o: src/observables/TimeSliceObservableCDT.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
+	${RM} $@.d
+	$(COMPILE.cc) -g -O -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/TimeSliceObservableCDT.o src/observables/TimeSliceObservableCDT.cpp
 
 ${OBJECTDIR}/src/observables/VolumeProfileObservable.o: src/observables/VolumeProfileObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables

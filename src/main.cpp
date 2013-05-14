@@ -23,6 +23,7 @@
 #include "observables/ConnectivityObservable.h"
 #include "observables/AcceptanceRateObservable.h"
 #include "observables/TriangleRatioObservable.h"
+#include "observables/TimeSliceObservableCDT.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ struct ConfigStruct {
     double alpha, deltaVolume;
     unsigned int N, T, numSweeps, sweepLength,
             volume, sizeFreq, gridFreq, timeFreq, volProfFreq, specDimFreq,
-            shapeFreq, hausFreq, connFreq, accFreq, ratioFreq;
+            shapeFreq, hausFreq, connFreq, accFreq, ratioFreq, sliceCDTFreq;
     std::string gridFile;
 };
 
@@ -61,6 +62,7 @@ ConfigStruct buildConfiguration() {
     config.connFreq = pt.get("conn.freq", 0);
     config.accFreq = pt.get("acc.freq", 0);
     config.ratioFreq = pt.get("ratio.freq", 0);
+    config.sliceCDTFreq = pt.get("sliceCDT.freq", 0);
 
     return config;
 }
@@ -127,11 +129,17 @@ int main(int argc, char** argv) {
                 AcceptanceRateObservable(config.accFreq, &simulation.getMoveFactory());
         simulation.addObservable(acceptanceRateObservable);
     }
-    
+
     if (config.ratioFreq > 0) {
         TriangleRatioObservable* triangleRatioObservable = new
                 TriangleRatioObservable(config.ratioFreq, &simulation);
         simulation.addObservable(triangleRatioObservable);
+    }
+
+    if (config.sliceCDTFreq > 0) {
+        TimeSliceObservableCDT* timeSliceObservableCDT = new
+                TimeSliceObservableCDT(config.sliceCDTFreq, config.T);
+        simulation.addObservable(timeSliceObservableCDT);
     }
 
     if (config.gridFile.size() > 0) {
