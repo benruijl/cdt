@@ -1,27 +1,35 @@
 #include "observables/TimeSliceObservableCDT.h"
 #include "Vertex.h"
+#include "Triangle.h"
 
 void TimeSliceObservableCDT::process(const std::vector<Vertex*>& state) {
     Vertex* cur = state[0];
-    Vertex* prev = cur->getNeighbouringVertex();
-    Triangle *t, *r;
-
-    Vertex::getAdjacentTriangles(cur, prev, &t, &r);
-    VertSet sec = cur->getSectorVertices(t, prev, false);
-    BOOST_ASSERT(sec.size() == 1);
-    prev = *sec.begin();
+    Vertex* future = cur->getNeighbouringVertex();
+    Triangle *f, *p;
+    Vertex::getAdjacentTriangles(cur, future, &f, &p);
+    if (!f->isTimelike(cur, future)) future = f->getThirdVertex(cur, future);
 
     for (unsigned int t = 0; t < T; t++) {
         unsigned int count = 0;
-        // find loop
+
+        // TODO: add TTS assert
+        Vertex::getAdjacentTriangles(cur, future, &f, &p);
+        Vertex* prev = f->getThirdVertex(cur, future);
+        if (f->isTimelike(prev, cur)) prev = p->getThirdVertex(cur, future);
+
+        // find spacelike loop
         Vertex* lc = cur;
         while (lc != prev) {
-            sec = lc->getOtherSectorVertices(cur);
+            VertSet sec = lc->getOtherSectorVertices(cur);
             BOOST_ASSERT(sec.size() == 1); // CDT constraint
             cur = lc;
             lc = *sec.begin();
             count++;
         }
+
+        Vertex* newfut = *future->getOtherSectorVertices(cur).begin();
+        cur = future;
+        future = newfut;
 
         volumeProfile[t] = count;
     }
