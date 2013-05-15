@@ -3,6 +3,7 @@
 #include "Triangle.h"
 
 void TimeSliceObservableCDT::process(const std::vector<Vertex*>& state) {
+    // define a timelike direction that is the future
     Vertex* cur = state[0];
     Vertex* future = cur->getNeighbouringVertex();
     Triangle *f, *p;
@@ -12,20 +13,20 @@ void TimeSliceObservableCDT::process(const std::vector<Vertex*>& state) {
     for (unsigned int t = 0; t < T; t++) {
         unsigned int count = 0;
 
-        // TODO: add TTS assert
+        // find spacelike loop at cur
         Vertex::getAdjacentTriangles(cur, future, &f, &p);
-        Vertex* prev = f->getThirdVertex(cur, future);
-        if (f->isTimelike(prev, cur)) prev = p->getThirdVertex(cur, future);
+        VertSet n = cur->getSectorVertices(f, future, false);
+        BOOST_ASSERT(n.size() == 1); // CDT constraint
 
-        // find spacelike loop
+        Vertex* prev = *n.begin();
         Vertex* lc = cur;
-        while (lc != prev) {
-            VertSet sec = lc->getOtherSectorVertices(cur);
+        do {
+            VertSet sec = lc->getOtherSectorVertices(prev);
             BOOST_ASSERT(sec.size() == 1); // CDT constraint
-            cur = lc;
+            prev = lc;
             lc = *sec.begin();
             count++;
-        }
+        } while (lc != cur);
 
         Vertex* newfut = *future->getOtherSectorVertices(cur).begin();
         cur = future;
