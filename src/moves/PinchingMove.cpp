@@ -6,8 +6,8 @@ PinchingMove::PinchingMove(bool isTimelike) : Move(isTimelike * -4 + !isTimelike
 }
 
 double PinchingMove::getTransitionProbability(std::vector<Vertex*>& vertices) {
-    // Note that this move is not symmetric, (u,v) and (v, u) are different moves.
-    return 1.0 / (vertices.size() * u->getNeighbouringVertexCount());
+    return 1.0 / (vertices.size() * u->getNeighbouringVertexCount()) +
+            1.0 / (vertices.size() * v->getNeighbouringVertexCount());
 }
 
 bool PinchingMove::isMovePossible(std::vector<Vertex*>& vertices) {
@@ -69,7 +69,7 @@ double PinchingMove::getInverseTransitionProbability(std::vector<Vertex*>& verti
     countLeft += v->getSectorVertices(l, w, !isTimelike).size() - 1;
     countRight += v->getSectorVertices(r, x, !isTimelike).size() - 1;
 
-    return 1.0 / ((countLeft + 1) * (countRight + 1) * 2);
+    return 1.0 / ((vertices.size() - 1) * (countLeft + 1) * (countRight + 1) * 2);
 }
 
 void PinchingMove::execute(std::vector<Vertex*>& vertices) {
