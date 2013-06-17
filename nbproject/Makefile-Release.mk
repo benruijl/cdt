@@ -49,6 +49,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/moves/Move.o \
 	${OBJECTDIR}/src/moves/MoveFactory.o \
 	${OBJECTDIR}/src/moves/PinchingMove.o \
+	${OBJECTDIR}/src/observables/CTCObservable.o \
 	${OBJECTDIR}/src/observables/HausdorffObservable.o \
 	${OBJECTDIR}/src/observables/ShapeObservable.o \
 	${OBJECTDIR}/src/observables/SpectralDimensionObservable.o \
@@ -150,6 +151,11 @@ ${OBJECTDIR}/src/moves/PinchingMove.o: src/moves/PinchingMove.cpp
 	${MKDIR} -p ${OBJECTDIR}/src/moves
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/moves/PinchingMove.o src/moves/PinchingMove.cpp
+
+${OBJECTDIR}/src/observables/CTCObservable.o: src/observables/CTCObservable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src/observables
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Iinclude -fopenmp -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/observables/CTCObservable.o src/observables/CTCObservable.cpp
 
 ${OBJECTDIR}/src/observables/HausdorffObservable.o: src/observables/HausdorffObservable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src/observables

@@ -17,6 +17,7 @@
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
         <itemPath>include/observables/AcceptanceRateObservable.h</itemPath>
+        <itemPath>include/observables/CTCObservable.h</itemPath>
         <itemPath>include/observables/ConnectivityObservable.h</itemPath>
         <itemPath>include/observables/GridObservable.h</itemPath>
         <itemPath>include/observables/HausdorffObservable.h</itemPath>
@@ -56,6 +57,7 @@
         <itemPath>src/moves/PinchingMove.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Observables" projectFiles="true">
+        <itemPath>src/observables/CTCObservable.cpp</itemPath>
         <itemPath>src/observables/HausdorffObservable.cpp</itemPath>
         <itemPath>src/observables/ShapeObservable.cpp</itemPath>
         <itemPath>src/observables/SpectralDimensionObservable.cpp</itemPath>
@@ -145,6 +147,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="include/observables/CTCObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"
             tool="3"
@@ -224,6 +231,8 @@
       <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/CTCObservable.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/observables/HausdorffObservable.cpp"
             ex="false"
@@ -327,6 +336,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="include/observables/CTCObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"
             tool="3"
@@ -406,6 +420,8 @@
       <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/CTCObservable.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/observables/HausdorffObservable.cpp"
             ex="false"
@@ -498,6 +514,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="include/observables/CTCObservable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/observables/ConnectivityObservable.h"
             ex="false"
             tool="3"
@@ -577,6 +598,8 @@
       <item path="src/moves/MoveFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/moves/PinchingMove.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/observables/CTCObservable.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/observables/HausdorffObservable.cpp"
             ex="false"

@@ -100,7 +100,7 @@ std::vector<Vertex*> TimeSliceObservable::createInitialSlice(Vertex* start) {
     int bestTime = -1;
     std::vector<Vertex*> slice;
 
-    /* For each outgoing vertex, find a shortest path */
+    /* For each outgoing spacelike vertex, find a shortest path */
     foreach(Vertex* n, start->getNeighbouringVertices()) {
         Vertex::getAdjacentTriangles(start, n, &t, &r);
 
