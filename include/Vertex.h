@@ -97,6 +97,14 @@ public:
      * @param u Vertex to take the opposite sector of
      */
     VertSet getOtherSectorVertices(Vertex* u);
+    
+    /**
+     * Gets the vertices that are in the same sector as u.
+     * @param u Vertex in the desired secotr
+     * 
+     * TODO: make more efficient
+     */
+    VertSet getSameSectorVertices(Vertex * u);
 
     /**
      * Gets all the triangles that belong to one of the four sectors. The two links

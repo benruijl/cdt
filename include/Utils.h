@@ -128,5 +128,12 @@ boost::unordered_map<Triangle*, unsigned int> createTriangleIds(const std::vecto
 
 NeighbourList buildDualLatticeConnectivity(boost::unordered_map<Triangle*, unsigned int>& index);
 
+/*
+ * Is the bubble in which the timelike link a-b lies self-overlapping?
+ * 
+ * TODO: check sst ends and move to other file
+ */
+bool hasSelfOverlappingBubbles(Vertex* a, Vertex* b);
+
 #endif	/* UTILS_H */
 

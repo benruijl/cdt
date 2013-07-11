@@ -84,6 +84,10 @@ void InverseCollapseMove::execute(std::vector<Vertex*>& vertices) {
     BOOST_ASSERT(v->checkCausality());
     BOOST_ASSERT(w->checkCausality());
     BOOST_ASSERT(x->checkCausality());
+    
+    if (isTimelike && hasSelfOverlappingBubbles(x, u)) {
+        std::cout << "SELF OVERLAPPING BUBBLES!" << std::endl;
+    }
 }
 
 std::string InverseCollapseMove::printID() {

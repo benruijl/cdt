@@ -14,6 +14,8 @@ class FlipMove : public Move {
 private:
     Vertex* u, *v;
     bool isTimelike, change;
+    
+    bool hasSelfOverlappingBubbles2(Vertex* a, Vertex* b, Vertex* e, Vertex* f);
 public:
 
     /**
