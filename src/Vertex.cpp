@@ -94,14 +94,7 @@ VertSet Vertex::getOtherSectorVertices(Vertex * u) {
 
     // start from the next vertex, to avoid returning u, if u is the only element
     // of its sector
-    VertSet o = getSectorVertices(t, t->getThirdVertex(this, u), t->isTimelike(this, u));
-
-    VertSet v = getSectorVertices(t, true, t->isTimelike(this, u));
-    VertSet w = getSectorVertices(t, false, t->isTimelike(this, u));
-    BOOST_ASSERT((v & w).size() == 0);
-    BOOST_ASSERT(((v & o).size() == 0 && w == o) || ((w & o).size() == 0 && v == o));
-
-    return o;
+    return getSectorVertices(t, t->getThirdVertex(this, u), t->isTimelike(this, u));
 }
 
 VertSet Vertex::getSectorVertices(Triangle* start, bool left, bool tl) {
