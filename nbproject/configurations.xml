@@ -282,6 +282,9 @@
             <pElem>include</pElem>
           </incDir>
           <commandLine>-fopenmp -Wall</commandLine>
+          <preprocessorList>
+            <Elem>ALEXANDER_DISABLE_BUBBLE_COLLAPSE</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

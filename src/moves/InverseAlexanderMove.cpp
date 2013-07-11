@@ -12,7 +12,7 @@ bool InverseAlexanderMove::doTopologyCheck() {
     Vertex::getAdjacentTriangles(u, x, &t, &r);
     fourth = t == third ? r : t;
     Vertex* y = fourth->getThirdVertex(u, x);
-    
+
     if (first->isTimelike(u, v) != isTimelike) {
         v = w;
         x = y;
@@ -83,9 +83,16 @@ bool InverseAlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
     bool lYU = second->isTimelike(y, u);
     bool lUW = first->isTimelike(u, w);
 
+    // test the symmetric configuration
     if (first->isOppositeLinkTimelike(u) != second->isOppositeLinkTimelike(u) &&
             first->isOppositeLinkTimelike(u) != third->isOppositeLinkTimelike(u)) {
-        return true; //symmetric configuration
+#ifdef ALEXANDER_DISABLE_BUBBLE_COLLAPSE
+        if (isTimelike) {
+            return false;
+        }
+#endif
+
+        return true;
     }
 
     if (lUV == lVW && lVW == lWX && lWX == lXU) return first->isTimelike(u, v) != isTimelike;
@@ -148,7 +155,7 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
     /* Perform cleanup */
     vertices[uIndex] = vertices.back();
     vertices.resize(vertices.size() - 1);
-    
+
     first->removeFromVertices();
     second->removeFromVertices();
     third->removeFromVertices();
