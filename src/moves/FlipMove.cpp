@@ -112,7 +112,7 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
     Vertex::getAdjacentTriangles(u, v, &first, &second);
 
     if (isTimelike && hasSelfOverlappingBubbles(u, v)) {
-        std::cout << "SELF OVERLAPPING BUBBLES FLIP CREATED ELSEWHERE" << std::endl;
+        std::cout << "Self-overlapping bubble detected, created elsewhere" << std::endl;
         std::cout << u << " " << v << std::endl;
         
         foreach(Vertex* k, vertices) {
@@ -120,7 +120,7 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
         }
         
         BOOST_ASSERT(false);
-    } else std::cout << isTimelike << " " << change << std::endl;
+    }// else std::cout << isTimelike << " " << change << " " << u << " " << v << std::endl;
 
     Vertex* c = first->getThirdVertex(u, v);
     Vertex* d = second->getThirdVertex(u, v);
@@ -131,19 +131,6 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
     bool lCB = first->isTimelike(c, v);
     bool lAD = second->isTimelike(u, d);
     bool lBD = second->isTimelike(v, d);
-
-    /*  if (change && !isTimelike) { // bubble merge move     
-          if (lAC) {
-              if (this->hasSelfOverlappingBubbles2(u, c, v, d)) {
-                  std::cout << "SELF OVERLAPPING BUBBLE DETECTED, BAILING OUT" << std::endl;
-                  return;
-              }
-          } else
-              if (this->hasSelfOverlappingBubbles2(u, d, v, c)) {
-              std::cout << "SELF OVERLAPPING BUBBLE DETECTED, BAILING OUT" << std::endl;
-              return;
-          }
-      }*/
 
     Triangle* t1 = new Triangle(u, c, d, lAC, lNew, lAD);
     Triangle* t2 = new Triangle(c, v, d, lCB, lBD, lNew);
@@ -162,7 +149,7 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
         if (hasSelfOverlappingBubbles(c, d)) {
             std::cout << "SELF OVERLAPPING BUBBLES CHANGE FLIP, REVERTING!" << std::endl;
 
-            // revert
+            // revert move
             new Triangle(u, c, v, lAC, lCB, isTimelike);
             new Triangle(u, d, v, lAD, lBD, isTimelike);
 
@@ -170,44 +157,10 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
             t2->removeFromVertices();
             delete t1;
             delete t2;
-            
-            BOOST_ASSERT(hasSelfOverlappingBubbles(u, v) == false);
 
             return;
         }
     }
-
-    // if spacelike
-    /* if ((!isTimelike && !change) || (isTimelike && change)) {
-         if ((t1->isTimelike(u, c) && hasSelfOverlappingBubbles(u, c))
-                 || (t1->isTimelike(u, d) && hasSelfOverlappingBubbles(u, d))) {
-             std::cout << "SELF OVERLAPPING BUBBLES CHANGE FLIP, REVERTING!" << std::endl;
-             u = c;
-             v = d;
-             isTimelike = (isTimelike && !change) || (!isTimelike && change);
-             docheck = false;
-             execute(vertices);
-         }
-         if ((t2->isTimelike(v, c) && hasSelfOverlappingBubbles(v, c))
-                 || (t2->isTimelike(v, d) && hasSelfOverlappingBubbles(v, d))) {
-             std::cout << "SELF OVERLAPPING BUBBLES CHANGE FLIP, REVERTING!" << std::endl;
-             u = c;
-             v = d;
-             isTimelike = (isTimelike && !change) || (!isTimelike && change);
-             docheck = false;
-             execute(vertices);
-
-         }
-     }
-
-     if (((isTimelike && !change) || (!isTimelike && change)) && hasSelfOverlappingBubbles(c, d)) {
-            std::cout << "SELF OVERLAPPING BUBBLES FLIP, REVERTING!" << std::endl;
-            u = c;
-            v = d;
-            isTimelike = (isTimelike && !change) || (!isTimelike && change);
-            execute(vertices);
-        } else 
-            std::cout << "NO OVERLAP!" << std::endl;*/
 }
 
 std::string FlipMove::printID() {

@@ -62,37 +62,37 @@ boost::unordered_map<Triangle*, unsigned int> createTriangleIds(const std::vecto
 
 bool hasSelfOverlappingBubbles(Vertex* a, Vertex* b) {
     typedef std::pair<Vertex*, Vertex*> curPrev;
-    VertSet visited;
+
+    boost::unordered_map<Vertex*, Vertex*> visited;
     std::deque<curPrev> queue;
+
     queue.push_back(curPrev(a, b));
-    queue.push_back(curPrev(b, a)); // is this correct?
+    queue.push_back(curPrev(b, a));
 
     while (!queue.empty()) {
         curPrev c = queue.back();
         queue.pop_back();
-        
-        visited.insert(c.first);
 
-        foreach(Vertex* n, c.first->getSameSectorVertices(c.second)) {
-            if (n != c.second) {
+        VertSet neigh = c.first->getSameSectorVertices(c.second);
+        boost::unordered_map<Vertex*, Vertex*>::iterator pos = visited.find(c.first);
 
-                // check if the hit is due to compactification or overlap
-                if (visited.find(n) != visited.end()) {
-
-                    foreach(Vertex* k, n->getOtherSectorVertices(c.first)) {
-                        if (visited.find(k) != visited.end()) {
-                            return true; // found overlap
-                        }
-                    }
-
-                    // TODO: what to do here? this means compactification is found,
-                    // is it also ok to just stop?
-                    continue;
-                }
-
-                queue.push_back(curPrev(n, c.first)); // depth first
+        if (pos != visited.end()) {
+            // check if the hit is due to compactification or overlap
+            if (neigh.find(pos->second) == neigh.end()) {
+                return true; // found overlap
             }
-        } 
+
+            // already visited, so continue to next queue element
+            continue;
+        }
+
+        visited[c.first] = c.second;
+
+        foreach(Vertex* n, neigh) {
+            if (n != c.second) {
+                queue.push_back(curPrev(n, c.first));
+            }
+        }
     }
 
     return false;
