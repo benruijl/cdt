@@ -21,6 +21,18 @@ bool AlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
     }
 #endif
 
+#ifdef ALEXANDER_DISABLE_BUBBLE_COLLAPSE
+    Vertex* c = first->getThirdVertex(u, v);
+    Vertex* d = second->getThirdVertex(u, v);
+
+    if (isTimelike == first->isTimelike(u, v) &&
+            !first->checkAdjacentSides(u, v) &&
+            !second->checkAdjacentSides(u, v) &&
+            first->isTimelike(u, c) != second->isTimelike(u, d)) {
+        return false;
+    }
+#endif
+
     /* A fixed triangle should not be deleted. */
     if (first == getFixedTriangle() || second == getFixedTriangle()) {
         return false;
