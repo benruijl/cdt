@@ -52,61 +52,6 @@ double FlipMove::getInverseTransitionProbability(std::vector<Vertex*>& vertices)
             1.0 / (vertices.size() * (d->getNeighbouringVertexCount() + 1));
 }
 
-// call for bubble removal move
-// link should be timelike
-// TODO: should also work for spacelike?
-// a and b should be two vertices on the outside of the the rhombus!
-// e and f are extra vertices
-
-bool FlipMove::hasSelfOverlappingBubbles2(Vertex* a, Vertex* b, Vertex* e, Vertex* f) {
-    typedef std::pair<Vertex*, Vertex*> curPrev;
-    VertSet visited;
-    std::deque<curPrev> queue;
-    queue.push_back(curPrev(a, b));
-    queue.push_back(curPrev(b, a)); // required?
-
-    while (!queue.empty()) {
-        curPrev c = queue.back();
-        queue.pop_back();
-
-        visited.insert(c.first);
-
-        Vertex* prev = c.second;
-        if (c.first == b && c.second == f) prev = e;
-        if (c.first == f && c.second == b) prev = a;
-        VertSet o = c.first->getSameSectorVertices(prev);
-        if (c.first == b && o.find(a) != o.end()) o.insert(f);
-        if (c.first == f && o.find(e) != o.end()) o.insert(b);
-
-        foreach(Vertex* n, o) {
-            if (n != c.second) { // this could skip vertices like (f,e)
-                Vertex* prev = c.first; // change prev so other sector vertices works
-                if (n == b && c.first == f) prev = a;
-                if (n == f && c.first == b) prev = e;
-
-
-                // check if the hit is due to compactification or overlap
-                if (visited.find(n) != visited.end()) {
-
-                    foreach(Vertex* k, n->getOtherSectorVertices(prev)) {
-                        if (visited.find(k) != visited.end()) {
-                            return true; // found overlap
-                        }
-                    }
-
-                    // TODO: what to do here? this means compactification is found,
-                    // is it also ok to just stop?
-                    continue;
-                }
-
-                queue.push_back(curPrev(n, c.first)); // depth first
-            }
-        }
-    }
-
-    return false;
-}
-
 void FlipMove::execute(std::vector<Vertex*>& vertices) {
     Triangle* first, *second;
     Vertex::getAdjacentTriangles(u, v, &first, &second);
@@ -147,7 +92,7 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
 
     if (!isTimelike && change) {
         if (hasSelfOverlappingBubbles(c, d)) {
-            std::cout << "SELF OVERLAPPING BUBBLES CHANGE FLIP, REVERTING!" << std::endl;
+            std::cout << "Self-overlapping bubble created, reverting flip" << std::endl;
 
             // revert move
             new Triangle(u, c, v, lAC, lCB, isTimelike);

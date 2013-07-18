@@ -58,9 +58,10 @@ void CollapseMove::execute(std::vector<Vertex*>& vertices) {
     first->removeFromVertices();
     second->removeFromVertices();
 
-    v->getTriangles() += u->getTriangles();
+    TriSet left = u->getTriangles();
+    v->getTriangles() += left;
 
-    foreach(Triangle* t, u->getTriangles()) {
+    foreach(Triangle* t, left) {
         t->replaceVertex(u, v);
     }
 
@@ -71,6 +72,31 @@ void CollapseMove::execute(std::vector<Vertex*>& vertices) {
     delete u;
     delete first;
     delete second;
+
+    Vertex::getAdjacentTriangles(v, c, &first, &second);
+    Vertex* tl = *v->getSectorVertices(first, true, true).begin();
+
+    if (isTimelike && hasSelfOverlappingBubbles(tl, v)) {
+        std::cout << "Self-overlapping bubble created, reverting collapse" << std::endl;
+        // Collected all triangles on one side of the barrier v - u - w
+
+        // revert
+        Vertex* x = new Vertex();
+        v->getTriangles() -= left;
+        x->getTriangles() += left;
+
+        foreach(Triangle* t, left) {
+            t->replaceVertex(v, x);
+        }
+
+        // Create two new triangles
+        new Triangle(c, x, v, false, true, false);
+        new Triangle(d, x, v, false, true, false);
+
+        vertices.push_back(x);
+    }
+
+    //std::cout << "C " << isTimelike << " " << c << " " << v << " " << d << std::endl;
 
     BOOST_ASSERT(v->checkCausality());
     BOOST_ASSERT(c->checkCausality());
