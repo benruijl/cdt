@@ -92,7 +92,7 @@ void FlipMove::execute(std::vector<Vertex*>& vertices) {
 
     if (!isTimelike && change) {
         if (hasSelfOverlappingBubbles(c, d)) {
-            std::cout << "Self-overlapping bubble created, reverting flip" << std::endl;
+            //std::cout << "Self-overlapping bubble created, reverting flip" << std::endl;
 
             // revert move
             new Triangle(u, c, v, lAC, lCB, isTimelike);

@@ -151,7 +151,7 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
 
     lWX = third->isTimelike(w, x);
     lXY = fourth->isTimelike(x, y);
-
+    
     /* Perform cleanup */
     vertices[uIndex] = vertices.back();
     vertices.resize(vertices.size() - 1);
@@ -174,11 +174,42 @@ void InverseAlexanderMove::execute(std::vector<Vertex*>& vertices) {
         new Triangle(v, x, y, lUV, lXY, lVY);
     }
 
+    //  check for self-overlapping bubbles
+    // FIXME: last check == 2 too imprecise, should be 1100, 0110, etc.
+   // if (lVW + lWX + lXY + lVY == 1 || (isTimelike && lVW + lWX + lXY + lVY == 2)) {
+    if (isTimelike) {
+        if ((lUV && hasSelfOverlappingBubbles(v, x)) ||
+                (!lUV && hasSelfOverlappingBubbles(w, y))) {
+            //std::cout << "Self-overlapping bubble created, reverting inv alex" << std::endl;
+
+            if (lUV) {
+                Vertex::getAdjacentTriangles(v, x, &first, &second);
+            } else {
+                Vertex::getAdjacentTriangles(w, y, &first, &second);
+            }
+
+            // revert
+            u = new Vertex();
+            new Triangle(u, v, w, lUV, lVW, !lUV);
+            new Triangle(u, w, x, !lUV, lWX, lUV);
+            new Triangle(u, x, y, lUV, lXY, !lUV);
+            new Triangle(u, y, v, !lUV, lVY, lUV);
+
+            vertices.push_back(u);
+            first->removeFromVertices();
+            second->removeFromVertices();
+            delete first;
+            delete second;
+        }
+    }
+
 
     BOOST_ASSERT(v->checkCausality());
     BOOST_ASSERT(w->checkCausality());
     BOOST_ASSERT(x->checkCausality());
     BOOST_ASSERT(y->checkCausality());
+
+    //std::cout << printID() << " " << lVW << lWX << lXY << lVY <<  " " << u << std::endl;
 }
 
 std::string InverseAlexanderMove::printID() {

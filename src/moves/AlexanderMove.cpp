@@ -21,18 +21,6 @@ bool AlexanderMove::isMovePossible(std::vector<Vertex*>& vertices) {
     }
 #endif
 
-#ifdef ALEXANDER_DISABLE_BUBBLE_COLLAPSE
-    Vertex* c = first->getThirdVertex(u, v);
-    Vertex* d = second->getThirdVertex(u, v);
-
-    if (isTimelike == first->isTimelike(u, v) &&
-            !first->checkAdjacentSides(u, v) &&
-            !second->checkAdjacentSides(u, v) &&
-            first->isTimelike(u, c) != second->isTimelike(u, d)) {
-        return false;
-    }
-#endif
-
     /* A fixed triangle should not be deleted. */
     if (first == getFixedTriangle() || second == getFixedTriangle()) {
         return false;
@@ -69,10 +57,10 @@ void AlexanderMove::execute(std::vector<Vertex*>& vertices) {
     bool newLink = !lAB;
 
     Vertex* e = new Vertex(); // new vertex
-    new Triangle(u, c, e, lAC, newLink, lAB);
-    new Triangle(e, c, v, newLink, lCB, lAB);
-    new Triangle(u, e, d, lAB, newLink, lAD);
-    new Triangle(e, v, d, lAB, lBD, newLink);
+    Triangle* t1 = new Triangle(u, c, e, lAC, newLink, lAB);
+    Triangle* t2 = new Triangle(e, c, v, newLink, lCB, lAB);
+    Triangle* t3 = new Triangle(u, e, d, lAB, newLink, lAD);
+    Triangle* t4 = new Triangle(e, v, d, lAB, lBD, newLink);
 
     vertices.push_back(e);
     first->removeFromVertices();
@@ -80,11 +68,36 @@ void AlexanderMove::execute(std::vector<Vertex*>& vertices) {
     delete first;
     delete second;
 
+    // FIXME: narrow bubble check down to particular alexander moves
+    if ((lAC && hasSelfOverlappingBubbles(u, c)) ||
+            (lAD && hasSelfOverlappingBubbles(u, d))) {
+        //std::cout << "Self-overlapping bubble created, reverting alex" << std::endl;
+
+        t1->removeFromVertices();
+        t2->removeFromVertices();
+        t3->removeFromVertices();
+        t4->removeFromVertices();
+
+        delete e;
+        delete t1;
+        delete t2;
+        delete t3;
+        delete t4;
+        vertices.resize(vertices.size() - 1); // remove e
+
+        // revert move
+        new Triangle(u, c, v, lAC, lCB, isTimelike);
+        new Triangle(u, d, v, lAD, lBD, isTimelike);
+        return;
+    }
+
     BOOST_ASSERT(u->checkCausality());
     BOOST_ASSERT(v->checkCausality());
     BOOST_ASSERT(c->checkCausality());
     BOOST_ASSERT(d->checkCausality());
     BOOST_ASSERT(e->checkCausality());
+
+    //std::cout << printID() << " " << lAC << lCB << lBD << lAD << " " << u << " " << v << std::endl;
 }
 
 std::string AlexanderMove::printID() {

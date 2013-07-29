@@ -77,7 +77,7 @@ void CollapseMove::execute(std::vector<Vertex*>& vertices) {
     Vertex* tl = *v->getSectorVertices(first, true, true).begin();
 
     if (isTimelike && hasSelfOverlappingBubbles(tl, v)) {
-        std::cout << "Self-overlapping bubble created, reverting collapse" << std::endl;
+        //std::cout << "Self-overlapping bubble created, reverting collapse" << std::endl;
         // Collected all triangles on one side of the barrier v - u - w
 
         // revert
