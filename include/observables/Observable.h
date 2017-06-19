@@ -44,7 +44,7 @@ public:
     writeFrequency(writeFrequency),
     currentMeasurement(0),
     doPrintToScreen(printToScreen),
-    name(name) {
+    name("") {
         suffix = READ_CONF("general.outputSuffix", std::string());
         folder = READ_CONF("general.dataFolder", std::string("data/"));
 

@@ -13,7 +13,7 @@
 
 class SpectralDimensionObservable : public Observable {
 private:
-    static const double epsilon = 1e-9;
+    static constexpr double epsilon = 1e-9;
     unsigned int sigmaMax;
     unsigned int sampleSize;
     double diffusionConst; // diffusion constant
